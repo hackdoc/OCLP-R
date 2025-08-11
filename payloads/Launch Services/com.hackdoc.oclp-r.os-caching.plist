@@ -4,18 +4,18 @@
 <dict>
 	<key>AssociatedBundleIdentifiers</key>
 	<array>
-		<string>com.pyquick.oclp-r</string>
+		<string>com.hackdoc.oclp-r</string>
 	</array>
 	<key>Label</key>
-	<string>com.pyquick.oclp-r.macos-update</string>
+	<string>com.hackdoc.oclp-r.os-caching</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/Library/Application Support/Pyquick/OCLP-R.app/Contents/MacOS/OCLP-R</string>
-		<string>--prepare_for_update</string>
+		<string>/Library/Application Support/Hackdoc/OCLP-R.app/Contents/MacOS/OCLP-R</string>
+		<string>--cache_os</string>
 	</array>
 	<key>WatchPaths</key>
 	<array>
-		<string>/System/Volumes/Update/Update.plist</string>
+		<string>/System/Volumes/Update/Preflight.plist</string>
 	</array>
 </dict>
 </plist>

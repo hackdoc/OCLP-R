@@ -55,7 +55,7 @@ module.exports = {
 
     themeConfig: {
         lastUpdated: true,
-        repo: 'https://github.com/pyquick/OCLP-R/',
+        repo: 'https://github.com/hackdoc/OCLP-R/',
         docsDir: 'docs',
         docsBranch: 'main',
         editLinks: true,

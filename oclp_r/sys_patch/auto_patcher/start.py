@@ -75,7 +75,7 @@ class StartAutomaticPatching:
             ID_GITHUB = wx.NewId()
             ID_UPDATE = wx.NewId()
 
-            url = "https://api.github.com/repos/pyquick/OCLP-R/releases/latest"
+            url = "https://api.github.com/repos/hackdoc/OCLP-R/releases/latest"
             response = requests.get(url,verify=False).json()
             try:
                 changelog = response["body"].split("## Asset Information")[0]
@@ -163,7 +163,7 @@ Please check the Github page for more information about this release."""
                 logging.info("- No new binaries found on Github, proceeding with patching")
 
                 warning_str = ""
-                if network_handler.NetworkUtilities("https://api.github.com/repos/pyquick/OCLP-R/releases/latest").verify_network_connection() is False:
+                if network_handler.NetworkUtilities("https://api.github.com/repos/hackdoc/OCLP-R/releases/latest").verify_network_connection() is False:
                     warning_str = f"""\n\nWARNING: We're unable to verify whether there are any new releases of OCLP-R on Github. Be aware that you may be using an outdated version for this OS. If you're unsure, verify on Github that OCLP-R {self.constants.patcher_version} is the latest official release"""
 
                 args = [

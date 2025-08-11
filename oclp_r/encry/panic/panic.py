@@ -31,7 +31,7 @@ class Panic(Exception):
         for i in contact:
             cprint(i.strip(),color,None,["reverse","underline","blink"])
         if self.level>=3:
-            cprint("Please report https://github.com/pyquick/pyquick/issues/ to report this panic.".strip(),color,None)
+            cprint("Please report https://github.com/hackdoc/hackdoc/issues/ to report this panic.".strip(),color,None)
             exit(self.level)
         else:
             return None

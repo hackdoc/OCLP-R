@@ -176,7 +176,7 @@ class ZSHFunctions:
         _script = ""
 
         _script += "function _fixSettingsFilePermission() {\n"
-        _script += "    local settingsPath=\"$pathToTargetVolume/Users/Shared/.com.pyquick.oclp-r.plist\"\n\n"
+        _script += "    local settingsPath=\"$pathToTargetVolume/Users/Shared/.com.hackdoc.oclp-r.plist\"\n\n"
 
         _script += "    if [[ -e $settingsPath ]]; then\n"
         _script += "        echo \"Fixing settings file permissions: $settingsPath\"\n"
@@ -233,7 +233,7 @@ class ZSHFunctions:
         _script = ""
 
         _script += "function _cleanLaunchService() {\n"
-        _script += "    local domain=\"com.pyquick.oclp-r\"\n\n"
+        _script += "    local domain=\"com.hackdoc.oclp-r\"\n\n"
 
         _script += "    # Iterate over launch agents and daemons\n"
         _script += "    for launchServiceVariant in \"$pathToTargetVolume/Library/LaunchAgents\" \"$pathToTargetVolume/Library/LaunchDaemons\"; do\n"
@@ -316,13 +316,13 @@ class GenerateScripts:
 
         self.files = [
             "Applications/OCLP-R.app",
-            "Library/Application Support/Pyquick/Update.plist",
-            "Library/Application Support/Pyquick/OCLP-R.app",
-            "Library/PrivilegedHelperTools/com.pyquick.oclp-r.privileged-helper"
+            "Library/Application Support/Hackdoc/Update.plist",
+            "Library/Application Support/Hackdoc/OCLP-R.app",
+            "Library/PrivilegedHelperTools/com.hackdoc.oclp-r.privileged-helper"
         ]
 
         self.additional_auto_pkg_files = [
-            "Library/LaunchAgents/com.pyquick.oclp-r.auto-patch.plist"
+            "Library/LaunchAgents/com.hackdoc.oclp-r.auto-patch.plist"
         ]
 
 
@@ -428,8 +428,8 @@ class GenerateScripts:
         _script += self._generate_label_bar()
         _script += "\n"
 
-        _script += "helperPath=\"Library/PrivilegedHelperTools/com.pyquick.oclp-r.privileged-helper\"\n"
-        _script += "mainAppPath=\"Library/Application Support/Pyquick/OCLP-R.app\"\n"
+        _script += "helperPath=\"Library/PrivilegedHelperTools/com.hackdoc.oclp-r.privileged-helper\"\n"
+        _script += "mainAppPath=\"Library/Application Support/Hackdoc/OCLP-R.app\"\n"
         _script += "shimAppPath=\"Applications/OCLP-R.app\"\n"
         if is_autopkg:
             _script += "executablePath=\"$mainAppPath/Contents/MacOS/OCLP-R\"\n"

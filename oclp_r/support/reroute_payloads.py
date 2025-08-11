@@ -76,7 +76,7 @@ class RoutePayloadDiskImage:
         dmg_info = plistlib.loads(dmg_info.stdout)
 
 
-        for variant in ["PyquickInternalResources.dmg", "Universal-Binaries.dmg", "payloads.dmg"]:
+        for variant in ["HackdocInternalResources.dmg", "Universal-Binaries.dmg", "payloads.dmg"]:
             for image in dmg_info["images"]:
                 if image["image-path"].endswith(variant):
                     if unmount_all_active is False:

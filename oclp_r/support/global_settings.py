@@ -19,7 +19,7 @@ class GlobalEnviromentSettings:
     """
 
     def __init__(self) -> None:
-        self.file_name:              str = ".com.pyquick.oclp-r.plist"
+        self.file_name:              str = ".com.hackdoc.oclp-r.plist"
         self.global_settings_folder: str = "/Users/Shared"
         self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"
 
@@ -86,7 +86,7 @@ class GlobalEnviromentSettings:
         if Path(self.global_settings_plist).exists():
             return
         try:
-            plistlib.dump({"Developed by Pyquick and Pyquick": True,}, Path(self.global_settings_plist).open("wb"))
+            plistlib.dump({"Developed by Hackdoc and Hackdoc": True,}, Path(self.global_settings_plist).open("wb"))
         except PermissionError:
             logging.info("Permission error: Unable to write to global settings file")
 
@@ -96,7 +96,7 @@ class GlobalEnviromentSettings:
         Converts legacy defaults to global settings
         """
 
-        defaults_path = "~/Library/Preferences/com.pyquick.oclp-r.plist"
+        defaults_path = "~/Library/Preferences/com.hackdoc.oclp-r.plist"
         defaults_path = Path(defaults_path).expanduser()
 
         if Path(defaults_path).exists():

@@ -169,8 +169,8 @@ class BaseHardware(BasePatchset):
         return "12.5-23.4"
 
 
-    def _pyquick_internal_check(self) -> None:
+    def _hackdoc_internal_check(self) -> None:
         """
-        Determine whether to unlock Pyquick Developer mode
+        Determine whether to unlock Hackdoc Developer mode
         """
-        return Path("~/.pyquick_developer").expanduser().exists()
+        return Path("~/.hackdoc_developer").expanduser().exists()

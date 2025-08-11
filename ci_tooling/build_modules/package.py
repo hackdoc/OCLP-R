@@ -20,11 +20,11 @@ class GeneratePackage:
         Initialize
         """
         self._files = {
-            "./dist/OCLP-R.app": "/Library/Application Support/Pyquick/OCLP-R.app",
-            "./ci_tooling/privileged_helper_tool/com.pyquick.oclp-r.privileged-helper": "/Library/PrivilegedHelperTools/com.pyquick.oclp-r.privileged-helper",
+            "./dist/OCLP-R.app": "/Library/Application Support/Hackdoc/OCLP-R.app",
+            "./ci_tooling/privileged_helper_tool/com.hackdoc.oclp-r.privileged-helper": "/Library/PrivilegedHelperTools/com.hackdoc.oclp-r.privileged-helper",
         }
         self._autopkg_files = {
-            "./payloads/Launch Services/com.pyquick.oclp-r.auto-patch.plist": "/Library/LaunchAgents/com.pyquick.oclp-r.auto-patch.plist",
+            "./payloads/Launch Services/com.hackdoc.oclp-r.auto-patch.plist": "/Library/LaunchAgents/com.hackdoc.oclp-r.auto-patch.plist",
         }
         self._autopkg_files.update(self._files)
 
@@ -92,7 +92,7 @@ class GeneratePackage:
 
         assert macos_pkg_builder.Packages(
             pkg_output="./dist/OCLP-R-Uninstaller.pkg",
-            pkg_bundle_id="com.pyquick.oclp-r-uninstaller",
+            pkg_bundle_id="com.hackdoc.oclp-r-uninstaller",
             pkg_version=constants.Constants().patcher_version,
             pkg_background="./ci_tooling/pkg_assets/PkgBackground-Uninstaller.png",
             pkg_preinstall_script=_tmp_uninstall.name,
@@ -112,7 +112,7 @@ class GeneratePackage:
 
         assert macos_pkg_builder.Packages(
             pkg_output="./dist/OCLP-R.pkg",
-            pkg_bundle_id="com.pyquick.oclp-r",
+            pkg_bundle_id="com.hackdoc.oclp-r",
             pkg_version=constants.Constants().patcher_version,
             pkg_allow_relocation=False,
             pkg_as_distribution=True,
@@ -135,7 +135,7 @@ class GeneratePackage:
 
         assert macos_pkg_builder.Packages(
             pkg_output="./dist/AutoPkg-Assets.pkg",
-            pkg_bundle_id="com.pyquick.pkg.AutoPkg-Assets",
+            pkg_bundle_id="com.hackdoc.pkg.AutoPkg-Assets",
             pkg_version=constants.Constants().patcher_version,
             pkg_allow_relocation=False,
             pkg_as_distribution=True,

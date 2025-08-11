@@ -163,7 +163,7 @@ class KDKDownloadFrame(wx.Frame):
         installers = self.kdk_data_latest[::-1] if show_full is False else self.kdk_data_full[::-1]
         if installers:
             locale.setlocale(locale.LC_TIME, '')
-            logging.info(f"Available installers on Pyquick ({'All entries' if show_full else 'Latest only'}):")
+            logging.info(f"Available installers on Hackdoc ({'All entries' if show_full else 'Latest only'}):")
             xnu_name={
                 "26":"Tahoe Beta",
                 "15":"Sequoia",
@@ -182,7 +182,7 @@ class KDKDownloadFrame(wx.Frame):
                 self.list.SetItem(index, 4, f"{item['seen']}")
         else:
             logging.error("Cannot find any KDKs on Github")
-            wx.MessageDialog(self.frame_modal, "Failed to download KDKs Catalog from Pyquick", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+            wx.MessageDialog(self.frame_modal, "Failed to download KDKs Catalog from Hackdoc", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
             self.on_return_to_main_menu()
         if show_full is False:
             self.list.Select(-1)

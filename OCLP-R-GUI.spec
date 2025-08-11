@@ -22,8 +22,8 @@ datas = [
    ('Universal-Binaries.dmg', '.'),
 ]
 
-if Path("PyquickInternalResources.dmg").exists():
-   datas.append(('PyquickInternalResources.dmg', '.'))
+if Path("HackdocInternalResources.dmg").exists():
+   datas.append(('HackdocInternalResources.dmg', '.'))
 
 
 a = Analysis(['OCLP-R-GUI.command'],
@@ -71,7 +71,7 @@ coll = COLLECT(exe,
 app = BUNDLE(coll,
              name='OCLP-R.app',
              icon="payloads/Icon/AppIcons/OCR.icns",
-             bundle_identifier="com.pyquick.oclp-r",
+             bundle_identifier="com.hackdoc.oclp-r",
              info_plist={
                 "CFBundleName": "OCLP-R",
                 "CFBundleVersion": constants.Constants().patcher_version,

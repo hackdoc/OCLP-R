@@ -11,7 +11,7 @@
 
 # MARK: Variables
 # ---------------------------
-helperName="com.pyquick.oclp-r.privileged-helper"
+helperName="com.hackdoc.oclp-r.privileged-helper"
 helperPath="/Library/PrivilegedHelperTools/$helperName"
 
 # MARK: Functions

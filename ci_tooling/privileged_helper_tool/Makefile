@@ -1,5 +1,5 @@
 CC=clang
-OUTPUT=com.pyquick.oclp-r.privileged-helper
+OUTPUT=com.hackdoc.oclp-r.privileged-helper
 
 all: clean release
 

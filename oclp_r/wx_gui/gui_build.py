@@ -149,7 +149,7 @@ class BuildFrame(wx.Frame):
             # Handle bug from 2.1.0 where None type was stored in config.plist from global settings
             if "TypeError: unsupported type: <class 'NoneType'>" in traceback.format_exc():
                 logging.error("If you continue to see this error, delete the following file and restart the application:")
-                logging.error("Path: /Users/Shared/.com.pyquick.oclp-r.plist")
+                logging.error("Path: /Users/Shared/.com.hackdoc.oclp-r.plist")
 
         logger.removeHandler(logger.handlers[2])
 

@@ -159,7 +159,7 @@ class HardwarePatchsetDetection:
         """
         _min_os = os_data.big_sur.value
         _max_os = os_data.tahoe.value
-        if self._pyquick_internal_check() is True:
+        if self._hackdoc_internal_check() is True:
             return False
         if self._xnu_major < _min_os or self._xnu_major > _max_os:
             return True
@@ -278,11 +278,11 @@ class HardwarePatchsetDetection:
         return level
 
 
-    def _pyquick_internal_check(self) -> None:
+    def _hackdoc_internal_check(self) -> None:
         """
-        Determine whether to unlock Pyquick Developer mode
+        Determine whether to unlock Hackdoc Developer mode
         """
-        return Path("~/.pyquick_developer").expanduser().exists()
+        return Path("~/.hackdoc_developer").expanduser().exists()
 
 
     def _already_has_networking_patches(self) -> bool:

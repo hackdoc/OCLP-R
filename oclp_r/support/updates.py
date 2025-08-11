@@ -15,7 +15,7 @@ from . import network_handler
 from .. import constants
 
 
-REPO_LATEST_RELEASE_URL: str = "https://api.github.com/repos/pyquick/OCLP-R/releases/latest"
+REPO_LATEST_RELEASE_URL: str = "https://api.github.com/repos/hackdoc/OCLP-R/releases/latest"
 
 
 class CheckBinaryUpdates:
@@ -117,7 +117,7 @@ class CheckBinaryUpdates:
         for asset in data_set["assets"]:
             logging.info(f"Found asset: {asset['name']}")
             if asset["name"] == "OCLP-R.pkg":
-                begi=f"https://github.com/pyquick/OCLP-R/releases/{latest_remote_version}"
+                begi=f"https://github.com/hackdoc/OCLP-R/releases/{latest_remote_version}"
                 if self.constants.github_proxy_link=="Default":
                     link=begi
                 elif self.constants.github_proxy_link=="SimpleHac":

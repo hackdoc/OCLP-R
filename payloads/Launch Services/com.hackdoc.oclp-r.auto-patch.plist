@@ -4,13 +4,13 @@
 <dict>
 	<key>AssociatedBundleIdentifiers</key>
 	<array>
-		<string>com.pyquick.oclp-r</string>
+		<string>com.hackdoc.oclp-r</string>
 	</array>
 	<key>Label</key>
-	<string>com.pyquick.oclp-r.auto-patch</string>
+	<string>com.hackdoc.oclp-r.auto-patch</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/Library/Application Support/Pyquick/OCLP-R.app/Contents/MacOS/OCLP-R</string>
+		<string>/Library/Application Support/Hackdoc/OCLP-R.app/Contents/MacOS/OCLP-R</string>
 		<string>--auto_patch</string>
 	</array>
 	<key>RunAtLoad</key>

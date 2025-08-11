@@ -4,10 +4,10 @@
 <dict>
 	<key>AssociatedBundleIdentifiers</key>
 	<array>
-		<string>com.pyquick.oclp-r</string>
+		<string>com.hackdoc.oclp-r</string>
 	</array>
 	<key>Label</key>
-	<string>com.pyquick.oclp-r.rsr-monitor</string>
+	<string>com.hackdoc.oclp-r.rsr-monitor</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>rm</string>

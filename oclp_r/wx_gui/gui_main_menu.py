@@ -390,7 +390,7 @@ class MainFrame(wx.Frame):
         ID_GITHUB = wx.NewId()
         ID_UPDATE = wx.NewId()
 
-        url = "https://api.github.com/repos/pyquick/OCLP-R/releases/latest"
+        url = "https://api.github.com/repos/hackdoc/OCLP-R/releases/latest"
         response = requests.get(url,verify=False).json()
         try:
             changelog = response["body"].split("## Asset Information")[0]
