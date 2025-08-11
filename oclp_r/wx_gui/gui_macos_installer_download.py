@@ -1,0 +1,863 @@
+"""
+gui_macos_installer_download.py: macOS Installer Download Frame
+"""
+
+import wx
+import locale
+import logging
+import threading
+import webbrowser
+
+from pathlib import Path
+
+from .. import (
+    constants,
+    sucatalog
+)
+
+from ..datasets import (
+    os_data,
+    smbios_data,
+    cpu_data
+)
+from ..wx_gui import (
+    gui_main_menu,
+    gui_support,
+    gui_download,
+    gui_macos_installer_flash
+)
+from ..support import (
+    macos_installer_handler,
+    utilities,
+    network_handler,
+    integrity_verification
+)
+
+
+class macOSInstallerDownloadFrame(wx.Frame):
+    """
+    Create a frame for downloading and creating macOS installers
+    Uses a Modal Dialog for smoother transition from other frames
+    Note: Flashing installers is passed to gui_macos_installer_flash.py
+    """
+    def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
+        logging.info("Initializing macOS Installer Download Frame")
+        self.constants: constants.Constants = global_constants
+        self.title: str = title
+        self.parent: wx.Frame = parent
+        self.fetched_aes_key = None
+        self.fetched_aes_key_status = None
+        self.available_dmgs=None
+        self.dmgs_all=None
+        self.latest_dmgs=None
+        self.available_installers = None
+        self.available_installers_latest = None
+
+        self.catalog_seed: sucatalog.SeedType = sucatalog.SeedType.DeveloperSeed
+
+        self.frame_modal = wx.Dialog(parent, title=title, size=(330, 200))
+
+        self._generate_elements(self.frame_modal)
+        self.frame_modal.ShowWindowModal()
+
+        self.icons = [[self._icon_to_bitmap(i), self._icon_to_bitmap(i, (64, 64))] for i in self.constants.icons_path]
+
+    def _icon_to_bitmap(self, icon: str, size: tuple = (32, 32)) -> wx.Bitmap:
+        """
+        Convert icon to bitmap
+        """
+        return wx.Bitmap(wx.Bitmap(icon, wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(size[0], size[1], wx.IMAGE_QUALITY_HIGH))
+
+    def _macos_version_to_icon(self, version: int) -> int:
+        """
+        Convert macOS version to icon
+        """
+        try:
+            self.constants.icons_path[version - 19]
+            return version - 19
+        except IndexError:
+            return 0
+
+
+    def _generate_elements(self, frame: wx.Frame = None) -> None:
+        """
+        Format:
+        - Title:  Create macOS Installer
+        - Button: Download macOS Installer
+        - Button: Use existing macOS Installer
+        - Button: Return to Main Menu
+        """
+
+        frame = self if not frame else frame
+
+        title_label = wx.StaticText(frame, label="Create macOS Installer", pos=(-1,5))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
+        title_label.Centre(wx.HORIZONTAL)
+
+        # Button: Download macOS Installer
+        download_button = wx.Button(frame, label="Download macOS Installer", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 2), size=(200, 30))
+        download_button.Bind(wx.EVT_BUTTON, self.on_download)
+        download_button.Centre(wx.HORIZONTAL)
+
+        # Button: Use existing macOS Installer
+        existing_button = wx.Button(frame, label="Use existing macOS Installer", pos=(-1, download_button.GetPosition()[1] + download_button.GetSize()[1] +2), size=(200, 30))
+        existing_button.Bind(wx.EVT_BUTTON, self.on_existing)
+        existing_button.Centre(wx.HORIZONTAL)
+
+        dmg_button = wx.Button(frame, label="Download DMGs", pos=(-1, existing_button.GetPosition()[1] + existing_button.GetSize()[1] +2), size=(200, 30))
+        dmg_button.Bind(wx.EVT_BUTTON, self.on_dmg)
+        dmg_button.Centre(wx.HORIZONTAL)
+
+        # Button: Return to Main Menu
+        return_button = wx.Button(frame, label="Return to Main Menu", pos=(-1, dmg_button.GetPosition()[1] + dmg_button.GetSize()[1] + 12), size=(150, 30))
+        return_button.Bind(wx.EVT_BUTTON, self.on_return)
+        return_button.Centre(wx.HORIZONTAL)
+
+        # Set size of frame
+        frame.SetSize((-1, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
+
+
+    def _generate_catalog_frame(self) -> None:
+        """
+        Generate frame to display available installers
+        """
+        super(macOSInstallerDownloadFrame, self).__init__(None, title=self.title, size=(300, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        gui_support.GenerateMenubar(self, self.constants).generate()
+        self.Centre()
+
+        # Title: Pulling installer catalog
+        title_label = wx.StaticText(self, label="Finding Available Software", pos=(-1,5))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
+        title_label.Centre(wx.HORIZONTAL)
+
+        # Progress bar
+        progress_bar = wx.Gauge(self, range=100, pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5), size=(250, 30))
+        progress_bar.Centre(wx.HORIZONTAL)
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
+
+        # Set size of frame
+        self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
+
+        self.Show()
+
+        # Grab installer catalog
+        def _fetch_installers():
+            logging.info(f"Fetching installer catalog: {sucatalog.SeedType.DeveloperSeed.name}")
+
+            sucatalog_contents = sucatalog.CatalogURL(seed=sucatalog.SeedType.DeveloperSeed).url_contents
+            if sucatalog_contents is None:
+                logging.error("Failed to download Installer Catalog from Apple")
+                return
+
+            self.available_installers        = sucatalog.CatalogProducts(sucatalog_contents).products
+            self.available_installers_latest = sucatalog.CatalogProducts(sucatalog_contents).latest_products
+
+
+        thread = threading.Thread(target=_fetch_installers)
+        thread.start()
+
+        gui_support.wait_for_thread(thread)
+
+        progress_bar_animation.stop_pulse()
+        progress_bar.Hide()
+        self._display_available_installers()
+    def _generate_dmg_frame(self) -> None:
+        """
+        Generate frame to display available installers
+        """
+        super(macOSInstallerDownloadFrame, self).__init__(None, title=self.title, size=(300, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        gui_support.GenerateMenubar(self, self.constants).generate()
+        self.Centre()
+
+        # Title: Pulling installer catalog
+        title_label = wx.StaticText(self, label="Finding Available DMG", pos=(-1,5))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
+        title_label.Centre(wx.HORIZONTAL)
+
+        # Progress bar
+        progress_bar = wx.Gauge(self, range=100, pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5), size=(250, 30))
+        progress_bar.Centre(wx.HORIZONTAL)
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
+
+        # Set size of frame
+        self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
+
+        self.Show()
+
+        # Grab installer catalog
+        def _fetch_simplehac_dmgs():
+            import requests,json
+            url = "https://oclpapi.simplehac.cn/DMG/api?token=oclpmod"
+            aesurl="https://oclpapi.simplehac.cn/DMG/data/aeskey.txt"
+            try:
+                res=requests.get(url,verify=False)
+                aes=requests.get(aesurl,verify=False)
+                if res.status_code == 200:
+                    dmgdata=res.json()
+                    logging.info("JSON data:")
+                    dmgwell=json.dumps(dmgdata, indent=4, ensure_ascii=False)
+                    if aes.status_code == 200:
+                        self.fetched_aes_key = aes.text.strip()
+                        self.fetched_aes_key_status = aes.status_code
+                        logging.info(self.fetched_aes_key_status)
+                        logging.info(self.fetched_aes_key)
+                    else:
+                        logging.error(f"AES Key Fetch Failed,status code: {self.fetched_aes_key_status}")
+                    dmg_number=[]
+                    dmg_build=[]
+                    maxnx=[]
+                    dmgdatak=dmgdata
+                    dmgdata=dmgdata['dmgFiles'][::-1]
+                    for i in range(len(dmgdata)):
+                        dmgdata[i]['releaseDate']=((dmgdata[i]['releaseDate']).split("T"))[0]
+                    for i in range(len(dmgdata)):
+                        data=dmgdata[i]["build"][:2]
+                        data2=dmgdata[i]["build"]
+                        dmg_number.append(data)
+                        dmg_build.append(data2)
+                    for i in range(4):
+                        maxn=dmg_number[0]
+                        while True:
+                            dmg_number.pop(0)
+                            if len(dmg_number)==0 or dmg_number[0]<maxn :
+                                break
+                        maxnx.append(maxn)
+                    i=0
+                    fl=[0,0,0,0]
+                    model={
+                        "dmgFiles":[]
+                    }
+                    latest=[]
+                    while True:
+                        if maxnx[0] == dmgdata[i]["build"][:2] and fl[0]==0:
+                            latest.append(dmgdata[i])
+                            fl[0]=1
+                            i+=1
+                        if  maxnx[1] == dmgdata[i]["build"][:2]and fl[1]==0:
+                            latest.append(dmgdata[i])
+                            fl[1]=1
+                            i+=1
+                        if  maxnx[2] == dmgdata[i]["build"][:2]and fl[2]==0:
+                            latest.append(dmgdata[i])
+                            fl[2]=1
+                            i+=1
+                        if  maxnx[3] == dmgdata[i]["build"][:2]and fl[3]==0:
+                            latest.append(dmgdata[i])
+                            fl[3]=1
+                            i+=1
+                        if i==len(dmgdata)-1:
+                            break
+                        else:
+                            i+=1
+                            continue
+                    
+                    latest=latest[::-1]
+                    model["dmgFiles"]=latest
+                    self.latest_dmgs=model
+                else:
+                    logging.error(f"API REQUEST FAILED,status_code: {res.status_code}")
+
+            except requests.exceptions.RequestException as e:
+                logging.info(f"REQUEST ERROR:{e}")
+            finally:
+                if dmgdata is not None:
+                    logging.info("DMG data got it!")
+                    self.available_dmgs=self.latest_dmgs
+                    self.dmgs_all=dmgdatak
+                    logging.info(type(dmgdatak))
+                else:
+                    logging.error("DMG data failed")
+
+
+        thread = threading.Thread(target=_fetch_simplehac_dmgs)
+        thread.start()
+
+        gui_support.wait_for_thread(thread)
+
+        progress_bar_animation.stop_pulse()
+        progress_bar.Hide()
+        self._display_available_dmgs()
+    def detect_os_build(self, rsr: bool = False) -> str:
+        import plistlib
+        file_path = "/System/Library/CoreServices/SystemVersion.plist"
+        if rsr is True:
+            file_path = f"/System/Volumes/Preboot/Cryptexes/OS{file_path}"
+
+        try:
+            return plistlib.load(open(file_path, "rb"))["ProductBuildVersion"]
+        except Exception as e:
+            raise RuntimeError(f"Failed to detect OS build: {e}")
+    
+    def _display_available_dmgs(self, event: wx.Event = None, show_full: bool = False) -> None:
+        """
+        Display available dmgs in frame
+        """
+
+        self.os_build_tahoe= self.detect_os_build(False)
+        bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
+
+        self.frame_modal.Destroy()
+        self.frame_modal = wx.Dialog(self, title="Select DMGs from SimpleHac", size=(505, 500))
+
+        # Title: Select macOS Installer
+        title_label = wx.StaticText(self.frame_modal, label="Select DMGs", pos=(-1,-1))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
+
+        # macOS Installers list
+        id = wx.NewIdRef()
+
+        self.list = wx.ListCtrl(self.frame_modal, id, style=wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER | wx.BORDER_SUNKEN)
+        self.list.SetSmallImages(bundles)
+
+        self.list.InsertColumn(0, "Title",        width=175)
+        self.list.InsertColumn(1, "Version",      width=50)
+        self.list.InsertColumn(2, "Build",        width=75)
+        self.list.InsertColumn(3, "Size",         width=75)
+        self.list.InsertColumn(4, "Release Date", width=100)
+
+        installers = self.available_dmgs if show_full is False else self.dmgs_all
+        if show_full is False:
+            self.frame_modal.SetSize((490, 370))
+
+        if installers:
+            locale.setlocale(locale.LC_TIME, '')
+            logging.info(f"Available installers on SimpleHac ({'All entries' if show_full else 'Latest only'}):")
+            for idx,item in enumerate(installers['dmgFiles'], start=1):
+                logging.info(item)
+                if isinstance(item, dict):
+                    build = str(item.get('build', 'Unknown Build'))
+                    index = self.list.InsertItem(self.list.GetItemCount(), str(item.get('title','Unknown title')))
+                    self.list.SetItemImage(index, self._macos_version_to_icon(int(build[:2])))
+                    self.list.SetItem(index, 1, str(item.get('version','Unknown Version')))
+                    self.list.SetItem(index, 2, str(item.get('build','Unknown Build')))
+                    self.list.SetItem(index, 3, str(item.get('size', 'Unknown Size')))
+                    self.list.SetItem(index, 4, str(item.get('releaseDate', 'Unknown Date')))
+            if self.fetched_aes_key_status != 200:
+                logging.info(f"Can't get AES Keys {self.fetched_aes_key_status}")
+                wx.MessageDialog(self.frame_modal, "Failed to download dmgs from SimpleHac", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+                self.on_return_to_main_menu()
+        else:
+            logging.error("No dmgs found on SimpleHac")
+            wx.MessageDialog(self.frame_modal, "Failed to download dmgs from SimpleHac", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+            self.on_return_to_main_menu()
+        if show_full is False:
+            self.list.Select(-1)
+
+        self.list.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.on_select_list)
+        self.list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_select_list)
+
+        self.select_button = wx.Button(self.frame_modal, label="Download", pos=(-1, -1), size=(150, -1))
+        self.select_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
+        self.select_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_download_dmg(installers))
+        self.select_button.SetToolTip("Download the selected DMGs.")
+        self.select_button.SetDefault()
+        if show_full is True:
+            self.select_button.Disable()
+
+        self.copy_button = wx.Button(self.frame_modal, label="Copy Link", pos=(-1, -1), size=(80, -1))
+        self.copy_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
+        if show_full is True:
+            self.copy_button.Disable()
+        self.copy_button.SetToolTip("Copy the download link of the selected DMG.")
+        self.copy_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_copy_dmg_link(installers))
+
+        return_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, -1), size=(150, -1))
+        return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
+        return_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
+
+        self.showolderversions_checkbox = wx.CheckBox(self.frame_modal, label="Show Older/Beta Versions", pos=(-1, -1))
+        if show_full is True:
+            self.showolderversions_checkbox.SetValue(True)
+        self.showolderversions_checkbox.Bind(wx.EVT_CHECKBOX, lambda event: self._display_available_dmgs(event, self.showolderversions_checkbox.GetValue()))
+
+        if self.os_build_tahoe!='25A5316i':
+            rectbox = wx.StaticBox(self.frame_modal, -1)
+            rectsizer = wx.StaticBoxSizer(rectbox, wx.HORIZONTAL)
+            rectsizer.Add(self.copy_button, 0, wx.EXPAND | wx.RIGHT, 5)
+            rectsizer.Add(self.select_button, 0, wx.EXPAND | wx.LEFT, 5)
+
+        checkboxsizer = wx.BoxSizer(wx.HORIZONTAL)
+        checkboxsizer.Add(self.showolderversions_checkbox, 0, wx.ALIGN_CENTRE | wx.RIGHT, 5)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.AddSpacer(10)
+        sizer.Add(title_label, 0, wx.ALIGN_CENTRE | wx.ALL, 0)
+        sizer.Add(self.list, 1, wx.EXPAND | wx.ALL, 10)
+        if self.os_build_tahoe!='25A5316i':
+             sizer.Add(rectsizer, 0, wx.ALIGN_CENTRE | wx.ALL, 0)
+             sizer.AddSpacer(10)
+        elif self.os_build_tahoe=='25A5316i':
+            mosizer=wx.BoxSizer(wx.HORIZONTAL)
+            mosizer.Add(self.copy_button, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
+            mosizer.Add(self.select_button, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
+            sizer.Add(mosizer, 0, wx.ALIGN_CENTRE | wx.ALL, 0)
+        sizer.Add(checkboxsizer, 0, wx.ALIGN_CENTRE | wx.ALL, 15)
+        sizer.Add(return_button, 0, wx.ALIGN_CENTRE | wx.BOTTOM, 15)
+
+        self.frame_modal.SetSizer(sizer)
+        self.frame_modal.ShowWindowModal()
+    def _display_available_installers(self, event: wx.Event = None, show_full: bool = False) -> None:
+        """
+        Display available installers in frame
+        """
+
+        self.os_build_tahoe= self.detect_os_build(False)
+        bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
+
+        self.frame_modal.Destroy()
+        self.frame_modal = wx.Dialog(self, title="Select macOS Installer", size=(505, 500))
+
+        # Title: Select macOS Installer
+        title_label = wx.StaticText(self.frame_modal, label="Select macOS Installer", pos=(-1,-1))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
+
+        # macOS Installers list
+        id = wx.NewIdRef()
+
+        self.list = wx.ListCtrl(self.frame_modal, id, style=wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER | wx.BORDER_SUNKEN)
+        self.list.SetSmallImages(bundles)
+
+        self.list.InsertColumn(0, "Title",        width=175)
+        self.list.InsertColumn(1, "Version",      width=50)
+        self.list.InsertColumn(2, "Build",        width=75)
+        self.list.InsertColumn(3, "Size",         width=75)
+        self.list.InsertColumn(4, "Release Date", width=100)
+
+        installers = self.available_installers_latest if show_full is False else self.available_installers
+        if show_full is False:
+            self.frame_modal.SetSize((490, 370))
+
+        if installers:
+            locale.setlocale(locale.LC_TIME, '')
+            logging.info(f"Available installers on SUCatalog ({'All entries' if show_full else 'Latest only'}):")
+            for item in installers:
+                logging.info(f"- {item['Title']} ({item['Version']} - {item['Build']}):\n  - Size: {utilities.human_fmt(item['InstallAssistant']['Size'])}\n  - Link: {item['InstallAssistant']['URL']}\n")
+                index = self.list.InsertItem(self.list.GetItemCount(), f"{item['Title']}")
+                self.list.SetItemImage(index, self._macos_version_to_icon(int(item['Build'][:2])))
+                self.list.SetItem(index, 1, item['Version'])
+                self.list.SetItem(index, 2, item['Build'])
+                self.list.SetItem(index, 3, utilities.human_fmt(item['InstallAssistant']['Size']))
+                self.list.SetItem(index, 4, item['PostDate'].strftime("%x"))
+        else:
+            logging.error("No installers found on SUCatalog")
+            wx.MessageDialog(self.frame_modal, "Failed to download Installer Catalog from Apple", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+
+        if show_full is False:
+            self.list.Select(-1)
+
+        self.list.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.on_select_list)
+        self.list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_select_list)
+
+        self.select_button = wx.Button(self.frame_modal, label="Download", pos=(-1, -1), size=(150, -1))
+        self.select_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
+        self.select_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_download_installer(installers))
+        self.select_button.SetToolTip("Download the selected macOS Installer.")
+        self.select_button.SetDefault()
+        if show_full is True:
+            self.select_button.Disable()
+
+        self.copy_button = wx.Button(self.frame_modal, label="Copy Link", pos=(-1, -1), size=(80, -1))
+        self.copy_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
+        if show_full is True:
+            self.copy_button.Disable()
+        self.copy_button.SetToolTip("Copy the download link of the selected macOS Installer.")
+        self.copy_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_copy_link(installers))
+
+        return_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, -1), size=(150, -1))
+        return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
+        return_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
+
+        self.showolderversions_checkbox = wx.CheckBox(self.frame_modal, label="Show Older/Beta Versions", pos=(-1, -1))
+        if show_full is True:
+            self.showolderversions_checkbox.SetValue(True)
+        self.showolderversions_checkbox.Bind(wx.EVT_CHECKBOX, lambda event: self._display_available_installers(event, self.showolderversions_checkbox.GetValue()))
+
+        if self.os_build_tahoe!='25A5316i':
+            rectbox = wx.StaticBox(self.frame_modal, -1)
+            rectsizer = wx.StaticBoxSizer(rectbox, wx.HORIZONTAL)
+            rectsizer.Add(self.copy_button, 0, wx.EXPAND | wx.RIGHT, 5)
+            rectsizer.Add(self.select_button, 0, wx.EXPAND | wx.LEFT, 5)
+
+        checkboxsizer = wx.BoxSizer(wx.HORIZONTAL)
+        checkboxsizer.Add(self.showolderversions_checkbox, 0, wx.ALIGN_CENTRE | wx.RIGHT, 5)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.AddSpacer(10)
+        sizer.Add(title_label, 0, wx.ALIGN_CENTRE | wx.ALL, 0)
+        sizer.Add(self.list, 1, wx.EXPAND | wx.ALL, 10)
+        if self.os_build_tahoe!='25A5316i':
+             sizer.Add(rectsizer, 0, wx.ALIGN_CENTRE | wx.ALL, 0)
+             sizer.AddSpacer(10)
+        elif self.os_build_tahoe=='25A5316i':
+            mosizer=wx.BoxSizer(wx.HORIZONTAL)
+            mosizer.Add(self.copy_button, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
+            mosizer.Add(self.select_button, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
+            sizer.Add(mosizer, 0, wx.ALIGN_CENTRE | wx.ALL, 0)
+            sizer.AddSpacer(8)
+        sizer.Add(checkboxsizer, 0, wx.ALIGN_CENTRE | wx.ALL, 15)
+        sizer.Add(return_button, 0, wx.ALIGN_CENTRE | wx.BOTTOM, 15)
+
+        self.frame_modal.SetSizer(sizer)
+        self.frame_modal.ShowWindowModal()
+
+    def on_copy_link(self, installers: dict) -> None:
+
+        selected_item = self.list.GetFirstSelected()
+        if selected_item != -1:
+            clipboard = wx.Clipboard.Get()
+
+            if not clipboard.IsOpened():
+                clipboard.Open()
+
+            clipboard.SetData(wx.TextDataObject(installers[selected_item]['InstallAssistant']['URL']))
+
+            clipboard.Close()
+            wx.MessageDialog(self.frame_modal, "Download link copied to clipboard", "", wx.OK | wx.ICON_INFORMATION).ShowModal()
+    def on_download_dmg(self, installers: dict) -> None:
+        selected_item = self.list.GetFirstSelected()
+        if selected_item != -1:
+            selected_installer = installers['dmgFiles'][selected_item]
+            logging.info(f"Selected macOS DMG {selected_installer['version']} ({selected_installer['build']})")
+            if isinstance(item,dict):
+                item = installers['dmgFiles'][selected_item]
+            self.frame_modal.Close()
+            def is_dir_writable(dirpath):
+                    import os
+                    return os.access(dirpath, os.W_OK | os.X_OK)
+            if not is_dir_writable(self.constants.user_download_file):
+                import getpass
+                self.constants.user_download_file=f"/Users/{getpass.getuser()}/Downloads"
+            file_name = f"/Install+{item.get('title', '')}+{item.get('version', '')}+{item.get('build', '')}+with+OC&FirPE+SimpleHac.dmg"
+            download_obj = network_handler.DownloadObject(item.get('downloadUrl', ''), self.constants.user_download_file+file_name, item.get('size', ''))
+            gui_download.DownloadFrame(
+                self,
+                title="Download DMG",
+                global_constants=self.constants,    
+                download_obj=download_obj,
+                item_name=f"macOS {selected_installer['version']}",
+                download_icon=self.constants.icons_path[self._macos_version_to_icon(int(item['build'][:2]))]
+            )
+            if download_obj.download_complete is False:
+                self.on_return_to_main_menu()
+                return
+    def generate_url(self,download_url,aes):
+        from urllib import parse
+        import time
+        from oclp_r.encry import as2
+        import hashlib
+        api='https://oclpapi.simplehac.cn/DMG/api/down.php'
+        purl=parse.urlparse(download_url)
+        fn=parse.unquote(purl.path.split('/')[-1])
+        times=int(time.time())
+        exp=times+300
+        sign_in=f'110100|1000011|110100|111001|110101|110101|110101|110100|110100|110001|110011|110100|110100|1000001|110101|110110|110100|1000011|110100|1000001|110100|110011|110101|111000|110100|110111|110101|111001|110100|110001|110011|1000100'
+        sign_data=f'{as2.decry_standard2(sign_in)}{fn}{exp}{aes}'
+        sign = hashlib.md5(sign_data.encode('utf-8')).hexdigest()
+        signed_url = f"{api}?origin={parse.quote(fn)}&sign={sign}&t={exp}"
+        return signed_url
+    def on_copy_dmg_link(self, installers: dict) -> None:
+        selected_item = self.list.GetFirstSelected()
+        if selected_item != -1:
+            clipboard = wx.Clipboard.Get()
+
+            if not clipboard.IsOpened():
+                clipboard.Open()
+            item = installers['dmgFiles'][selected_item]
+            origin = item.get('downloadUrl', '')
+            clipboard.SetData(wx.TextDataObject(self.generate_url(origin, self.fetched_aes_key)))
+
+            clipboard.Close()
+
+            wx.MessageDialog(self.frame_modal, "Download link copied to clipboard", "", wx.OK | wx.ICON_INFORMATION).ShowModal()
+    def on_select_list(self, event):
+        if self.list.GetSelectedItemCount() > 0:
+            self.select_button.Enable()
+            self.copy_button.Enable()
+        else:
+            self.select_button.Disable()
+            self.copy_button.Disable()
+
+    def on_download_installer(self, installers: dict) -> None:
+        """
+        Download macOS installer
+        """
+
+        selected_item = self.list.GetFirstSelected()
+        if selected_item != -1:
+            selected_installer = installers[selected_item]
+
+            logging.info(f"Selected macOS {selected_installer['Version']} ({selected_installer['Build']})")
+
+            # Notify user whether their model is compatible with the selected installer
+            problems = []
+            model = self.constants.custom_model or self.constants.computer.real_model
+            if model in smbios_data.smbios_dictionary:
+                if selected_installer["InstallAssistant"]["XNUMajor"] >= os_data.os_data.ventura:
+                    if smbios_data.smbios_dictionary[model]["CPU Generation"] <= cpu_data.CPUGen.penryn or model in ["MacPro4,1", "MacPro5,1", "Xserve3,1"]:
+                        if model.startswith("MacBook"):
+                            problems.append("Lack of internal Keyboard/Trackpad in macOS installer.")
+                        else:
+                            problems.append("Lack of internal Keyboard/Mouse in macOS installer.")
+
+            if problems:
+                logging.warning(f"Potential issues with {model} and {selected_installer['Version']} ({selected_installer['Build']}): {problems}")
+                problems = "\n".join(problems)
+                dlg = wx.MessageDialog(self.frame_modal, f"Your model ({model}) may not be fully supported by this installer. You may encounter the following issues:\n\n{problems}\n\nFor more information, see associated page. Otherwise, we recommend using macOS Monterey", "Potential Issues", wx.YES_NO | wx.CANCEL | wx.ICON_WARNING)
+                dlg.SetYesNoCancelLabels("View Github Issue", "Download Anyways", "Cancel")
+                result = dlg.ShowModal()
+                if result == wx.ID_CANCEL:
+                    return
+                elif result == wx.ID_YES:
+                    webbrowser.open("https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021")
+                    return
+
+            host_space = utilities.get_free_space()
+            needed_space = selected_installer['InstallAssistant']['Size'] * 2
+            if host_space < needed_space:
+                logging.error(f"Insufficient space to download and extract: {utilities.human_fmt(host_space)} available vs {utilities.human_fmt(needed_space)} required")
+                dlg = wx.MessageDialog(self.frame_modal, f"You do not have enough free space to download and extract this installer. Please free up some space and try again\n\n{utilities.human_fmt(host_space)} available vs {utilities.human_fmt(needed_space)} required", "Insufficient Space", wx.OK | wx.ICON_WARNING)
+                dlg.ShowModal()
+                return
+
+            self.frame_modal.Close()
+
+            download_obj = network_handler.DownloadObject(selected_installer['InstallAssistant']['URL'], self.constants.payload_path / "InstallAssistant.pkg")
+
+            gui_download.DownloadFrame(
+                self,
+                title=self.title,
+                global_constants=self.constants,
+                download_obj=download_obj,
+                item_name=f"macOS {selected_installer['Version']} ({selected_installer['Build']})",
+                download_icon=self.constants.icons_path[self._macos_version_to_icon(selected_installer["InstallAssistant"]["XNUMajor"])]
+            )
+
+            if download_obj.download_complete is False:
+                self.on_return_to_main_menu()
+                return
+
+            self._validate_installer(selected_installer['InstallAssistant']['IntegrityDataURL'])
+
+    def on_download_dmg(self, installers: dict) -> None:
+        """
+        Download macOS installer
+        """
+
+        selected_item = self.list.GetFirstSelected()
+        if selected_item != -1:
+            selected_installer = installers['dmgFiles'][selected_item]
+            logging.info(f"Selected macOS DMG {selected_installer['version']} ({selected_installer['build']})")
+            item = installers['dmgFiles'][selected_item]
+            download_url = item.get('downloadUrl', '')
+            title = item.get('title', '')
+            version = item.get('version', '')
+            build = item.get('build', '')
+            size = item.get('size', '')
+            dir_dialog = wx.DirDialog(self, "Select Path", "", wx.DD_DIR_MUST_EXIST)
+            while True:
+                if dir_dialog.ShowModal() == wx.ID_OK:
+                    save_path = dir_dialog.GetPath()
+                    def is_dir_writable(dirpath):
+
+                        import os
+                        return os.access(dirpath, os.W_OK | os.X_OK)
+                    if not is_dir_writable(save_path):
+                        wx.MessageBox(
+                            "Cannot write to the selected directory.", 
+                            "Read-only Directory", 
+                            wx.OK | wx.ICON_WARNING
+                        )  
+                        continue
+                    logging.info(f"选择了目录: {save_path}")
+                    dir_dialog.Destroy()
+                    break
+                else:
+                    self.on_return_to_main_menu()
+                    return
+            self.frame_modal.Close()
+            file_name = f"/Install+{title}+{version}+{build}+with+OC&FirPE+SimpleHac.dmg"
+            download_obj = network_handler.DownloadObject(download_url, save_path+file_name,size)
+            
+            gui_download.DownloadFrame(
+                self,
+                title="Download DMGs",
+                global_constants=self.constants,    
+                download_obj=download_obj,
+                item_name=f"macOS {selected_installer['version']}",
+                download_icon=self.constants.icons_path[self._macos_version_to_icon(int(item['build'][:2]))]
+            )
+
+            if download_obj.download_complete is False:
+                self.on_return_to_main_menu()
+                return
+            self.on_return_to_main_menu()
+    def _validate_installer(self, chunklist_link: str) -> None:
+        """
+        Validate macOS installer
+        """
+        self.SetSize((300, 200))
+        for child in self.GetChildren():
+            child.Destroy()
+
+        # Title: Validating macOS Installer
+        title_label = wx.StaticText(self, label="Validating macOS Installer", pos=(-1,5))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
+        title_label.Centre(wx.HORIZONTAL)
+
+        # Label: Validating chunk 0 of 0
+        chunk_label = wx.StaticText(self, label="Validating chunk 0 of 0", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
+        chunk_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
+        chunk_label.Centre(wx.HORIZONTAL)
+
+        # Progress bar
+        progress_bar = wx.Gauge(self, range=100, pos=(-1, chunk_label.GetPosition()[1] + chunk_label.GetSize()[1] + 5), size=(270, 30))
+        progress_bar.Centre(wx.HORIZONTAL)
+
+        # Set size of frame
+        self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
+        self.Show()
+
+        chunklist_stream = network_handler.NetworkUtilities().get(chunklist_link).content
+        if chunklist_stream:
+            logging.info("Validating macOS installer")
+            utilities.disable_sleep_while_running()
+            chunk_obj = integrity_verification.ChunklistVerification(self.constants.payload_path / Path("InstallAssistant.pkg"), chunklist_stream)
+            if chunk_obj.chunks:
+                progress_bar.SetValue(chunk_obj.current_chunk)
+                progress_bar.SetRange(chunk_obj.total_chunks)
+
+                wx.App.Get().Yield()
+                chunk_obj.validate()
+
+                while chunk_obj.status == integrity_verification.ChunklistStatus.IN_PROGRESS:
+                    progress_bar.SetValue(chunk_obj.current_chunk)
+                    chunk_label.SetLabel(f"Validating chunk {chunk_obj.current_chunk} of {chunk_obj.total_chunks}")
+                    chunk_label.Centre(wx.HORIZONTAL)
+                    wx.App.Get().Yield()
+
+                if chunk_obj.status == integrity_verification.ChunklistStatus.FAILURE:
+                    logging.error(f"Chunklist validation failed: Hash mismatch on {chunk_obj.current_chunk}")
+                    wx.MessageBox(f"Chunklist validation failed: Hash mismatch on {chunk_obj.current_chunk}\n\nThis generally happens when downloading on unstable connections such as WiFi or cellular.\n\nPlease try redownloading again on a stable connection (ie. Ethernet)", "Corrupted Installer!", wx.OK | wx.ICON_ERROR)
+                    self.on_return_to_main_menu()
+                    return
+
+        logging.info("macOS installer validated")
+
+        # Extract installer
+        title_label.SetLabel("Extracting macOS Installer")
+        title_label.Centre(wx.HORIZONTAL)
+
+        chunk_label.SetLabel("May take a few minutes...")
+        chunk_label.Centre(wx.HORIZONTAL)
+
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
+
+        # Start thread to extract installer
+        self.result = False
+        def extract_installer():
+            self.result = macos_installer_handler.InstallerCreation().install_macOS_installer(self.constants.payload_path)
+
+        thread = threading.Thread(target=extract_installer)
+        thread.start()
+
+        # Show frame
+        self.Show()
+
+        # Wait for thread to finish
+        gui_support.wait_for_thread(thread)
+
+        progress_bar_animation.stop_pulse()
+        progress_bar.Hide()
+        chunk_label.SetLabel("Successfully extracted macOS installer" if self.result is True else "Failed to extract macOS installer")
+        chunk_label.Centre(wx.HORIZONTAL)
+
+        # Create macOS Installer button
+        create_installer_button = wx.Button(self, label="Create macOS Installer", pos=(-1, progress_bar.GetPosition()[1]), size=(170, 30))
+        create_installer_button.Bind(wx.EVT_BUTTON, self.on_existing)
+        create_installer_button.Centre(wx.HORIZONTAL)
+        if self.result is False:
+            create_installer_button.Disable()
+
+        # Return to main menu button
+        return_button = wx.Button(self, label="Return to Main Menu", pos=(-1, create_installer_button.GetPosition()[1] + create_installer_button.GetSize()[1]), size=(150, 30))
+        return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
+        return_button.Centre(wx.HORIZONTAL)
+
+        # Set size of frame
+        self.SetSize((-1, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
+
+        # Show frame
+        self.Show()
+
+        if self.result is False:
+            wx.MessageBox("An error occurred while extracting the macOS installer. Could be due to a corrupted installer", "Error", wx.OK | wx.ICON_ERROR)
+            return
+
+        user_input = wx.MessageBox("Finished extracting the installer, would you like to continue and create a macOS installer?", "Create macOS Installer?", wx.YES_NO | wx.ICON_QUESTION)
+        if user_input == wx.YES:
+            self.on_existing()
+
+
+    def on_download(self, event: wx.Event) -> None:
+        """
+        Display available macOS versions to download
+        """
+        self.frame_modal.Close()
+        self.parent.Hide()
+        self._generate_catalog_frame()
+        self.parent.Close()
+    def on_dmg(self, event: wx.Event) -> None:
+        """
+        Display available dmgs versions to download
+        """
+        self.frame_modal.Close()
+        self.parent.Hide()
+        self._generate_dmg_frame()
+        self.parent.Close()
+
+
+    def on_existing(self, event: wx.Event = None) -> None:
+        """
+        Display local macOS installers
+        """
+        frames = [self, self.frame_modal, self.parent]
+        for frame in frames:
+            if frame:
+                frame.Close()
+        gui_macos_installer_flash.macOSInstallerFlashFrame(
+            None,
+            title=self.title,
+            global_constants=self.constants,
+            **({"screen_location": self.GetScreenPosition()} if self else {})
+        )
+        for frame in frames:
+            if frame:
+                frame.Destroy()
+
+
+    def on_return(self, event: wx.Event) -> None:
+        """
+        Return to main menu (dismiss frame)
+        """
+        self.frame_modal.Close()
+
+
+    def on_return_to_main_menu(self, event: wx.Event = None) -> None:
+        """
+        Return to main menu
+        """
+        if self.frame_modal:
+            self.frame_modal.Hide()
+        main_menu_frame = gui_main_menu.MainFrame(
+            None,
+            title=self.title,
+            global_constants=self.constants,
+            screen_location=self.GetScreenPosition()
+        )
+        main_menu_frame.Show()
+        if self.frame_modal:
+            self.frame_modal.Destroy()
+        self.Destroy()
