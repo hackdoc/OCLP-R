@@ -43,9 +43,6 @@ class VoodooAudio(BaseHardware):
         if self._xnu_major >= os_data.tahoe and self._os_build != "25A5279m":
             return {
                 "Voodoo Audio": {
-                    PatchType.REMOVE_SYSTEM_VOLUME:[
-                        "AppleHDA.kext",
-                    ],
                     PatchType.OVERWRITE_SYSTEM_VOLUME: {
                         "/Library/Extensions": {
                             "VoodooHDA.kext":"11.3",
@@ -59,9 +56,6 @@ class VoodooAudio(BaseHardware):
         else:
             return {
                 "Voodoo Audio": {
-                    PatchType.REMOVE_SYSTEM_VOLUME:[
-                        "AppleHDA.kext",
-                    ],
                     PatchType.OVERWRITE_SYSTEM_VOLUME: {
                         "/Library/Extensions": {
                             "VoodooHDA.kext":"11.3",
