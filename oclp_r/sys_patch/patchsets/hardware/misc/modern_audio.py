@@ -64,7 +64,7 @@ class ModernAudio(BaseHardware):
         """
         return {
             "Modern Audio": {
-                PatchType.MERGE_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AppleHDA.kext":      "26.0 Beta 1",
                     },
