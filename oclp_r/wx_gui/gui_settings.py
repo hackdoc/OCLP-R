@@ -33,8 +33,9 @@ from ..datasets import (
     os_data,
     cpu_data
 )
+from ..support   import utilities
 
-
+import platform
 class SettingsFrame(wx.Frame):
     """
     Modal-based Settings Frame
@@ -44,7 +45,7 @@ class SettingsFrame(wx.Frame):
         self.constants: constants.Constants = global_constants
         self.title: str = title
         self.parent: wx.Frame = parent
-
+        self.xnu_major = int(platform.release().split(".")[0])
         self.hyperlink_colour = (25, 179, 231)
 
         self.settings = self._settings()
@@ -201,6 +202,10 @@ class SettingsFrame(wx.Frame):
                         choice.Bind(wx.EVT_CHOICE, lambda event, variable=setting: self.settings[tab][variable]["override_function"](event))
                     else:
                         choice.Bind(wx.EVT_CHOICE, lambda event, variable=setting: self.on_choice(event, variable))
+                    if "condition" in setting_info:
+                        choice.Enable(setting_info["condition"])
+                        if setting_info["condition"] is False:
+                            choice.Disable()
                     height += 10
                 elif setting_info["type"] == "button":
                     button = wx.Button(panel, label=setting, pos=(width + 25, 10 + height), size = (200,-1))
@@ -230,8 +235,14 @@ class SettingsFrame(wx.Frame):
 
                 if height > lowest_height_reached:
                     lowest_height_reached = height
-
-
+    def audio_check(self):
+        if utilities.check_kext_loaded("com.apple.driver.AppleHDA")!="" or utilities.check_kext_loaded("as.vit9696.AppleALC") !="":
+            self.constants.audio_type="AppleHDA"
+            return False
+        if utilities.check_kext_loaded("com.apple.driver.AppleHDA") and self.xnu_major>=os_data.os_data.tahoe:
+            self.constants.audio_type="AppleHDA"
+            return False
+        return True
     def _settings(self) -> dict:
         """
         Generates a dictionary of settings to be used in the GUI
@@ -729,11 +740,12 @@ class SettingsFrame(wx.Frame):
                         "  on Monterey and newer.",
                         "  Not recommended.",
                     ],
+                    "condition":self.audio_check()
                 },
                 "wrap_around 1": {
                     "type": "wrap_around",
                 },
-                "Allow Tahoe Old USB Exts Patch": {
+                "Allow Tahoe Modern USB Patch": {
                     "type": "checkbox",
                     "value": self.constants.allow_usb_patch,
                     "variable": "allow_usb_patch",

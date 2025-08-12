@@ -58,7 +58,7 @@ class WEG(BaseHardware):
         return {
             "WEG Patch": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
-                    "/System/Library/Extensions": {
+                    "/Library/Extensions": {
                         "WhateverGreen.kext":      "WEG",
                         "Lilu.kext":               "WEG",
                     },

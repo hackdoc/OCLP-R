@@ -196,6 +196,9 @@ class macOSInstallerDownloadFrame(wx.Frame):
                 aes=requests.get(aesurl,verify=False)
                 if res.status_code == 200:
                     dmgdata=res.json()
+                    dmgdata['dmgFiles'] = sorted(dmgdata['dmgFiles'], key=lambda x: x['build'])
+
+                    print(dmgdata)
                     logging.info("JSON data:")
                     dmgwell=json.dumps(dmgdata, indent=4, ensure_ascii=False)
                     if aes.status_code == 200:
