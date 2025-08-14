@@ -17,7 +17,7 @@ from ..support import (
     utilities,
     network_handler,
 )
-KDK_API_LINK_ORIGIN:str  = "https://dortania.github.io/KdkSupportPkg/manifest.json"
+KDK_API_LINK_ORIGIN:str  = "https://pyquick.github.io/KdkSupportPkg/manifest.json"
 KDK_API_LINK_PROXY:str  = "https://oclpapi.simplehac.cn/KdkSupportPkg/manifest.json"
 class KDKDownloadFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants,screen_location: tuple = None):
@@ -69,7 +69,6 @@ class KDKDownloadFrame(wx.Frame):
                 kdk_data_build=[]
                 maxnx=[]
                 for i in range(len(self.kdk_data)):
-                    self.kdk_data[i].pop("kernel_versions")
                     self.kdk_data[i]['seen']=((self.kdk_data[i]['seen']).split("T"))[0]
                     if self.constants.github_proxy_link!="SimpleHac" and self.constants.github_proxy_link!="Default":
                         self.kdk_data[i]['url']=self.kdk_data[i]['url'].replace("https://gitapi.simplehac.top/","")
