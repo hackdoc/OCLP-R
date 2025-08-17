@@ -70,7 +70,7 @@ class MetalLibraryObject:
             return METALLIB_ASSET_LIST
 
         try:
-            if self.constants.github_proxy_link!="Default":
+            if self.constants.github_proxy_link=="SimpleHac":
                 METALLIB_API_LINK=METALLIB_API_LINK_PROXY
             else:
                 METALLIB_API_LINK=METALLIB_API_LINK_ORG

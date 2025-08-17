@@ -108,7 +108,7 @@ class KernelDebugKitObject:
             return KDK_ASSET_LIST
 
         try:
-            if self.constants.github_proxy_link=="Default":
+            if self.constants.github_proxy_link!="SimpleHac":
                 KDK_API_LINK=KDK_API_LINK_ORG
             else:
                 KDK_API_LINK=KDK_API_LINK_PROXY
