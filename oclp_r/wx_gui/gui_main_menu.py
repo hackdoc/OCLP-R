@@ -199,10 +199,10 @@ class MainFrame(wx.Frame):
             if "icon" in button_function:
                 icon = wx.StaticBitmap(self, bitmap=wx.Bitmap(button_function["icon"], wx.BITMAP_TYPE_ICON), pos=(button_x - 10, button_y), size=(64, 64))
                 if button_name == "Post-Install Root Patch":
-                    icon.SetPosition((-1, button_y + 7))
+                    icon.SetPosition((button_x-10, button_y + 7))
                 if button_name == "Create macOS Installer":
-                    icon.SetPosition((button_x - 7, button_y + 3))
-                    icon.SetSize((60,60))
+                    icon.SetPosition((button_x - 10, button_y + 3))
+                    icon.SetSize((70,70))
                 if button_name == "Support":
                     icon.SetPosition((button_x - 3, button_y + 3))
                 if button_name == "Build and Install OpenCore":
