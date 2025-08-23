@@ -893,7 +893,7 @@ class SettingsFrame(wx.Frame):
                     "variable": "github_proxy_link",
                     "constants_variable": "github_proxy_link",
                     "description": [
-                        "Default : https://(pyquick/dortania).github.io/",
+                        "Default : https://xxx.github.io/",
                         "SimpleHac : https://gitapi.simplehac.top/",
                         "gh-proxy : https://gh-proxy.com/",
                         "ghfast : https://ghfast.top/",
