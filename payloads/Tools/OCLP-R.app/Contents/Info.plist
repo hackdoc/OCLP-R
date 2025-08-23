@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>OCLP-R</string>
 	<key>CFBundleIconFile</key>
-	<string>OCR.icns</string>
+	<string>AppIcon.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.hackdoc.oclp-r-helper</string>
 	<key>CFBundleInfoDictionaryVersion</key>
