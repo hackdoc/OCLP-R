@@ -165,7 +165,7 @@ class Constants:
         self.computer: device_probe.Computer = None  # type: ignore
         self.custom_model:     Optional[str] = None
         self.change_launchpad:bool = False
-        self.change_control_center:bool =False
+
 
         ## OpenCore Settings
         self.opencore_debug: bool = False # Enable OpenCore debug

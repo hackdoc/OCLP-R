@@ -769,17 +769,7 @@ class SettingsFrame(wx.Frame):
                         "When enabled, this will patch the Old USB",
                         "extensions on Tahoe.",
                     ],
-                },   
-                "Allow Tahoe Control Center Patch": {
-                    "type": "checkbox",
-                    "value": self.constants.change_control_center,
-                    "variable": "change_control_center",
-                    "constants_variable": "change_control_center",
-                    "description": [
-                        "When enabled, this will patch the Control",
-                        "Center on Tahoe.",
-                    ],
-                },  
+                },     
                 "Allow Launchpad Patch": {
                     "type": "checkbox",
                     "value": self.constants.change_launchpad,
