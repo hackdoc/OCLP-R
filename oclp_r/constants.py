@@ -48,6 +48,8 @@ class Constants:
         self.cslvfixup_version:          str = "2.6.1"  #      CSLVFixup
         self.autopkg_version:            str = "1.0.4"  #      AutoPkgInstaller
         self.cryptexfixup_version:       str = "1.0.4"  #      CryptexFixup
+        self.launchpad_version:          str = "26.0 Beta 4"
+
 
         ## Apple
         ## https://www.apple.com
@@ -162,6 +164,8 @@ class Constants:
         ## Hardware
         self.computer: device_probe.Computer = None  # type: ignore
         self.custom_model:     Optional[str] = None
+        self.change_launchpad:bool = False
+        self.change_control_center:bool =False
 
         ## OpenCore Settings
         self.opencore_debug: bool = False # Enable OpenCore debug

@@ -707,7 +707,7 @@ class SettingsFrame(wx.Frame):
                 },
             },
             "Patch": {
-                "Root Volume Patching": {
+                "Patch-General": {
                     "type": "title",
                 },
                 "TeraScale 2 Acceleration": {
@@ -742,6 +742,21 @@ class SettingsFrame(wx.Frame):
                     ],
                     "condition":self.audio_check()
                 },
+                "Launchpad Version Change": {
+                    "type": "choice",
+                    "choices": [
+                        "26.0 Beta 4",
+                        "26.0 Beta 2"
+                    ],
+                    "value": self.constants.launchpad_version,
+                    "variable": "launchpad_version",
+                    "constants_variable": "launchpad_version",
+                    "description": [
+                        "   - 26.0 Beta 4: Using macOS 26.0 Beta 4 socures.",
+                        "   - 26.0 Beta 2: Using macOS 26.0 Beta 2 socures.",
+                    ],
+                   
+                },
                 "wrap_around 1": {
                     "type": "wrap_around",
                 },
@@ -754,8 +769,30 @@ class SettingsFrame(wx.Frame):
                         "When enabled, this will patch the Old USB",
                         "extensions on Tahoe.",
                     ],
+                },   
+                "Allow Tahoe Control Center Patch": {
+                    "type": "checkbox",
+                    "value": self.constants.change_control_center,
+                    "variable": "change_control_center",
+                    "constants_variable": "change_control_center",
+                    "description": [
+                        "When enabled, this will patch the Control",
+                        "Center on Tahoe.",
+                    ],
+                },  
+                "Allow Launchpad Patch": {
+                    "type": "checkbox",
+                    "value": self.constants.change_launchpad,
+                    "variable": "change_launchpad",
+                    "constants_variable": "change_launchpad",
+                    "description": [
+                        "When enabled, this will patch the Control",
+                        "Center on Tahoe.",
+                    ],
                 },               
-                "Non-Metal Configuration": {
+            },
+            "Non-Metal":{
+                "Non-Metal Settings": {
                     "type": "title",
                 },
                 "Log out required to apply changes to SkyLight": {
@@ -768,7 +805,6 @@ class SettingsFrame(wx.Frame):
                     "description": [
                         "If Beta Menu Bar is enabled,",
                         "menu bar colour will dynamically",
-                        "change as needed.",
                     ],
                     "override_function": self._update_system_defaults,
                     "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
@@ -803,9 +839,6 @@ class SettingsFrame(wx.Frame):
                     "variable": "Amy.MenuBar2Beta",
                     "description": [
                         "Supports dynamic colour changes.",
-                        "Note: Setting is still experimental.",
-                        "If you experience issues, please",
-                        "disable this setting.",
                     ],
                     "override_function": self._update_system_defaults,
                     "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
@@ -830,7 +863,6 @@ class SettingsFrame(wx.Frame):
                     "override_function": self._update_system_defaults,
                     "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
                 },
-                
             },
             "App": {
                 "General": {
