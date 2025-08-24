@@ -66,7 +66,6 @@ class LaunchPad(BaseHardware):
                     },
                     "/System/Applications": {
                         "Apps.app":      f"{self._constants.launchpad_version}",
-                        "Launchpad.app":      f"{self._constants.launchpad_version}",
                     },
                 },
             },

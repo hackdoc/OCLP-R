@@ -25,7 +25,6 @@ datas = [
 if Path("HackdocInternalResources.dmg").exists():
    datas.append(('HackdocInternalResources.dmg', '.'))
 
-
 a = Analysis(['OCLP-R-GUI.command'],
              pathex=[],
              binaries=[],
@@ -85,3 +84,4 @@ app = BUNDLE(coll,
                 "NSPrincipalClass": "NSApplication",
                 "CFBundleIconName": "oclp",
              })
+

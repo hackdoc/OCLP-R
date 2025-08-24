@@ -55,7 +55,12 @@ class SysPatchStartFrame(wx.Frame):
 
         if self.patches == {}:
             self.patches = HardwarePatchsetDetection(constants=self.constants).device_properties
-
+    def convert_size(self, size_str):
+        units = {'KB': 1024, 'MB': 1024**2, 'GB': 1024**3, 'TB': 1024**4}
+        for unit, factor in units.items():
+            if unit in size_str:
+               return float(size_str.replace(unit, '')) * factor
+        return float(size_str)
 
     def _kdk_download(self, frame: wx.Frame = None) -> bool:
         frame = self if not frame else frame
@@ -79,7 +84,7 @@ class SysPatchStartFrame(wx.Frame):
         # Set size of frame
         frame.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 35))
         frame.Show()
-
+       
         # Generate KDK object
         self.kdk_obj: kdk_handler.KernelDebugKitObject = None
         def _kdk_thread_spawn():
@@ -100,7 +105,7 @@ class SysPatchStartFrame(wx.Frame):
         if not kdk_download_obj:
             # KDK is already downloaded
             return True
-
+        
         gui_download.DownloadFrame(
             self,
             title=self.title,

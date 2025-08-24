@@ -74,7 +74,7 @@ class KernelDebugKitObject:
         self.kdk_url:         str = ""
         self.kdk_url_build:   str = ""
         self.kdk_url_version: str = ""
-
+        self.size=0
         self.kdk_url_expected_size: int = 0
 
         self.kdk_url_is_exactly_match: bool = False
@@ -259,7 +259,12 @@ class KernelDebugKitObject:
 
         self.success = True
 
-
+    def convert_size(self, size_str):
+        units = {'KB': 1024, 'MB': 1024**2, 'GB': 1024**3, 'TB': 1024**4}
+        for unit, factor in units.items():
+            if unit in size_str:
+               return float(size_str.replace(unit, '')) * factor
+        return float(size_str)
     def retrieve_download(self, override_path: str = "") -> network_handler.DownloadObject:
         """
         Returns a DownloadObject for the KDK
@@ -283,7 +288,11 @@ class KernelDebugKitObject:
             self.error_msg = "Could not retrieve KDK catalog, no KDK to download"
             logging.error(self.error_msg)
             return None
-
+        re=requests.get(self.kdk_url)
+        json=re.json()
+        for i in json:
+            if i["build"]==self.kdk_url_build:
+                self.size=self.convert_size(i["fileSize"])
         logging.info(f"Returning DownloadObject for KDK: {Path(self.kdk_url).name}")
         self.success = True
 
@@ -291,7 +300,7 @@ class KernelDebugKitObject:
         kdk_plist_path = Path(f"{kdk_download_path.parent}/{KDK_INFO_PLIST}") if override_path == "" else Path(f"{Path(override_path).parent}/{KDK_INFO_PLIST}")
 
         self._generate_kdk_info_plist(kdk_plist_path)
-        return network_handler.DownloadObject(self.kdk_url, kdk_download_path)
+        return network_handler.DownloadObject(self.kdk_url, kdk_download_path,self.size)
 
 
     def _generate_kdk_info_plist(self, plist_path: str) -> None:
