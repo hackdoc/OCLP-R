@@ -68,7 +68,8 @@ jobs:
         if: github.event_name == 'push'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: push-${{ github.sha }}
+          #tag_name: push-${{ github.sha }}
+          tag_name: 3.0.0Pre
           name: 3.0.0 Tahoe Test Version
           body: ${{ github.event.head_commit.message }}
           prerelease: true

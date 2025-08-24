@@ -224,7 +224,7 @@ class PatchSysVolume:
 
         if self._create_new_apfs_snapshot() is False:
             return False
-
+        self.load_launchpad()
         self._unmount_root_vol()
 
         logging.info("- Patching complete")
@@ -353,7 +353,7 @@ class PatchSysVolume:
             InstallAutomaticPatchingServices(self.constants).install_auto_patcher_launch_agent(kdk_caching_needed=needs_daemon)
 
         self._rebuild_root_volume()
-        self.load_launchpad()
+        
 
 
     def _execute_patchset(self, required_patches: dict):
@@ -583,11 +583,11 @@ class PatchSysVolume:
 
     def load_launchpad(self):
         if self.constants.change_launchpad is True:
-            logging.info("- LaunchPad patching enabled, run command......")
+            logging.info("- LaunchPad patching enabled, runing command")
             subprocess.run("mkdir -p /Library/Preferences/FeatureFlags/Domain",capture_output=True,text=True,shell=True)
             subprocess.run("defaults write /Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist SpotlightPlus -dict Enabled -bool false",capture_output=True,text=True,shell=True)
         else:
-            logging.info("- LaunchPad patching disabled,skip......")
+            logging.info("- LaunchPad patching disabled, skiping")
             subprocess.run("mkdir -p /Library/Preferences/FeatureFlags/Domain",capture_output=True,text=True,shell=True)
             subprocess.run("defaults write /Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist SpotlightPlus -dict Enabled -bool true",capture_output=True,text=True,shell=True)
     def start_unpatch(self) -> None:
