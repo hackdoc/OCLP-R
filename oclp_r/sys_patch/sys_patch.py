@@ -181,8 +181,8 @@ class PatchSysVolume:
         ).merge(save_hid_cs)
     def clean_launchpad(self) -> None:
         logging.info("- Cleaning LaunchPad Settings")
-        subprocess.run(["mkdir", "-p", "/Library/Preferences/FeatureFlags/Domain"],capture_output=True,text=True)
-        subprocess.run(["defaults", "write", "/Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist", "SpotlightPlus", "-dict", "Enabled", "-bool", "false"],capture_output=True,text=True)
+        subprocess.run("mkdir -p /Library/Preferences/FeatureFlags/Domain",capture_output=True,text=True,shell=True)
+        subprocess.run("defaults write /Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist SpotlightPlus -dict Enabled -bool true",capture_output=True,text=True,shell=True)
     def _unpatch_root_vol(self):
         """
         Reverts APFS snapshot and cleans up any changes made to the root and data volume
@@ -559,12 +559,12 @@ class PatchSysVolume:
             return
         if self.constants.change_launchpad is True:
             logging.info("- LaunchPad patching enabled, run command......")
-            subprocess.run(["mkdir", "-p", "/Library/Preferences/FeatureFlags/Domain"],capture_output=True,text=True)
-            subprocess.run(["defaults", "write", "/Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist", "SpotlightPlus", "-dict", "Enabled", "-bool", "false"])
+            subprocess.run("mkdir -p /Library/Preferences/FeatureFlags/Domain",capture_output=True,text=True,shell=True)
+            subprocess.run("defaults write /Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist SpotlightPlus -dict Enabled -bool false",capture_output=True,text=True,shell=True)
         else:
             logging.info("- LaunchPad patching disabled,skip......")
-            subprocess.run(["mkdir", "-p", "/Library/Preferences/FeatureFlags/Domain"],capture_output=True,text=True)
-            subprocess.run(["defaults", "write", "/Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist", "SpotlightPlus", "-dict", "Enabled", "-bool", "true"])
+            subprocess.run("mkdir -p /Library/Preferences/FeatureFlags/Domain",capture_output=True,text=True,shell=True)
+            subprocess.run("defaults write /Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist SpotlightPlus -dict Enabled -bool true",capture_output=True,text=True,shell=True)
         logging.info("- Verifying whether Root Patching possible")
         if patchset_obj.can_patch is False:
             logging.error("- Cannot continue with patching!!!")
