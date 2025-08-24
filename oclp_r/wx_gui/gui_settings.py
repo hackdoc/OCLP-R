@@ -770,11 +770,21 @@ class SettingsFrame(wx.Frame):
                         "extensions on Tahoe.",
                     ],
                 },     
-                "Allow Launchpad Patch": {
+                "Allow Launchpad Patch (Exp.)": {
                     "type": "checkbox",
                     "value": self.constants.change_launchpad,
                     "variable": "change_launchpad",
                     "constants_variable": "change_launchpad",
+                    "description": [
+                        "When enabled, this will patch the LaunchPad",
+                        "on Tahoe.",
+                    ],
+                },
+                "Allow Control Center Patch (Exp.)": {
+                    "type": "checkbox",
+                    "value": self.constants.change_control_center,
+                    "variable": "change_control_center",
+                    "constants_variable": "change_control_center",
                     "description": [
                         "When enabled, this will patch the Control",
                         "Center on Tahoe.",

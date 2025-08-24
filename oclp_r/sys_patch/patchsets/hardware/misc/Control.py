@@ -1,6 +1,6 @@
 """
-launch.py: LaunchPad patch set for macOS 26
-Not Recommend for using
+Control.py: Control Center patch set for macOS 26 B6+
+DO NOT USE ON MACOS SEQUOIA
 """
 
 from ..base import BaseHardware, HardwareVariant
@@ -14,21 +14,20 @@ from .....datasets.os_data import os_data
 from .....support   import utilities
 
 
-class LaunchPad(BaseHardware):
+class ModernControl(BaseHardware):
 
     def __init__(self, xnu_major, xnu_minor, os_build, global_constants: Constants) -> None:
         super().__init__(xnu_major, xnu_minor, os_build, global_constants)
-
-
+    
     def name(self) -> str:
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: LaunchPad ({self._constants.launchpad_version})"
+        return f"{self.hardware_variant()}: Control Center"
 
 
     def present(self) -> bool:
-        return self._constants.change_launchpad
+        return self._constants.change_control_center
     def requires_kernel_debug_kit(self) -> bool:
         """
         Apple no longer provides standalone kexts in the base OS
@@ -40,7 +39,8 @@ class LaunchPad(BaseHardware):
         """
         if self._xnu_major < os_data.tahoe.value:
             return True
-
+        if self._os_build == "25A5279m" or self._os_build == "25A5295e" or self._os_build == "25A5306g" or self._os_build == "25A5316i" or self._os_build == "25A5327h":
+            return True
         return False
 
 
@@ -55,18 +55,16 @@ class LaunchPad(BaseHardware):
         """
         Patches for Modern Audio
         """
-        if self._constants.launchpad_version != "26.0 Beta 4" and self._constants.launchpad_version != "26.0 Beta 2":
-            self._constants.launchpad_version = "26.0 Beta 4"
         return {
-            "LuanchPad": {
+            "Control Center": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/CoreServices": {
-                        "Dock.app":      f"{self._constants.launchpad_version}",
-                        "Spotlight.app":      f"{self._constants.launchpad_version}",
+                        "ControlCenter.app":      f"26.0 Beta 5",
                     },
-                    "/System/Applications": {
-                        "Apps.app":      f"{self._constants.launchpad_version}",
-                        **({"Launchpad.app": f"{self._constants.launchpad_version}"} if f"{self._constants.launchpad_version}" != "26.0 Beta 4" else {}),
+                },
+                PatchType.MERGE_SYSTEM_VOLUME:{
+                    "/System/Library/PrivateFrameworks":{
+                        "ControlCenter.framework": "26.0 Beta 5",
                     },
                 },
             },

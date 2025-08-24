@@ -138,6 +138,7 @@ class Constants:
 
         # Patcher Settings
         ## Internal settings
+        self.change_control_center:     bool = False
         self.allow_oc_everywhere:       bool = False  # Set whether Patcher can be run on unsupported Macs
         self.gui_mode:                  bool = False  # Determine whether running in a GUI or TUI
         self.cli_mode:                  bool = True  #  Determine if running in CLI mode
