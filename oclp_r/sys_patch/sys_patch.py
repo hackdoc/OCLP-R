@@ -179,8 +179,10 @@ class PatchSysVolume:
             self.mount_location,
             self.skip_root_kmutil_requirement
         ).merge(save_hid_cs)
-
-
+    def clean_launchpad(self) -> None:
+        logging.info("- Cleaning LaunchPad Settings")
+        subprocess.run(["mkdir", "-p", "/Library/Preferences/FeatureFlags/Domain"],capture_output=True,text=True)
+        subprocess.run(["defaults", "write", "/Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist", "SpotlightPlus", "-dict", "Enabled", "-bool", "false"],capture_output=True,text=True)
     def _unpatch_root_vol(self):
         """
         Reverts APFS snapshot and cleans up any changes made to the root and data volume
@@ -191,6 +193,7 @@ class PatchSysVolume:
 
         self._clean_skylight_plugins()
         self._delete_nonmetal_enforcement()
+        self.clean_launchpad()
         kernelcache.KernelCacheSupport(
             mount_location_data=self.mount_location_data,
             detected_os=self.constants.detected_os,
@@ -554,7 +557,14 @@ class PatchSysVolume:
         if self.patch_set_dictionary == {}:
             logging.info("- No Root Patches required for your machine!")
             return
-
+        if self.constants.change_launchpad is True:
+            logging.info("- LaunchPad patching enabled, run command......")
+            subprocess.run(["mkdir", "-p", "/Library/Preferences/FeatureFlags/Domain"],capture_output=True,text=True)
+            subprocess.run(["defaults", "write", "/Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist", "SpotlightPlus", "-dict", "Enabled", "-bool", "false"])
+        else:
+            logging.info("- LaunchPad patching disabled,skip......")
+            subprocess.run(["mkdir", "-p", "/Library/Preferences/FeatureFlags/Domain"],capture_output=True,text=True)
+            subprocess.run(["defaults", "write", "/Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist", "SpotlightPlus", "-dict", "Enabled", "-bool", "true"])
         logging.info("- Verifying whether Root Patching possible")
         if patchset_obj.can_patch is False:
             logging.error("- Cannot continue with patching!!!")

@@ -354,7 +354,7 @@ class SysPatchStartFrame(wx.Frame):
 
         self._generate_modal(self.patches, "Revert Root Patches")
         self.return_button.Disable()
-
+        
         thread = threading.Thread(target=self._revert_root_patching, args=(self.patches,))
         thread.start()
 
