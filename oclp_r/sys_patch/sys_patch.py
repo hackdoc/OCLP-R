@@ -353,6 +353,7 @@ class PatchSysVolume:
             InstallAutomaticPatchingServices(self.constants).install_auto_patcher_launch_agent(kdk_caching_needed=needs_daemon)
 
         self._rebuild_root_volume()
+        self.load_launchpad()
 
 
     def _execute_patchset(self, required_patches: dict):
@@ -471,7 +472,6 @@ class PatchSysVolume:
         # After install, check if it's present
         return self._resolve_metallib_support_pkg()
 
-
     @cache
     def _resolve_dynamic_patchset(self, variant: DynamicPatchset) -> str:
         """
@@ -557,14 +557,7 @@ class PatchSysVolume:
         if self.patch_set_dictionary == {}:
             logging.info("- No Root Patches required for your machine!")
             return
-        if self.constants.change_launchpad is True:
-            logging.info("- LaunchPad patching enabled, run command......")
-            subprocess.run("mkdir -p /Library/Preferences/FeatureFlags/Domain",capture_output=True,text=True,shell=True)
-            subprocess.run("defaults write /Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist SpotlightPlus -dict Enabled -bool false",capture_output=True,text=True,shell=True)
-        else:
-            logging.info("- LaunchPad patching disabled,skip......")
-            subprocess.run("mkdir -p /Library/Preferences/FeatureFlags/Domain",capture_output=True,text=True,shell=True)
-            subprocess.run("defaults write /Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist SpotlightPlus -dict Enabled -bool true",capture_output=True,text=True,shell=True)
+        
         logging.info("- Verifying whether Root Patching possible")
         if patchset_obj.can_patch is False:
             logging.error("- Cannot continue with patching!!!")
@@ -588,7 +581,15 @@ class PatchSysVolume:
 
         self._patch_root_vol()
 
-
+    def load_launchpad(self):
+        if self.constants.change_launchpad is True:
+            logging.info("- LaunchPad patching enabled, run command......")
+            subprocess.run("mkdir -p /Library/Preferences/FeatureFlags/Domain",capture_output=True,text=True,shell=True)
+            subprocess.run("defaults write /Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist SpotlightPlus -dict Enabled -bool false",capture_output=True,text=True,shell=True)
+        else:
+            logging.info("- LaunchPad patching disabled,skip......")
+            subprocess.run("mkdir -p /Library/Preferences/FeatureFlags/Domain",capture_output=True,text=True,shell=True)
+            subprocess.run("defaults write /Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist SpotlightPlus -dict Enabled -bool true",capture_output=True,text=True,shell=True)
     def start_unpatch(self) -> None:
         """
         Entry function for unpatching the root volume
