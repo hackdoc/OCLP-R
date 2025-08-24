@@ -66,7 +66,7 @@ class LaunchPad(BaseHardware):
                     },
                     "/System/Applications": {
                         "Apps.app":      f"{self._constants.launchpad_version}",
-                        "Launchpad.app": f"{self._constants.launchpad_version}" if f"{self._constants.launchpad_version}" != f"26.0 Beta 4" else {},
+                        **({"Launchpad.app": f"{self._constants.launchpad_version}"} if f"{self._constants.launchpad_version}" != "26.0 Beta 4" else {}),
                     },
                 },
             },
