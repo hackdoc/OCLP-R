@@ -1,5 +1,8 @@
 requests
 pyobjc
+pybase64
+colorama
+termcolor
 wxpython
 pyinstaller
 packaging
