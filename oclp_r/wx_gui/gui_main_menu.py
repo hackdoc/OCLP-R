@@ -53,10 +53,27 @@ class MainFrame(wx.Frame):
 
         self.Centre()
         self.Show()
-
+        threading.Thread(target=self._exp_check).start()
 
         self._preflight_checks()
-
+    def _exp_check(self)->None:
+        from pathlib import Path
+        import os,requests,json
+        path=Path("~/Library/Logs/Hackdoc/JSON").expanduser()
+        filename="control.json"
+        print(path)
+        try:
+            logging.info("Checking for json")
+            print("checking for json")
+            os.mkdir(path)
+        except:
+            pass
+        filepath=Path(path,filename).expanduser()
+        url="https://pyquick.github.io/KdkSupportPkg/control.json"
+        re=requests.get(url)
+        js=re.json()
+        with open(filepath, "w", encoding="utf-8") as file:
+            json.dump(js, file, ensure_ascii=False, indent=4)
 
     def _generate_elements(self) -> None:
         """

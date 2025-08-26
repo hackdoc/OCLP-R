@@ -24,7 +24,8 @@ from ..support import (
     defaults,
     generate_smbios,
     network_handler,
-    subprocess_wrapper
+    subprocess_wrapper,
+    private,
 )
 from ..datasets import (
     model_array,
@@ -40,8 +41,10 @@ class SettingsFrame(wx.Frame):
     """
     Modal-based Settings Frame
     """
+
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
         logging.info("Initializing Settings Frame")
+        private.PRIVATE()
         self.constants: constants.Constants = global_constants
         self.title: str = title
         self.parent: wx.Frame = parent
@@ -54,7 +57,25 @@ class SettingsFrame(wx.Frame):
 
         self._generate_elements(self.frame_modal)
         self.frame_modal.ShowWindowModal()
-
+    def condition_exp(self,key:str):
+        import os,json
+        try:
+            
+            private_path=Path("~/Library/Logs/Hackdoc/PRIVATE/.PRIVATE").expanduser()
+            if private_path.exists():
+                return True
+            else:
+                base_path=Path("~/Library/Logs/Hackdoc/JSON/control.json").expanduser()
+                with open(base_path,"r",encoding="utf-8") as file:
+                    data=json.load(file.read())
+                    if data[key]=="1":
+                        return True
+                    else:
+                        return False
+        except:
+            return False
+           
+        
     def _generate_elements(self, frame: wx.Frame = None) -> None:
         """
         Generates elements for the Settings Frame
@@ -755,7 +776,7 @@ class SettingsFrame(wx.Frame):
                         "   - 26.0 Beta 4: Using macOS 26.0 Beta 4 socures.",
                         "   - 26.0 Beta 2: Using macOS 26.0 Beta 2 socures.",
                     ],
-                   
+                    "condition":self.condition_exp("LP")
                 },
                 "wrap_around 1": {
                     "type": "wrap_around",
@@ -769,6 +790,7 @@ class SettingsFrame(wx.Frame):
                         "When enabled, this will patch the Old USB",
                         "extensions on Tahoe.",
                     ],
+                    "condition":self.condition_exp("USB")
                 },     
                 "Allow Launchpad Patch (Exp.)": {
                     "type": "checkbox",
@@ -779,6 +801,7 @@ class SettingsFrame(wx.Frame):
                         "When enabled, this will patch the LaunchPad",
                         "on Tahoe.",
                     ],
+                    "condition":self.condition_exp("LP")
                 },
                 "Allow Control Center Patch (Exp.)": {
                     "type": "checkbox",
@@ -789,6 +812,7 @@ class SettingsFrame(wx.Frame):
                         "When enabled, this will patch the Control",
                         "Center on Tahoe.",
                     ],
+                    "condition":self.condition_exp("CC")
                 },               
             },
             "Non-Metal":{
