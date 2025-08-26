@@ -1,4 +1,4 @@
-import pybase64
+import 
 import base64
 from oclp_r.encry.panic.panic import Panic
 
@@ -10,7 +10,7 @@ class Encry:
         try:
             if not isinstance(data, bytes):
                 raise Panic("Panic:This type is not bytes.",4,"TypeError").raise_panic()
-            self.encry = pybase64.b64encode(data)
+            self.encry = .b64encode(data)
             
             return self.encry
         except Exception as e:
@@ -59,7 +59,7 @@ class Decry:
         try:
             if not isinstance(data, bytes):
                 raise TypeError("Panic:This type is not bytes.")
-            self.encry = pybase64.b64decode(data)
+            self.encry = .b64decode(data)
            
             return self.encry
         except Exception as e:
