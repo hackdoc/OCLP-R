@@ -58,7 +58,7 @@ class Decry:
         try:
             if not isinstance(data, bytes):
                 raise TypeError("Panic:This type is not bytes.")
-            self.encry = .b64decode(data)
+            self.encry = base64.b64decode(data)
            
             return self.encry
         except Exception as e:
