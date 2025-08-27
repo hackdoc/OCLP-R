@@ -69,7 +69,7 @@ coll = COLLECT(exe,
 
 app = BUNDLE(coll,
              name='OCLP-R.app',
-             icon="payloads/Icon/AppIcons/AppIcon.icns",
+             icon="payloads/Icon/AppIcons/OCR.icns",
              bundle_identifier="com.hackdoc.oclp-r",
              info_plist={
                 "CFBundleName": "OCLP-R",

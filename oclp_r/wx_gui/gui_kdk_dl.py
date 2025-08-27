@@ -58,7 +58,7 @@ class KDKDownloadFrame(wx.Frame):
         self.Show()
         def _fetch_installers():
             try:
-                if self.constants.github_proxy_link!="Default":
+                if self.constants.github_proxy_link=="SimpleHac":
                     KDK_API_LINK:str=KDK_API_LINK_PROXY
                 else:
                     KDK_API_LINK: str = KDK_API_LINK_ORIGIN

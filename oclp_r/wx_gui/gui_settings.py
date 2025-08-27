@@ -50,7 +50,6 @@ class SettingsFrame(wx.Frame):
         self.parent: wx.Frame = parent
         self.xnu_major = int(platform.release().split(".")[0])
         self.hyperlink_colour = (25, 179, 231)
-
         self.settings = self._settings()
 
         self.frame_modal = wx.Dialog(parent, title=title, size=(600, 720))
@@ -58,23 +57,22 @@ class SettingsFrame(wx.Frame):
         self._generate_elements(self.frame_modal)
         self.frame_modal.ShowWindowModal()
     def condition_exp(self,key:str):
-        import os,json
+        import json
         try:
             
-            private_path=Path("~/Library/Logs/Hackdoc/PRIVATE/.PRIVATE").expanduser()
-            if private_path.exists():
+            developer_path=Path("~/.hackdoc_developer").expanduser()
+            if developer_path.exists():
                 return True
-            else:
-                base_path=Path("~/Library/Logs/Hackdoc/JSON/control.json").expanduser()
-                with open(base_path,"r",encoding="utf-8") as file:
-                    data=json.load(file.read())
-                    if data[key]=="1":
-                        return True
-                    else:
-                        return False
+            
+            base_path=Path("~/Library/Logs/Hackdoc/JSON/control.json").expanduser()
+            with open(base_path,"r",encoding="utf-8") as file:
+                data=json.load(file)
+                if data[key]=="1":
+                    return True
+            return False
         except:
             return False
-           
+    
         
     def _generate_elements(self, frame: wx.Frame = None) -> None:
         """
