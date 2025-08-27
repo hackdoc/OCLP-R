@@ -18,7 +18,7 @@ from oclp_r import constants
 block_cipher = None
 
 datas = [
-   ('payloads/Icon/AppIcons/Assets.car', '.')
+   ('payloads/Icon/AppIcons/Assets.car', '.'),
    ('payloads.dmg', '.'),
    ('Universal-Binaries.dmg', '.'),
 ]
