@@ -18,6 +18,7 @@ from oclp_r import constants
 block_cipher = None
 
 datas = [
+   ('payloads/Icon/AppIcons/Assets.car', '.')
    ('payloads.dmg', '.'),
    ('Universal-Binaries.dmg', '.'),
 ]
@@ -82,6 +83,6 @@ app = BUNDLE(coll,
                 "Build Date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
                 "BuildMachineOSBuild": subprocess.run(["/usr/bin/sw_vers", "-buildVersion"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode().strip(),
                 "NSPrincipalClass": "NSApplication",
-                "CFBundleIconName": "oclp",
+                "CFBundleIconName": "oclp-r",
              })
 
