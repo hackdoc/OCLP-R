@@ -268,8 +268,8 @@ class KDKDownloadFrame(wx.Frame):
             file_name = selected_installer['name']+".dmg"
             self.frame_modal.Close()
             self.path_validate=self.constants.user_download_file+"/"+file_name
-            size=selected_installer['fileSize']
-            download_obj = network_handler.DownloadObject(selected_installer['url'], self.constants.user_download_file+"/"+file_name,self.convert_size(size))
+            size=int(selected_installer['fileSize'])
+            download_obj = network_handler.DownloadObject(selected_installer['url'], self.constants.user_download_file+"/"+file_name,size)
             gui_download.DownloadFrame(
                 self,
                 title=self.title,

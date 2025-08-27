@@ -283,16 +283,10 @@ class KernelDebugKitObject:
             logging.info("No download required, KDK already installed")
             self.success = True
             return None
-
         if self.kdk_url == "":
             self.error_msg = "Could not retrieve KDK catalog, no KDK to download"
             logging.error(self.error_msg)
             return None
-        re=requests.get(self.kdk_url)
-        json=re.json()
-        for i in json:
-            if i["build"]==self.kdk_url_build:
-                self.size=self.convert_size(i["fileSize"])
         logging.info(f"Returning DownloadObject for KDK: {Path(self.kdk_url).name}")
         self.success = True
 
@@ -300,7 +294,7 @@ class KernelDebugKitObject:
         kdk_plist_path = Path(f"{kdk_download_path.parent}/{KDK_INFO_PLIST}") if override_path == "" else Path(f"{Path(override_path).parent}/{KDK_INFO_PLIST}")
 
         self._generate_kdk_info_plist(kdk_plist_path)
-        return network_handler.DownloadObject(self.kdk_url, kdk_download_path,self.size)
+        return network_handler.DownloadObject(self.kdk_url, kdk_download_path)
 
 
     def _generate_kdk_info_plist(self, plist_path: str) -> None:

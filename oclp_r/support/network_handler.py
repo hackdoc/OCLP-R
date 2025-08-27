@@ -261,6 +261,11 @@ class DownloadObject:
         return Path(self.url).name
 
     def convert_size(self, size_str):
+        if isinstance(size_str, float):
+            return float(size_str)
+        if isinstance(size_str, int):
+            return float(size_str)
+
         units = {'KB': 1024, 'MB': 1024**2, 'GB': 1024**3, 'TB': 1024**4}
         for unit, factor in units.items():
             if unit in size_str:
@@ -354,7 +359,7 @@ class DownloadObject:
             if self._prepare_working_directory(self.filepath) is False:
                 raise Exception(self.error_msg)
 
-            response = NetworkUtilities().get(self.url, stream=True, timeout=10)
+            response = NetworkUtilities().get(self.url, stream=True, timeout=100)
 
             with open(self.filepath, 'wb') as file:
                 atexit.register(self.stop)
@@ -437,7 +442,6 @@ class DownloadObject:
         Returns:
             float: The file size in bytes, or 0.0 if unknown
         """
-
         return self.total_file_size
 
 
