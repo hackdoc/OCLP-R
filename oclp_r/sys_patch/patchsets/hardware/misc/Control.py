@@ -65,12 +65,11 @@ class ModernControl(BaseHardware):
                 PatchType.MERGE_SYSTEM_VOLUME:{
                     "/System/Library/PrivateFrameworks":{
                         "ControlCenter.framework": "26.0 Beta 5",
-                    },
-                    "/System/Library/Frameworks":{
-                        "Contacts.framework": "26.0 Beta 5",
-                        "ContactsUI.framework":"26.0 Beta 5",
-                        "CoreText.framework":"26.0 Beta 5",
-                        "Foundation.framework":"26.0 Beta 5",
+                        "BatteryUIKit.framework": "26.0 Beta 5",
+                        "FeatureFlags.framework": "26.0 Beta 5",
+                        "MonitorPanel.framework": "26.0 Beta 5",
+                        "PowerUI.framework": "26.0 Beta 5",
+                        "SystemBanner.framework": "26.0 Beta 5",
                     },
                 },
             },
