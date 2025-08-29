@@ -60,16 +60,12 @@ class ModernControl(BaseHardware):
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/CoreServices": {
                         "ControlCenter.app":      f"26.0 Beta 5",
+                        "SystemUIServer.app":      f"26.0 Beta 5",
                     },
                 },
                 PatchType.MERGE_SYSTEM_VOLUME:{
                     "/System/Library/PrivateFrameworks":{
                         "ControlCenter.framework": "26.0 Beta 5",
-                        "BatteryUIKit.framework": "26.0 Beta 5",
-                        "FeatureFlags.framework": "26.0 Beta 5",
-                        "MonitorPanel.framework": "26.0 Beta 5",
-                        "PowerUI.framework": "26.0 Beta 5",
-                        "SystemBanner.framework": "26.0 Beta 5",
                     },
                 },
             },
