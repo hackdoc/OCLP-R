@@ -418,7 +418,8 @@ class KernelDebugKitObject:
                 match = self.host_version
             else:
                 match = self.host_build
-
+        if match == "24A354":
+            match = "24A353"
         if not Path(KDK_INSTALL_PATH).exists():
             return None
 

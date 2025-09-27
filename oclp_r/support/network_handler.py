@@ -43,7 +43,7 @@ class NetworkUtilities:
         if self.contents.github_proxy_link=="Default":
             self.url="https://www.github.com"
         else:
-            self.url = "https://www.kkgithub.com"
+            self.url = "https://baidu.com/"
 
 
 
