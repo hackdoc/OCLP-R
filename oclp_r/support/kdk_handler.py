@@ -211,6 +211,7 @@ class KernelDebugKitObject:
 
         # If no exact match, check for closest match
         if self.kdk_url == "":
+            count_kdks=[]
             for kdk in remote_kdk_version:
                 kdk_version = cast(packaging.version.Version, packaging.version.parse(kdk["version"]))
                 if kdk_version > parsed_version:
@@ -219,14 +220,23 @@ class KernelDebugKitObject:
                     continue
                 if kdk_version.minor not in range(parsed_version.minor - 1, parsed_version.minor + 1):
                     continue
-
-                # The KDK list is already sorted by version then date, so the first match is the closest
-                self.kdk_closest_match_url = kdk["url"]
-                self.kdk_closest_match_url_build = kdk["build"]
-                self.kdk_closest_match_url_version = kdk["version"]
-                self.kdk_closest_match_url_expected_size = kdk["fileSize"]
+                count_kdks.append(kdk)
+            if count_kdks:
+                count_kdks.sort(key=lambda x: x["build"], reverse=True)
+                closest = None
+                for kdk in count_kdks:
+                    if kdk["build"] <= host_build:
+                        closest = kdk
+                        break
+                if closest is None:
+                    closest = count_kdks[-1]
+                self.kdk_closest_match_url = closest["url"]
+                self.kdk_closest_match_url_build = closest["build"]
+                self.kdk_closest_match_url_version = closest["version"]
+                self.kdk_closest_match_url_expected_size = closest["fileSize"]
                 self.kdk_url_is_exactly_match = False
-                break
+
+               
 
         if self.kdk_url == "":
             if self.kdk_closest_match_url == "":
@@ -418,8 +428,7 @@ class KernelDebugKitObject:
                 match = self.host_version
             else:
                 match = self.host_build
-        if match == "24A354":
-            match = "24A353"
+        
         if not Path(KDK_INSTALL_PATH).exists():
             return None
 
