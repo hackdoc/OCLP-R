@@ -30,7 +30,8 @@ class ModernAudio(BaseHardware):
         """
         AppleHDA was outright removed in macOS 26, so this patch set is always present if OS requires it
         """
-       
+        if utilities.check_kext_loaded("org.voodoo.driver.VoodooHDA") !="" and self._constants.audio_type!="AppleHDA":
+            self._constants.audio_type="AppleHDA"
         return self._constants.audio_type=="AppleHDA" and utilities.check_kext_loaded("as.vit9696.AppleALC") !="" and utilities.check_kext_loaded("org.voodoo.driver.VoodooHDA") ==""
     def requires_kernel_debug_kit(self) -> bool:
         """
@@ -45,7 +46,7 @@ class ModernAudio(BaseHardware):
             return True
 
         # Technically, macOS Tahoe Beta 1 is also native, so return True
-        if self._os_build == "25A5279m":
+        if self._os_build == "25A5279m" and self._constants.applehda_version=="26.0 Beta 1":
             return True
 
         return False
@@ -66,7 +67,7 @@ class ModernAudio(BaseHardware):
             "Modern Audio": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
-                        "AppleHDA.kext":      "26.0 Beta 1",
+                        "AppleHDA.kext":      f"{self._constants.applehda_version}",
                     },
                 },
             },

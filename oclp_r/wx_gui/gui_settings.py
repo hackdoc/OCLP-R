@@ -811,7 +811,20 @@ class SettingsFrame(wx.Frame):
                         "Center on Tahoe.",
                     ],
                     "condition":self.condition_exp("CC")
-                },               
+                },      
+                "AppleHDA.kext Version": {
+                    "type": "choice",
+                    "choices": [
+                        "15.6",
+                        "26.0 Beta 1"
+                    ],
+                    "value": self.constants.applehda_version,
+                    "variable": "applehda_version",
+                    "constants_variable": "applehda_version",
+                    "description": [
+                        "",
+                    ],
+                },         
             },
             "Non-Metal":{
                 "Non-Metal Settings": {

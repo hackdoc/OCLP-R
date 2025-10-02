@@ -14,7 +14,7 @@ class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
         self.patcher_version:                 str = "3.0.0"  # OCLP-R
-        self.patcher_support_pkg_version:     str = "1.9.9"  # PatcherSupportPkg
+        self.patcher_support_pkg_version:     str = "1.10.0"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2025 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
         
@@ -166,7 +166,7 @@ class Constants:
         self.computer: device_probe.Computer = None  # type: ignore
         self.custom_model:     Optional[str] = None
         self.change_launchpad:bool = False
-
+        self.applehda_version:str="15.6"
 
         ## OpenCore Settings
         self.opencore_debug: bool = False # Enable OpenCore debug
