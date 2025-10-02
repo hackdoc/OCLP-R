@@ -16,7 +16,7 @@ from ..support import (
     utilities,
     network_handler,
 )
-METALLIB_API_LINK_ORIGIN:     str  = "https://dortania.github.io/MetallibSupportPkg/manifest.json"
+METALLIB_API_LINK_ORIGIN:     str  = "https://pyquick.github.io/MetallibSupportPkg/manifest.json"
 METALLIB_API_LINK_PROXY:     str  = "https://oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
 class MetallibDownloadFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants,screen_location: tuple = None):
@@ -32,6 +32,7 @@ class MetallibDownloadFrame(wx.Frame):
         self.backup_item=None
         self.kdk_data = None
         self.path_validate=None
+        self.callback=False
         self.retry_download:bool=False
         self.show_fully=False
         self.kdk_data_full=None
@@ -56,7 +57,7 @@ class MetallibDownloadFrame(wx.Frame):
         self.Show()
         def _fetch_installers():
             try:
-                if self.constants.github_proxy_link!="Default":
+                if self.constants.github_proxy_link=="SimpleHac":
                     METALLIB_API_LINK:str=METALLIB_API_LINK_PROXY
                 else:
                     METALLIB_API_LINK: str = METALLIB_API_LINK_ORIGIN
@@ -118,13 +119,16 @@ class MetallibDownloadFrame(wx.Frame):
                 self.kdk_data_latest=self.kdk_data_latest
             except requests.RequestException as e:
                 wx.MessageBox(f"Fetch Metal Libraries Error: {e}", "Error", wx.OK | wx.ICON_ERROR)
-                self.on_return_to_main_menu()
+                self.callback=True
         thread = threading.Thread(target=_fetch_installers)
         thread.start()
         gui_support.wait_for_thread(thread)
         progress_bar_animation.stop_pulse()
         progress_bar.Hide()
-        self._display_available_installers()
+        if self.callback:
+           self.on_return_to_main_menu()
+        else:
+            self._display_available_installers()
     def convert_size(self,size_bytes):
         for unit in ['B', 'KB', 'MB', 'GB']:
             if size_bytes < 1024.0:

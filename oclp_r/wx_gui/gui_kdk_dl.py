@@ -35,6 +35,7 @@ class KDKDownloadFrame(wx.Frame):
         self.available_installers_latest = None
         self.kdk_data = None
         self.show_fully=False
+        self.callback=False
         self.kdk_data_full=None
         self.backup_item=None
         self.kdk_data_latest = None
@@ -116,13 +117,16 @@ class KDKDownloadFrame(wx.Frame):
                 self.kdk_data_latest=self.kdk_data_latest
             except requests.RequestException as e:
                 wx.MessageBox(f"Fetching KDK ERROR: {e}", "Error", wx.OK | wx.ICON_ERROR)
-                self.on_return_to_main_menu()
+                self.callback=True
         thread = threading.Thread(target=_fetch_installers)
         thread.start()
         gui_support.wait_for_thread(thread)
         progress_bar_animation.stop_pulse()
         progress_bar.Hide()
-        self._display_available_installers()
+        if self.callback:
+            self.on_return_to_main_menu()
+        else:
+            self._display_available_installers()
     def convert_size(self,size_bytes):
         for unit in ['B', 'KB', 'MB', 'GB']:
             if size_bytes < 1024.0:
