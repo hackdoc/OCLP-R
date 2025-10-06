@@ -12,7 +12,7 @@ import logging
 import enum
 import hashlib
 import atexit
-
+import json
 from typing import Union
 from pathlib import Path
 
@@ -165,17 +165,20 @@ class DownloadObject:
 
     """
 
-    def __init__(self, url: str, path: str,size:str=None) -> None:
+    def __init__(self, url: str, path: str, size:str=None, resume_download: bool = True) -> None:
         self.url:       str = url
         self.status:    str = DownloadStatus.INACTIVE
         self.error_msg: str = ""
         self.filename:  str = self._get_filename()
         self.size:      str = size
+        self.resume_download: bool = resume_download
         
         self.filepath:  Path = Path(path)
+        self.progress_file: Path = Path(f"{path}.progress")
 
         self.total_file_size:      float = 0.0
         self.downloaded_file_size: float = 0.0
+        self.downloaded_file_offset: float = 0.0
         self.start_time:           float = time.time()
 
         self.error:             bool = False
@@ -304,7 +307,7 @@ class DownloadObject:
 
     def _prepare_working_directory(self, path: Path) -> bool:
         """
-        Validates working enviroment, including free space and removing existing files
+        Validates working enviroment, including free space and handling existing files
 
         Parameters:
             path (str): Path to the file
@@ -315,8 +318,13 @@ class DownloadObject:
 
         try:
             if Path(path).exists():
-                logging.info(f"Deleting existing file: {path}")
-                Path(path).unlink()
+                if self.resume_download:
+                    # For resumable download, keep the existing file
+                    self.downloaded_file_offset = Path(path).stat().st_size
+                    logging.info(f"Resuming download from {utilities.human_fmt(self.downloaded_file_offset)}: {path}")
+                else:
+                    logging.info(f"Deleting existing file: {path}")
+                    Path(path).unlink()
                 return True
 
             if not Path(path).parent.exists():
@@ -339,10 +347,55 @@ class DownloadObject:
         logging.info(f"- Directory ready: {path}")
         return True
 
+    def _save_progress(self) -> None:
+        """
+        Save download progress to a file
+        """
+        try:
+            with open(self.progress_file, 'w') as f:
+                json.dump({
+                    'downloaded': self.downloaded_file_size,
+                    'total': self.total_file_size,
+                    'offset': self.downloaded_file_offset
+                }, f)
+        except Exception as e:
+            logging.warning(f"Failed to save download progress: {str(e)}")
+
+    def _load_progress(self) -> bool:
+        """
+        Load download progress from file
+
+        Returns:
+            bool: True if progress was loaded, False otherwise
+        """
+        if not self.progress_file.exists():
+            return False
+
+        try:
+            with open(self.progress_file, 'r') as f:
+                progress = json.load(f)
+                self.downloaded_file_size = progress.get('downloaded', 0)
+                self.total_file_size = progress.get('total', 0)
+                self.downloaded_file_offset = progress.get('offset', 0)
+            return True
+        except Exception as e:
+            logging.warning(f"Failed to load download progress: {str(e)}")
+            return False
+
+    def _clear_progress(self) -> None:
+        """
+        Clear download progress file
+        """
+        try:
+            if self.progress_file.exists():
+                self.progress_file.unlink()
+        except Exception as e:
+            logging.warning(f"Failed to clear progress file: {str(e)}")
+
 
     def _download(self, display_progress: bool = False) -> None:
         """
-        Download the file
+        Download the file with resumable support
 
         Libraries should invoke download() instead of this method
 
@@ -359,12 +412,19 @@ class DownloadObject:
             if self._prepare_working_directory(self.filepath) is False:
                 raise Exception(self.error_msg)
 
-            response = NetworkUtilities().get(self.url, stream=True, timeout=100)
+            headers = {}
+            if self.resume_download and self.downloaded_file_offset > 0:
+                headers['Range'] = f'bytes={self.downloaded_file_offset}-'
+                logging.info(f"Resuming download from byte {self.downloaded_file_offset}")
 
-            with open(self.filepath, 'wb') as file:
+            response = NetworkUtilities().get(self.url, stream=True, timeout=100, headers=headers)
+
+            mode = 'ab' if self.resume_download and self.downloaded_file_offset > 0 else 'wb'
+            with open(self.filepath, mode) as file:
                 atexit.register(self.stop)
                 for i, chunk in enumerate(response.iter_content(1024 * 1024 * 4)):
                     if self.should_stop:
+                        self._save_progress()
                         raise Exception("Download stopped")
                     
                     if chunk:
@@ -378,14 +438,20 @@ class DownloadObject:
                                 print(f"Downloaded {utilities.human_fmt(self.downloaded_file_size)} of {self.filename}")
                             else:
                                 print(f"Downloaded {self.get_percent():.2f}% of {self.filename} ({utilities.human_fmt(self.get_speed())}/s) ({self.get_time_remaining():.2f} seconds remaining)")
-                self.download_complete = True
-                logging.info(f"Download complete: {self.filename}")
-                logging.info("Stats:")
-                logging.info(f"- Downloaded size: {utilities.human_fmt(self.downloaded_file_size)}")
-                logging.info(f"- Time elapsed: {(time.time() - self.start_time):.2f} seconds")
-                logging.info(f"- Speed: {utilities.human_fmt(self.downloaded_file_size / (time.time() - self.start_time))}/s")
-                logging.info(f"- Location: {self.filepath}")
+                
+                if response.status_code == 206:  # Partial Content
+                    self._save_progress()
+                else:
+                    self.download_complete = True
+                    self._clear_progress()
+                    logging.info(f"Download complete: {self.filename}")
+                    logging.info("Stats:")
+                    logging.info(f"- Downloaded size: {utilities.human_fmt(self.downloaded_file_size)}")
+                    logging.info(f"- Time elapsed: {(time.time() - self.start_time):.2f} seconds")
+                    logging.info(f"- Speed: {utilities.human_fmt(self.downloaded_file_size / (time.time() - self.start_time))}/s")
+                    logging.info(f"- Location: {self.filepath}")
         except Exception as e:
+            self._save_progress()
             self.error = True
             self.error_msg = str(e)
             self.status = DownloadStatus.ERROR
