@@ -50,7 +50,7 @@ class LegacyWireless(BaseHardware):
         """
         Dropped support with macOS 12, Monterey
         """
-        return self._xnu_major < os_data.monterey.value
+        return self._xnu_major < os_data.monterey.value  or self._xnu_major >= os_data.tahoe.value
 
 
     def hardware_variant(self) -> HardwareVariant:

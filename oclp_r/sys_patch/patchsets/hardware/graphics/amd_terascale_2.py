@@ -45,7 +45,7 @@ class AMDTeraScale2(BaseHardware):
         """
         Dropped support with macOS 10.14, Mojave
         """
-        return self._xnu_major < os_data.mojave.value
+        return self._xnu_major < os_data.mojave.value or self._xnu_major >= os_data.tahoe.value
 
 
     def hardware_variant(self) -> HardwareVariant:

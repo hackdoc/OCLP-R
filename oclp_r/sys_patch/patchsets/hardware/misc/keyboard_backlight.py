@@ -44,7 +44,7 @@ class KeyboardBacklight(BaseHardware):
         """
         Dropped support with macOS 11, Big Sur
         """
-        return self._xnu_major < os_data.big_sur.value
+        return self._xnu_major < os_data.big_sur.value  or self._xnu_major >= os_data.tahoe.value
 
 
     def hardware_variant(self) -> HardwareVariant:

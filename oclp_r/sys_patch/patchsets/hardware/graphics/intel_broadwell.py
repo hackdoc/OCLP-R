@@ -56,7 +56,7 @@ class IntelBroadwell(BaseHardware):
         """
         Dropped support with macOS 13, Ventura
         """
-        return self._xnu_major < os_data.ventura.value
+        return self._xnu_major < os_data.ventura.value or self._xnu_major >= os_data.tahoe.value
 
 
     def _model_specific_patches(self) -> dict:

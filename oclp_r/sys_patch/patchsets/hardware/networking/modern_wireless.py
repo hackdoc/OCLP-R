@@ -48,7 +48,7 @@ class ModernWireless(BaseHardware):
         """
         Dropped support with macOS 14, Sonoma
         """
-        return self._xnu_major < os_data.sonoma.value
+        return self._xnu_major < os_data.sonoma.value  or self._xnu_major >= os_data.tahoe.value
 
 
     def hardware_variant(self) -> HardwareVariant:
