@@ -21,7 +21,7 @@ from .hardware.graphics import (
     intel_haswell,
     intel_broadwell,
     intel_skylake,
-
+    
     nvidia_tesla,
     nvidia_kepler,
     nvidia_webdriver,
@@ -43,7 +43,7 @@ from .hardware.misc import (
     legacy_audio,
     legacy_usb11,
     modern_audio,
-
+    apfs_aligned,
     Launch,
     modern_usb,
     pcie_webcam,
@@ -134,7 +134,7 @@ class HardwarePatchsetDetection:
             modern_wireless.ModernWireless,
             legacy_audio.LegacyAudio,
             modern_audio.ModernAudio,
-           
+            apfs_aligned.APFSP,
             Launch.LaunchPad,
             voodoo_audio.VoodooAudio,
             modern_usb.LegacyUSBHost,

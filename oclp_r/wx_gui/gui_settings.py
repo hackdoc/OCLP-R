@@ -799,19 +799,18 @@ class SettingsFrame(wx.Frame):
                         "When enabled, this will patch the LaunchPad",
                         "on Tahoe.",
                     ],
-                    "condition":self.condition_exp("LP")
+                    #"condition":self.condition_exp("LP")
                 },
-                "Allow Control Center Patch (Exp.)": {
+                "Allow APFS Patch For Non-T2": {
                     "type": "checkbox",
-                    "value": self.constants.change_control_center,
-                    "variable": "change_control_center",
-                    "constants_variable": "change_control_center",
+                    "value": self.constants.allow_apfs_aligned_patch,
+                    "variable": "allow_apfs_aligned_patch",
+                    "constants_variable": "allow_apfs_aligned_patch",
                     "description": [
-                        "When enabled, this will patch the Control",
-                        "Center on Tahoe.",
+                        "When enabled, this will patch the apfs.efi",
+                        "on Tahoe.",
                     ],
-                    "condition":self.condition_exp("CC")
-                },      
+                },     
                 "AppleHDA.kext Version": {
                     "type": "choice",
                     "choices": [
