@@ -30,13 +30,13 @@ class APFSP(BaseHardware):
         """
         AppleHDA was outright removed in macOS 26, so this patch set is always present if OS requires it
         """
-        return True
+        return self._constants.allow_apfs_aligned_patch
         
     def requires_kernel_debug_kit(self) -> bool:
         """
         Apple no longer provides standalone kexts in the base OS
         """
-        return self._constants.allow_apfs_aligned_patch
+        return False
     def native_os(self) -> bool:
         """
         - Everything before macOS Tahoe 26 is considered native
