@@ -61,7 +61,7 @@ class APFSP(BaseHardware):
         Patches for Modern Audio
         """
         return {
-            "Modern Audio": {
+            "APFS-Patch For Non-T2": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/usr/standalone/i386": {
                         "apfs.efi":      "15.6",
