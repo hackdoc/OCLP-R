@@ -16,7 +16,7 @@ from ..support import (
     utilities,
     network_handler,
 )
-METALLIB_API_LINK_ORIGIN:     str  = "https://pyquick.github.io/MetallibSupportPkg/manifest.json"
+METALLIB_API_LINK_ORIGIN:     str  = "https://dortania.github.io/MetallibSupportPkg/manifest.json"
 METALLIB_API_LINK_PROXY:     str  = "https://oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
 class MetallibDownloadFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants,screen_location: tuple = None):

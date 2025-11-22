@@ -17,7 +17,7 @@ from ..support import (
     utilities,
     network_handler,
 )
-KDK_API_LINK_ORIGIN:str  = "https://pyquick.github.io/KdkSupportPkg/manifest.json"
+KDK_API_LINK_ORIGIN:str  = "https://dortania.github.io/KdkSupportPkg/manifest.json"
 KDK_API_LINK_PROXY:str  = "https://oclpapi.simplehac.cn/KdkSupportPkg/manifest.json"
 class KDKDownloadFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants,screen_location: tuple = None):
