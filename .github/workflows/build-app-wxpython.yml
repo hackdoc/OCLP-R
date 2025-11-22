@@ -12,7 +12,7 @@ jobs:
   build:
     name: Build wxPython
     runs-on: macos-26
-    if: github.repository_owner == 'hackdoc'
+    if: github.repository_owner == 'ghltbm'
     permissions:
       contents: write
     env:
