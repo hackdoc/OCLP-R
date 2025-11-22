@@ -12,7 +12,7 @@ jobs:
   build:
     name: Validate
     runs-on: macOS-26
-    if: github.repository_owner == 'ghltbm'
+    if: github.repository_owner == 'intsant'
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
