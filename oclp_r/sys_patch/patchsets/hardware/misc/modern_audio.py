@@ -37,7 +37,7 @@ class ModernAudio(BaseHardware):
         """
         Apple no longer provides standalone kexts in the base OS
         """
-        return False
+        return True
     def native_os(self) -> bool:
         """
         - Everything before macOS Tahoe 26 is considered native
