@@ -3,6 +3,10 @@
              <h1>OCLP-R</h1>
 </div>
 
+# FROM HACKDOC!!!!!
+
+## My Account "@pyquick" was flagged.(You can't see) So I move  [there](https://github.com/intsant/OCLP-R)
+
 A Python-based project revolving around [Acidanthera's OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) and [Lilu](https://github.com/acidanthera/Lilu) for both running and unlocking features in macOS on supported and unsupported Macs.
 
 Our project's main goal is to breathe new life into Macs no longer supported by Apple, allowing for the installation and usage of macOS Big Sur and newer on machines as old as 2007.
