@@ -4,7 +4,7 @@
 </div>
 
 # FROM HACKDOC!!!!!
-My Account "@pyquick" was flagged. So I move there.
+My Account "@pyquick" "@hackdoc" was suspended. So I move there.
 ---
 A Python-based project revolving around [Acidanthera's OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) and [Lilu](https://github.com/acidanthera/Lilu) for both running and unlocking features in macOS on supported and unsupported Macs.
 
