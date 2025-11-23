@@ -20,7 +20,7 @@ class VoodooAudio(BaseHardware):
 
 
     def present(self) -> bool:
-        return self._constants.audio_type=="VoodooHDA" and utilities.check_kext_loaded("as.vit9696.AppleALC") =="" and utilities.check_kext_loaded("org.voodoo.driver.VoodooHDA")==""
+        return self._constants.audio_type=="VoodooHDA"
 
 
     def native_os(self) -> bool:
