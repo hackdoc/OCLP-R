@@ -255,8 +255,7 @@ class SettingsFrame(wx.Frame):
                 if height > lowest_height_reached:
                     lowest_height_reached = height
     def audio_check(self):
-        if utilities.check_kext_loaded("com.apple.driver.AppleHDA")!="" or utilities.check_kext_loaded("as.vit9696.AppleALC") !="":
-            self.constants.audio_type="AppleHDA"
+        if self.xnu_major<os_data.os_data.tahoe:
             return False
         if utilities.check_kext_loaded("com.apple.driver.AppleHDA") and self.xnu_major>=os_data.os_data.tahoe:
             self.constants.audio_type="AppleHDA"
