@@ -71,7 +71,7 @@ coll = COLLECT(exe,
 app = BUNDLE(coll,
              name='OCLP-R.app',
              icon="payloads/Icon/AppIcons/OC-Patcher.icns",
-             bundle_identifier="com.hackdoc.oclp-r",
+             bundle_identifier="com.intsant.oclp-r",
              info_plist={
                 "CFBundleName": "OCLP-R",
                 "CFBundleVersion": constants.Constants().patcher_version,

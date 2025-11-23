@@ -59,7 +59,7 @@ class MainFrame(wx.Frame):
     def _exp_check(self)->None:
         from pathlib import Path
         import os,requests,json
-        path=Path("~/Library/Logs/Hackdoc/JSON").expanduser()
+        path=Path("~/Library/Logs/Intsant/JSON").expanduser()
         filename="control.json"
         print(path)
         try:
@@ -407,7 +407,7 @@ class MainFrame(wx.Frame):
         ID_GITHUB = wx.NewId()
         ID_UPDATE = wx.NewId()
 
-        url = "https://api.github.com/repos/hackdoc/OCLP-R/releases/latest"
+        url = "https://api.github.com/repos/intsant/OCLP-R/releases/latest"
         response = requests.get(url,verify=False).json()
         try:
             changelog = response["body"].split("## Asset Information")[0]
