@@ -3,8 +3,8 @@
              <h1>OCLP-R</h1>
 </div>
 
-# FROM HACKDOC!!!!!
-My Account "@pyquick" "@hackdoc" was suspended. So I move there.
+# FROM INTSANT!!!!!
+My Account "@pyquick" "@intsant" was suspended. So I move there.
 ---
 A Python-based project revolving around [Acidanthera's OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) and [Lilu](https://github.com/acidanthera/Lilu) for both running and unlocking features in macOS on supported and unsupported Macs.
 
@@ -54,7 +54,7 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
 
 * [Acidanthera](https://github.com/Acidanthera)
   * OpenCorePkg, as well as many of the core kexts and tools
-* [Hackdoc](https://github.com/hackdoc)
+* [Intsant](https://github.com/intsant)
   * Main co-author
 * [vit9696](https://github.com/vit9696)
   * Endless amount of help troubleshooting, determining fixes and writing patches

@@ -22,7 +22,7 @@ Once Python is installed, open Terminal and run the following:
 # Move into a directory to store the project
 cd ~/Developer
 # Clone project
-git clone https://github.com/hackdoc/OCLP-R.git
+git clone https://github.com/intsant/OCLP-R.git
 # Move into Project directory
 cd ./OCLP-R
 # Install Python dependencies used by the project

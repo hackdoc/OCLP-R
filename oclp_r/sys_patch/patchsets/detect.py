@@ -273,7 +273,7 @@ class HardwarePatchsetDetection:
 
     def _hackdoc_internal_check(self) -> None:
         """
-        Determine whether to unlock Hackdoc Developer mode
+        Determine whether to unlock Intsant Developer mode
         """
         return Path("~/.hackdoc_developer").expanduser().exists()
 

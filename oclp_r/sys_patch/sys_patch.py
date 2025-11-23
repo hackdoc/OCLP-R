@@ -31,7 +31,7 @@ Alternative to mounting via 'mount', Apple's update system uses 'mount_apfs' dir
   '/sbin/mount_apfs -R /dev/disk5s5 /System/Volumes/Update/mnt1'
 
 With macOS Ventura, you will also need to install the KDK onto root if you plan to use kmutil
-This is because Apple removed on-disk binaries (ref: https://github.com/hackdoc/OpenCore-Legacy-Patcher/issues/998)
+This is because Apple removed on-disk binaries (ref: https://github.com/intsant/OpenCore-Legacy-Patcher/issues/998)
   'sudo ditto /Library/Developer/KDKs/<KDK Version>/System /System/Volumes/Update/mnt1/System'
 """
 

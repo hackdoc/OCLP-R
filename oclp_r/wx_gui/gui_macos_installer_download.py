@@ -341,7 +341,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
                 if result == wx.ID_CANCEL:
                     return
                 elif result == wx.ID_YES:
-                    webbrowser.open("https://github.com/hackdoc/OpenCore-Legacy-Patcher/issues/1021")
+                    webbrowser.open("https://github.com/intsant/OpenCore-Legacy-Patcher/issues/1021")
                     return
 
             host_space = utilities.get_free_space()

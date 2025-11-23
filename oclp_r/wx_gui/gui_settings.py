@@ -827,7 +827,7 @@ class SettingsFrame(wx.Frame):
                     "variable": "DisableCrashAndAnalyticsReporting",
                     "description": [
                         "When enabled, patcher will not",
-                        "report any info to Hackdoc.",
+                        "report any info to Intsant.",
                     ],
                     "override_function": self._update_global_settings,
                 },
@@ -1339,7 +1339,7 @@ Hardware Information:
         branches = ["main"]
         if self.constants.commit_info[0] not in ["Running from source", "Built from source"]:
             branches = [self.constants.commit_info[0].split("/")[-1]]
-        result = network_handler.NetworkUtilities().get("https://api.github.com/repos/hackdoc/OCLP-R/branches")
+        result = network_handler.NetworkUtilities().get("https://api.github.com/repos/intsant/OCLP-R/branches")
         if result is not None:
             result = result.json()
             for branch in result:
@@ -1361,7 +1361,7 @@ Hardware Information:
             title=self.title,
             global_constants=self.constants,
             screen_location=self.parent.GetPosition(),
-            url=f"https://nightly.link/hackdoc/OCLP-R/workflows/build-app-wxpython/{branch}/OCLP-R.pkg.zip",
+            url=f"https://nightly.link/intsant/OCLP-R/workflows/build-app-wxpython/{branch}/OCLP-R.pkg.zip",
             #version_label="(Nightly)"
             version_label="(Nightly)"
         )

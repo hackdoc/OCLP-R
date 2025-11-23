@@ -4,18 +4,18 @@
 <dict>
 	<key>AssociatedBundleIdentifiers</key>
 	<array>
-		<string>com.hackdoc.oclp-r</string>
+		<string>com.intsant.oclp-r</string>
 	</array>
 	<key>Label</key>
-	<string>com.hackdoc.oclp-r.macos-update</string>
+	<string>com.intsant.oclp-r.os-caching</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/Library/Application Support/Hackdoc/OCLP-R.app/Contents/MacOS/OCLP-R</string>
-		<string>--prepare_for_update</string>
+		<string>/Library/Application Support/Intsant/OCLP-R.app/Contents/MacOS/OCLP-R</string>
+		<string>--cache_os</string>
 	</array>
 	<key>WatchPaths</key>
 	<array>
-		<string>/System/Volumes/Update/Update.plist</string>
+		<string>/System/Volumes/Update/Preflight.plist</string>
 	</array>
 </dict>
 </plist>

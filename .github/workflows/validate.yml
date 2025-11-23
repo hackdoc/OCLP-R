@@ -12,7 +12,7 @@ jobs:
   build:
     name: Validate
     runs-on: macos-15
-    if: github.repository_owner == 'hackdoc'
+    if: github.repository_owner == 'intsant'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Python 3.11
@@ -24,6 +24,6 @@ jobs:
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install -r requirements.txt
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install packaging
           rm -rf Univ*
-          aria2c -x 16 "https://github.com/hackdoc/PatcherSupportPkg/releases/download/push-8f0fc7d8311f13b55a05287db5e873d1a19fb5a8/Universal-Binaries.dmg"
+          aria2c -x 16 "https://github.com/intsant/PatcherSupportPkg/releases/download/push-8f0fc7d8311f13b55a05287db5e873d1a19fb5a8/Universal-Binaries.dmg"
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 OCLP-R-GUI.command --validate
         

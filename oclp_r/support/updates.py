@@ -15,7 +15,7 @@ from . import network_handler
 from .. import constants
 
 
-REPO_LATEST_RELEASE_URL: str = "https://api.github.com/repos/hackdoc/OCLP-R/releases/latest"
+REPO_LATEST_RELEASE_URL: str = "https://api.github.com/repos/intsant/OCLP-R/releases/latest"
 
 
 class CheckBinaryUpdates:
@@ -121,7 +121,7 @@ class CheckBinaryUpdates:
                     "Name": asset["name"],
                     "Version": latest_remote_version,
                     "Link": asset["browser_download_url"],
-                    "Github Link": f"https://github.com/hackdoc/OCLP-R/releases/{latest_remote_version}",
+                    "Github Link": f"https://github.com/intsant/OCLP-R/releases/{latest_remote_version}",
                 }
                 return self.latest_details
 

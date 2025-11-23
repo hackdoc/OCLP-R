@@ -16,7 +16,7 @@ from .. import constants
 from ..datasets import os_data
 
 
-METALLIB_INSTALL_PATH: str  = "/Library/Application Support/Hackdoc/MetallibSupportPkg"
+METALLIB_INSTALL_PATH: str  = "/Library/Application Support/Intsant/MetallibSupportPkg"
 METALLIB_API_LINK:     str  = "https://dortania.github.io/MetallibSupportPkg/manifest.json"
 
 METALLIB_ASSET_LIST:   list = None

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.hackdoc.USB-Map</string>
+	<string>com.intsant.USB-Map</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -10648,7 +10648,7 @@
 		</dict>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © Hackdoc</string>
+	<string>Copyright © Intsant</string>
 	<key>OSBundleRequired</key>
 	<string>Root</string>
 </dict>
