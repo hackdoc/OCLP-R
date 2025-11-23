@@ -189,8 +189,8 @@ class macOSInstallerDownloadFrame(wx.Frame):
         # Grab installer catalog
         def _fetch_simplehac_dmgs():
             import requests,json
-            url = "https://oclpapi.simplehac.cn/DMG/api?token=oclpmod"
-            aesurl="https://oclpapi.simplehac.cn/DMG/data/aeskey.txt"
+            url = "https://next.oclpapi.simplehac.cn/DMG/data/dmgs.json"
+            aesurl="https://next.oclpapi.simplehac.cn/DMG/data/aeskey.txt"
             try:
                 res=requests.get(url,verify=False)
                 aes=requests.get(aesurl,verify=False)
@@ -550,7 +550,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         import time
         from oclp_r.encry import as2
         import hashlib
-        api='https://oclpapi.simplehac.cn/DMG/api/down.php'
+        api='https://next.oclpapi.simplehac.cn/DMG/api/down.php'
         purl=parse.urlparse(download_url)
         fn=parse.unquote(purl.path.split('/')[-1])
         times=int(time.time())

@@ -3,7 +3,7 @@ modern_audio.py: Modern Audio patch set for macOS 26
 """
 
 from ..base import BaseHardware, HardwareVariant
-
+from .....detections.amfi_detect import AmfiConfigDetectLevel
 from ...base import PatchType
 
 from .....constants import Constants
@@ -18,7 +18,12 @@ class ModernAudio(BaseHardware):
     def __init__(self, xnu_major, xnu_minor, os_build, global_constants: Constants) -> None:
         super().__init__(xnu_major, xnu_minor, os_build, global_constants)
 
-
+    def required_amfi_level(self) -> AmfiConfigDetectLevel:
+        """
+        What level of AMFI configuration is required for this patch set
+        Currently defaulted to AMFI needing to be disabled
+        """
+        return AmfiConfigDetectLevel.NO_CHECK
     def name(self) -> str:
         """
         Display name for end users

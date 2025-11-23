@@ -16,6 +16,8 @@ import json
 from typing import Union
 from pathlib import Path
 
+from urllib3 import response
+
 from . import utilities
 from .. import constants
 SESSION = requests.Session()
@@ -56,7 +58,11 @@ class NetworkUtilities:
         """
 
         try:
-            requests.head(self.url, timeout=5, allow_redirects=True)
+            response=requests.head(self.url, timeout=5, allow_redirects=True,verify=False)
+            if response.status_code == 200:
+                return True
+            if response.status_code == 404:
+                return False
             return True
         except (
             requests.exceptions.Timeout,

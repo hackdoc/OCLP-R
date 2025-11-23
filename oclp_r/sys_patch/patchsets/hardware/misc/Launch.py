@@ -4,7 +4,7 @@ Not Recommend for using
 """
 
 from ..base import BaseHardware, HardwareVariant
-
+from .....detections.amfi_detect import AmfiConfigDetectLevel
 from ...base import PatchType
 
 from .....constants import Constants
@@ -25,10 +25,18 @@ class LaunchPad(BaseHardware):
         Display name for end users
         """
         return f"{self.hardware_variant()}: LaunchPad ({self._constants.launchpad_version})"
+    def required_amfi_level(self) -> AmfiConfigDetectLevel:
+        """
+        What level of AMFI configuration is required for this patch set
+        Currently defaulted to AMFI needing to be disabled
+        """
+        return AmfiConfigDetectLevel.NO_CHECK
+
 
 
     def present(self) -> bool:
         return self._constants.change_launchpad
+        
     def requires_kernel_debug_kit(self) -> bool:
         """
         Apple no longer provides standalone kexts in the base OS
@@ -51,9 +59,9 @@ class LaunchPad(BaseHardware):
         return HardwareVariant.MISCELLANEOUS
 
 
-    def _modern_audio_patches(self) -> dict:
+    def _launchpad_patches(self) -> dict:
         """
-        Patches for Modern Audio
+        Patches for LaunchPad   
         """
         if self._constants.launchpad_version != "26.0 Beta 4" and self._constants.launchpad_version != "26.0 Beta 2":
             self._constants.launchpad_version = "26.0 Beta 4"
@@ -80,4 +88,4 @@ class LaunchPad(BaseHardware):
         if self.native_os() is True:
             return {}
 
-        return self._modern_audio_patches()
+        return self._launchpad_patches()

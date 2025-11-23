@@ -1,6 +1,7 @@
 """
 voodoo_audio.py: Modern Audio patch set for macOS 12+26(VoodooHDA)
 """
+from .....detections.amfi_detect import AmfiConfigDetectLevel
 from ..base import BaseHardware, HardwareVariant
 from ...base import PatchType
 from .....constants import Constants
@@ -18,11 +19,17 @@ class VoodooAudio(BaseHardware):
         """
         return f"{self.hardware_variant()}: Voodoo Audio"
 
+    def required_amfi_level(self) -> AmfiConfigDetectLevel:
+        """
+        What level of AMFI configuration is required for this patch set
+        Currently defaulted to AMFI needing to be disabled
+        """
+        return AmfiConfigDetectLevel.NO_CHECK
 
     def present(self) -> bool:
         return self._constants.audio_type=="VoodooHDA"
 
-
+    
     def native_os(self) -> bool:
         if self._xnu_major < os_data.monterey.value:
             return True

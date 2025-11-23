@@ -18,7 +18,7 @@ from ..datasets import os_data
 
 METALLIB_INSTALL_PATH: str  = "/Library/Application Support/Hackdoc/MetallibSupportPkg"
 METALLIB_API_LINK_ORG:     str  = "https://dortania.github.io/MetallibSupportPkg/manifest.json"
-METALLIB_API_LINK_PROXY:str ="https://oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
+METALLIB_API_LINK_PROXY:str ="https://next.oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
 METALLIB_ASSET_LIST:   list = None
 
 
