@@ -37,7 +37,7 @@ class ModernAudio(BaseHardware):
         """
         if utilities.check_kext_loaded("org.voodoo.driver.VoodooHDA") !="" and self._constants.audio_type!="AppleHDA":
             self._constants.audio_type="AppleHDA"
-        return self._constants.audio_type=="AppleHDA" and utilities.check_kext_loaded("as.vit9696.AppleALC") !="" and utilities.check_kext_loaded("org.voodoo.driver.VoodooHDA") ==""
+        return self._constants.audio_type=="AppleHDA" and utilities.check_kext_loaded("as.vit9696.AppleALC") !=""
     def requires_kernel_debug_kit(self) -> bool:
         """
         Apple no longer provides standalone kexts in the base OS

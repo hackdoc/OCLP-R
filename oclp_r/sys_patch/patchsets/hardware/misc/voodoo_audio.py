@@ -31,7 +31,7 @@ class VoodooAudio(BaseHardware):
 
     
     def native_os(self) -> bool:
-        if self._xnu_major < os_data.monterey.value:
+        if self._xnu_major < os_data.big_sur.value:
             return True
         return False
 

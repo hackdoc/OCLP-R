@@ -35,6 +35,7 @@ from .hardware.graphics import (
 from .hardware.networking import (
     legacy_wireless,
     modern_wireless,
+    intel_wireless_tahoe,
 )
 from .hardware.misc import (
     display_backlight,
@@ -132,7 +133,9 @@ class HardwarePatchsetDetection:
 
             legacy_wireless.LegacyWireless,
             modern_wireless.ModernWireless,
+            intel_wireless_tahoe.IntelWireless,
             legacy_audio.LegacyAudio,
+            intel_wireless_tahoe.IntelWireless,
             modern_audio.ModernAudio,
             apfs_aligned.APFSP,
             Launch.LaunchPad,
