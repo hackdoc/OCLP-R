@@ -15,17 +15,17 @@ class Constants:
         # Patcher Versioning
         self.patcher_version:                 str = "3.0.0"  # OCLP-R
         self.patcher_support_pkg_version:     str = "1.10.0"  # PatcherSupportPkg
-        self.copyright_date:                  str = "Copyright © 2020-2025 Dortania and Intsant"
+        self.copyright_date:                  str = "Copyright © 2020-2025 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
         
         # URLs
         self.github_proxy_link:               str = "Default"
-        self.url_patcher_support_pkg:         str = "https://github.com/intsant/PatcherSupportPkg/releases/download/"
+        self.url_patcher_support_pkg:         str = "https://github.com/hackdoc/PatcherSupportPkg/releases/download/"
         self.discord_link:                    str = "https://discord.gg/rqdPgH8xSN"
-        self.guide_link:                      str = "https://intsant.github.io/oclpr/"
-        self.repo_link:                       str = "https://github.com/intsant/OCLP-R"
+        self.guide_link:                      str = "https://hackdoc.github.io/oclpr/"
+        self.repo_link:                       str = "https://github.com/hackdoc/OCLP-R"
         self.installer_pkg_url:               str = f"{self.repo_link}/releases/download/{self.patcher_version}/AutoPkg-Assets.pkg"
-        self.installer_pkg_url_nightly:       str = "http://nightly.link/intsant/OCLP-R/workflows/build-app-wxpython/main/AutoPkg-Assets.pkg.zip"
+        self.installer_pkg_url_nightly:       str = "http://nightly.link/hackdoc/OCLP-R/workflows/build-app-wxpython/main/AutoPkg-Assets.pkg.zip"
         self.user_download_file:              str = f"/Users/{getpass.getuser()}/Downloads"
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
@@ -79,7 +79,7 @@ class Constants:
         self.apple_spi_hid_version: str = "1.0.0"  #  AppleHSSPIHIDDriver (14.4 Beta 1)
         self.kernel_relay_version:  str = "1.0.0"  #  KernelRelayHost (15.0 Beta 3)
 
-        ## Apple - Intsant Modified
+        ## Apple - Hackdoc Modified
         self.bcm570_version:           str = "1.0.2"  # CatalinaBCM5701Ethernet
         self.i210_version:             str = "1.0.0"  # CatalinaIntelI210Ethernet
         self.corecaptureelcap_version: str = "1.0.2"  # corecaptureElCap
@@ -92,8 +92,8 @@ class Constants:
         ## Apple - Jazzzny Modified
         self.aquantia_version: str = "1.1.0"  # AppleEthernetAbuantiaAqtion
 
-        ## Intsant
-        ## https://github.com/intsant
+        ## Hackdoc
+        ## https://github.com/hackdoc
         self.backlight_injector_version:     str = "1.1.0"  # BacklightInjector
         self.backlight_injectorA_version:    str = "1.0.0"  # BacklightInjector (iMac9,1)
         self.smcspoof_version:               str = "1.0.0"  # SMC-Spoof
@@ -108,7 +108,7 @@ class Constants:
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
         ## https://github.com/reenigneorcim/latebloom
-        self.mousse_version:     str = "0.95-Intsant"  # MouSSE
+        self.mousse_version:     str = "0.95-Hackdoc"  # MouSSE
         self.telemetrap_version: str = "1.0.0"  #         telemetrap
 
         ## cdf
@@ -307,19 +307,19 @@ class Constants:
 
     @property
     def auto_patch_launch_agent_path(self):
-        return self.launch_services_path / Path("com.intsant.oclp-r.auto-patch.plist")
+        return self.launch_services_path / Path("com.hackdoc.oclp-r.auto-patch.plist")
 
     @property
     def rsr_monitor_launch_daemon_path(self):
-        return self.launch_services_path / Path("com.intsant.oclp-r.rsr-monitor.plist")
+        return self.launch_services_path / Path("com.hackdoc.oclp-r.rsr-monitor.plist")
 
     @property
     def update_launch_daemon_path(self):
-        return self.launch_services_path / Path("com.intsant.oclp-r.macos-update.plist")
+        return self.launch_services_path / Path("com.hackdoc.oclp-r.macos-update.plist")
 
     @property
     def kdk_launch_daemon_path(self):
-        return self.launch_services_path / Path("com.intsant.oclp-r.os-caching.plist")
+        return self.launch_services_path / Path("com.hackdoc.oclp-r.os-caching.plist")
 
     # ACPI
     @property

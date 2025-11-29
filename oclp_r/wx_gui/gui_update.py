@@ -151,8 +151,8 @@ class UpdateFrame(wx.Frame):
         installed_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
         installed_label.Centre(wx.HORIZONTAL)
 
-        # Label: '/Library/Application Support/Intsant'
-        installed_path_label = wx.StaticText(self.frame, label='/Library/Application Support/Intsant', pos=(-1, installed_label.GetPosition().y + 20))
+        # Label: '/Library/Application Support/Hackdoc'
+        installed_path_label = wx.StaticText(self.frame, label='/Library/Application Support/Hackdoc', pos=(-1, installed_label.GetPosition().y + 20))
         installed_path_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         installed_path_label.Centre(wx.HORIZONTAL)
 
@@ -238,5 +238,5 @@ class UpdateFrame(wx.Frame):
         """
         Launches newly installed update
         """
-        logging.info("Launching update: '/Library/Application Support/Intsant/OCLP-R.app'")
-        subprocess.Popen(["/Library/Application Support/Intsant/OCLP-R.app/Contents/MacOS/OCLP-R", "--update_installed"])
+        logging.info("Launching update: '/Library/Application Support/Hackdoc/OCLP-R.app'")
+        subprocess.Popen(["/Library/Application Support/Hackdoc/OCLP-R.app/Contents/MacOS/OCLP-R", "--update_installed"])

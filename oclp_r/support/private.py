@@ -4,7 +4,7 @@ import threading
 import os
 class PRIVATE:
     def __init__(self):
-        self.base_path= Path("~/Library/Logs/Intsant/PRIVATE").expanduser()
+        self.base_path= Path("~/Library/Logs/Hackdoc/PRIVATE").expanduser()
         if not self.base_path.exists():
             self.base_path.mkdir()
         self.filepath=Path(self.base_path,".PRIVATE")
@@ -20,7 +20,7 @@ class PRIVATE:
     def write(self):
         import json
         print("writing")
-        soc = Path("~/Library/Logs/Intsant/JSON/control.json").expanduser()
+        soc = Path("~/Library/Logs/Hackdoc/JSON/control.json").expanduser()
         
         # 读取并解析JSON文件
         try:
