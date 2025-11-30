@@ -17,16 +17,14 @@ from ..support import (
     utilities,
     network_handler,
 )
-KDK_API_LINK_ORIGIN:str  = "https://dortania.github.io/KdkSupportPkg/manifest.json"
-KDK_API_LINK_PROXY:str  = "https://next.oclpapi.simplehac.cn/KdkSupportPkg/manifest.json"
 class KDKDownloadFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants,screen_location: tuple = None):
         logging.info("Initializing KDK Download Frame")
         self.constants: constants.Constants = global_constants
         self.title: str = title
         self.parent: wx.Frame = parent
-        icon_path = str(self.constants.icns_resource_path / "Package.icns")
-        self.icons = [self._icon_to_bitmap(icon_path), self._icon_to_bitmap(icon_path, (64, 64))]
+    
+        self.icons = [[self._icon_to_bitmap(icon_path), self._icon_to_bitmap(icon_path, (64, 64))] for icon_path in self.constants.package_icns_paths]
         self.repl=False
         self.path_validate=None
         self.retry_download:bool=False
@@ -42,8 +40,20 @@ class KDKDownloadFrame(wx.Frame):
         self.catalog_seed: sucatalog.SeedType = sucatalog.SeedType.DeveloperSeed
         self.frame_modal = wx.Dialog(parent, title=title, size=(330, 200))
         self.on_download()
+
     def _icon_to_bitmap(self, icon: str, size: tuple = (32, 32)) -> wx.Bitmap:
         return wx.Bitmap(wx.Bitmap(icon, wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(size[0], size[1], wx.IMAGE_QUALITY_HIGH))
+
+    def _macos_version_to_icon(self, version: int) -> int:
+        """
+        Convert macOS version to icon(Package)
+        """
+        try:
+            self.constants.package_icns_paths[version-19]
+            return version - 19
+        except IndexError:
+            return 0
+
     def _generate_catalog_frame(self) -> None:
         super(KDKDownloadFrame, self).__init__(None, title=self.title, size=(300, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         gui_support.GenerateMenubar(self, self.constants).generate()
@@ -59,10 +69,7 @@ class KDKDownloadFrame(wx.Frame):
         self.Show()
         def _fetch_installers():
             try:
-                if self.constants.github_proxy_link=="SimpleHac":
-                    KDK_API_LINK:str=KDK_API_LINK_PROXY
-                else:
-                    KDK_API_LINK: str = KDK_API_LINK_ORIGIN
+                KDK_API_LINK=self.constants.kdk_api_link
                 response = requests.get(KDK_API_LINK,verify=False)
                 self.kdk_data = response.json()
                 self.kdk_data_latest = []
@@ -127,12 +134,14 @@ class KDKDownloadFrame(wx.Frame):
             self.on_return_to_main_menu()
         else:
             self._display_available_installers()
+
     def convert_size(self,size_bytes):
         for unit in ['B', 'KB', 'MB', 'GB']:
             if size_bytes < 1024.0:
                 return f"{size_bytes:.2f} {unit}"
             size_bytes /= 1024.0
         return f"{size_bytes:.2f} TB"
+
     def detect_os_build(self, rsr: bool = False) -> str:
         import plistlib
         file_path = "/System/Library/CoreServices/SystemVersion.plist"
@@ -142,13 +151,14 @@ class KDKDownloadFrame(wx.Frame):
             return plistlib.load(open(file_path, "rb"))["ProductBuildVersion"]
         except Exception as e:
             raise RuntimeError(f"Failed to detect OS build: {e}")
+
     def _display_available_installers(self, event: wx.Event = None, show_full: bool = False) -> None:
         if show_full:
             self.show_fully=True
         else:
             self.show_fully=False
         self.os_build_tahoe=self.detect_os_build(False)
-        bundles = [wx.BitmapBundle.FromBitmaps(self.icons)]
+        bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
         self.frame_modal.Destroy()
         self.frame_modal = wx.Dialog(self, title="Choose KDK Version", size=(500, 580))
         title_label = wx.StaticText(self.frame_modal, label="Choose KDKs", pos=(-1,-1))
@@ -178,7 +188,7 @@ class KDKDownloadFrame(wx.Frame):
                 logging.info(f"- {item['name']} (macOS {item['version']} - {item['build']}):\n  - Size: {self.convert_size(item['fileSize'])}\n  - Link: {item['url']}\n")
                 version = re.search(r'^\d+', item['version'])
                 index = self.list.InsertItem(self.list.GetItemCount(), f"macOS {xnu_name[version.group()]}")
-                self.list.SetItemImage(index, 0)
+                self.list.SetItemImage(index, self._macos_version_to_icon(int(item['build'][:2])))
                 self.list.SetItem(index, 1, f"{item['version']}")
                 self.list.SetItem(index, 2, f"{item['build']}")
                 self.list.SetItem(index, 3, f"{self.convert_size(item['fileSize'])}")
@@ -280,7 +290,7 @@ class KDKDownloadFrame(wx.Frame):
                 global_constants=self.constants,
                 download_obj=download_obj,
                 item_name=f"KDK {selected_installer['version']} {selected_installer['build']}",
-                download_icon=str(self.constants.icns_resource_path / "Package.icns")
+                download_icon=self.constants.package_icns_paths[self._macos_version_to_icon(int(selected_installer['build'][:2]))]
             )
             if download_obj.download_complete is False:
                 import os

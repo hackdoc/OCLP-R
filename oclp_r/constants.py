@@ -12,6 +12,10 @@ from .detections import device_probe
 import getpass
 class Constants:
     def __init__(self) -> None:
+        #API Link
+        self.kdk_api_link:                    str = ""
+        self.metallib_api_link:               str = ""
+
         # Patcher Versioning
         self.patcher_version:                 str = "3.0.0"  # OCLP-R
         self.patcher_support_pkg_version:     str = "1.10.1-pre"  # PatcherSupportPkg
@@ -29,7 +33,7 @@ class Constants:
         self.user_download_file:              str = f"/Users/{getpass.getuser()}/Downloads"
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_version: str = "1.0.5"
+        self.opencore_version: str = "1.0.6"
 
         # Kext Versioning
         ## Acidanthera
@@ -264,7 +268,15 @@ class Constants:
         self.github_mirror: str = ""
         # Open Intel Wireless
         self.intel_wireless_tahoe: bool = False
+        self.api_link()
 
+    def api_link(self):
+        if self.github_proxy_link!="SimpleHac":
+            self.kdk_api_link="https://dortania.github.io/KdkSupportPkg/manifest.json"
+            self.metallib_api_link="https://dortania.github.io/MetallibSupportPkg/manifest.json"
+        if self.github_proxy_link=="SimpleHac":
+            self.kdk_api_link="https://next.oclpapi.simplehac.cn/KdkSupportPkg/manifest.json"
+            self.metallib_api_link="https://next.oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
     @property
     def special_build(self):
         """
@@ -801,28 +813,56 @@ class Constants:
         return self.icns_resource_path / Path("Generic.icns")
 
     @property
+    def package_icns_path_generic(self):
+        return self.icns_resource_path / Path("Package.icns")
+
+    @property
     def icon_path_macos_big_sur(self):
         return self.icns_resource_path / Path("BigSur.icns")
+
+    @property
+    def package_icns_path_big_sur(self):
+        return self.icns_resource_path / Path("Package11.icns")
 
     @property
     def icon_path_macos_monterey(self):
         return self.icns_resource_path / Path("Monterey.icns")
 
     @property
+    def package_icns_path_monterey(self):
+        return self.icns_resource_path / Path("Package12.icns")
+
+    @property
     def icon_path_macos_ventura(self):
         return self.icns_resource_path / Path("Ventura.icns")
+
+    @property
+    def package_icns_path_ventura(self):
+        return self.icns_resource_path / Path("Package13.icns")
 
     @property
     def icon_path_macos_sonoma(self):
         return self.icns_resource_path / Path("Sonoma.icns")
 
     @property
+    def package_icns_path_sonoma(self):
+        return self.icns_resource_path / Path("Package14.icns")
+
+    @property
     def icon_path_macos_sequoia(self):
         return self.icns_resource_path / Path("Sequoia.icns")
 
     @property
+    def package_icns_path_sequoia(self):
+        return self.icns_resource_path / Path("Package15.icns")
+
+    @property
     def icon_path_macos_tahoe(self):
         return self.icns_resource_path / Path("Tahoe.icns")
+
+    @property
+    def package_icns_path_tahoe(self):
+        return self.icns_resource_path / Path("Package26.icns")
 
     @property
     def gui_path(self):
@@ -859,6 +899,18 @@ class Constants:
             str(self.icon_path_macos_sonoma),
             str(self.icon_path_macos_sequoia),
             str(self.icon_path_macos_tahoe),
+        ]
+
+    @property
+    def package_icns_paths(self):
+        return [
+            str(self.package_icns_path_generic),
+            str(self.package_icns_path_big_sur),
+            str(self.package_icns_path_monterey),
+            str(self.package_icns_path_ventura),
+            str(self.package_icns_path_sonoma),
+            str(self.package_icns_path_sequoia),
+            str(self.package_icns_path_tahoe),
         ]
 
     sbm_values = [

@@ -17,8 +17,8 @@ from ..datasets import os_data
 
 
 METALLIB_INSTALL_PATH: str  = "/Library/Application Support/Hackdoc/MetallibSupportPkg"
-METALLIB_API_LINK_ORG:     str  = "https://dortania.github.io/MetallibSupportPkg/manifest.json"
-METALLIB_API_LINK_PROXY:str ="https://next.oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
+
+
 METALLIB_ASSET_LIST:   list = None
 
 
@@ -30,7 +30,7 @@ class MetalLibraryObject:
         ) -> None:
 
         self.constants: constants.Constants = global_constants
-
+        self.METALLIB_API_LINK_ORG:     str  = self.constants.metallib_api_link
         self.host_build:   str = host_build    # ex. 20A5384c
         self.host_version: str = host_version  # ex. 11.0.1
 
@@ -70,10 +70,7 @@ class MetalLibraryObject:
             return METALLIB_ASSET_LIST
 
         try:
-            if self.constants.github_proxy_link=="SimpleHac":
-                METALLIB_API_LINK=METALLIB_API_LINK_PROXY
-            else:
-                METALLIB_API_LINK=METALLIB_API_LINK_ORG
+            METALLIB_API_LINK=self.METALLIB_API_LINK_ORG
             results = network_handler.NetworkUtilities().get(
                 METALLIB_API_LINK,
                 headers={
@@ -93,6 +90,17 @@ class MetalLibraryObject:
 
         return METALLIB_ASSET_LIST
 
+    def _get_file_size(self, url: str) -> int:
+        try:
+            response = requests.head(url, verify=False, allow_redirects=True, timeout=10)
+            if response.status_code == 200:
+                content_length = response.headers.get('content-length')
+                if content_length:
+                    return int(content_length)
+        except Exception as e:
+            logging.warning(f"Cannot get file size {url}: {e}")
+        
+        return 0
 
     def _get_latest_metallib(self) -> None:
         """
@@ -158,6 +166,7 @@ class MetalLibraryObject:
             self.metallib_url = metallib["url"]
             self.metallib_url_build = metallib["build"]
             self.metallib_url_version = metallib["version"]
+            self.metallib_file_size = self._get_file_size(self.metallib_url)
             self.metallib_url_is_exactly_match = True
             break
 
@@ -176,6 +185,7 @@ class MetalLibraryObject:
                 self.metallib_closest_match_url = metallib["url"]
                 self.metallib_closest_match_url_build = metallib["build"]
                 self.metallib_closest_match_url_version = metallib["version"]
+                self.metallib_closest_match_file_size = self._get_file_size(self.metallib_closest_match_url)
                 self.metallib_url_is_exactly_match = False
                 break
 
@@ -190,6 +200,8 @@ class MetalLibraryObject:
             self.metallib_url = self.metallib_closest_match_url
             self.metallib_url_build = self.metallib_closest_match_url_build
             self.metallib_url_version = self.metallib_closest_match_url_version
+            self.metallib_file_size = self.metallib_closest_match_file_size
+
         else:
             logging.info(f"Direct match found for {self.host_build} ({self.host_version})")
 
@@ -206,10 +218,23 @@ class MetalLibraryObject:
         logging.info(f"- metallib Build: {self.metallib_url_build}")
         logging.info(f"- metallib Version: {self.metallib_url_version}")
         logging.info(f"- metallib URL: {self.metallib_url}")
+        logging.info(f"- metallib size: {self._format_file_size(self.metallib_file_size)}")
 
         self.success = True
 
-
+    def _format_file_size(self, size_bytes: int) -> str:
+        """
+        Format file size for display
+        """
+        if size_bytes == 0:
+            return "/"
+        size_names = ["B", "KB", "MB", "GB"]
+        i = 0
+        size = float(size_bytes)
+        while size >= 1024 and i < len(size_names) - 1:
+            size /= 1024.0
+            i += 1
+        return f"{size:.2f} {size_names[i]}"
     def _local_metallib_installed(self, match: str = None, check_version: bool = False) -> str:
         """
         Check if a metallib is already installed
@@ -258,7 +283,7 @@ class MetalLibraryObject:
         self.success = True
 
         metallib_download_path = self.constants.metallib_download_path if override_path == "" else Path(override_path)
-        return network_handler.DownloadObject(self.metallib_url, metallib_download_path)
+        return network_handler.DownloadObject(self.metallib_url, metallib_download_path, self.metallib_file_size)
 
 
     def install_metallib(self, metallib: str = None) -> None:

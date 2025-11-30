@@ -16,16 +16,13 @@ from ..support import (
     utilities,
     network_handler,
 )
-METALLIB_API_LINK_ORIGIN:     str  = "https://dortania.github.io/MetallibSupportPkg/manifest.json"
-METALLIB_API_LINK_PROXY:     str  = "https://next.oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
 class MetallibDownloadFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants,screen_location: tuple = None):
         logging.info("Initializing NewMetallibDownloadFrame")
         self.constants: constants.Constants = global_constants
         self.title: str = title
         self.parent: wx.Frame = parent
-        icon_path = str(self.constants.icns_resource_path / "Package.icns")
-        self.icons = [self._icon_to_bitmap(icon_path), self._icon_to_bitmap(icon_path, (64, 64))]
+        self.icons = [[self._icon_to_bitmap(icon_path), self._icon_to_bitmap(icon_path, (64, 64))] for icon_path in self.constants.package_icns_paths]
         self.repl=False
         self.available_installers = None
         self.available_installers_latest = None
@@ -55,12 +52,10 @@ class MetallibDownloadFrame(wx.Frame):
         progress_bar_animation.start_pulse()
         self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
         self.Show()
+    
         def _fetch_installers():
             try:
-                if self.constants.github_proxy_link=="SimpleHac":
-                    METALLIB_API_LINK:str=METALLIB_API_LINK_PROXY
-                else:
-                    METALLIB_API_LINK: str = METALLIB_API_LINK_ORIGIN
+                METALLIB_API_LINK:str=self.constants.metallib_api_link
                 response = requests.get(METALLIB_API_LINK,verify=False)
                 self.kdk_data = response.json()
                 self.kdk_data_latest = []
@@ -129,6 +124,15 @@ class MetallibDownloadFrame(wx.Frame):
            self.on_return_to_main_menu()
         else:
             self._display_available_installers()
+    def _macos_version_to_icon(self, version: int) -> int:
+        """
+        Convert macOS version to icon(Package)
+        """
+        try:
+            self.constants.package_icns_paths[version - 19]
+            return version - 19
+        except IndexError:
+            return 0
     def convert_size(self,size_bytes):
         for unit in ['B', 'KB', 'MB', 'GB']:
             if size_bytes < 1024.0:
@@ -147,7 +151,7 @@ class MetallibDownloadFrame(wx.Frame):
             raise RuntimeError(f"Failed to detect OS build: {e}")
     def _display_available_installers(self, event: wx.Event = None, show_full: bool = False) -> None:
         self.os_build_tahoe=self.detect_os_build(False)
-        bundles = [wx.BitmapBundle.FromBitmaps(self.icons)]
+        bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
         self.frame_modal.Destroy()
         self.frame_modal = wx.Dialog(self, title="Choose Metallib Version", size=(414, 580))
         title_label = wx.StaticText(self.frame_modal, label="Choose Metallib", pos=(-1,-1))
@@ -176,7 +180,7 @@ class MetallibDownloadFrame(wx.Frame):
                 logging.info(f"- {item['name']} (macOS {item['version']} - {item['build']}):\n   - Link: {item['url']}\n")
                 result = re.search(r'^\d+', item['version'])
                 index = self.list.InsertItem(self.list.GetItemCount(), f"macOS {xnu_name[result.group()]}")
-                self.list.SetItemImage(index, 0)
+                self.list.SetItemImage(index, self._macos_version_to_icon(int(item['build'][:2])))
                 self.list.SetItem(index, 1, f"{item['version']}")
                 self.list.SetItem(index, 2, f"{item['build']}")
                 self.list.SetItem(index, 3, f"{item['seen']}")
@@ -267,7 +271,7 @@ class MetallibDownloadFrame(wx.Frame):
                 global_constants=self.constants,
                 download_obj=download_obj,
                 item_name=f"Metallib {selected_installer['version']} {selected_installer['build']}",
-                download_icon=str(self.constants.icns_resource_path / "Package.icns")
+                download_icon=self.constants.package_icns_paths[self._macos_version_to_icon(int(selected_installer['build'][:2]))]
             )
             if download_obj.download_complete is False:
                 import os
