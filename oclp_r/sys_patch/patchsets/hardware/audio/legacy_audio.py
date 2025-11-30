@@ -81,7 +81,7 @@ class LegacyAudio(BaseHardware):
         """
         Type of hardware variant
         """
-        return HardwareVariant.MISCELLANEOUS
+        return HardwareVariant.AUDIO
 
 
     def _missing_gop_patches(self) -> dict:

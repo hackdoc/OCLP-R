@@ -760,21 +760,6 @@ class SettingsFrame(wx.Frame):
                     ],
                     "condition":self.audio_check()
                 },
-                "Launchpad Version Change": {
-                    "type": "choice",
-                    "choices": [
-                        "26.0 Beta 4",
-                        "26.0 Beta 2"
-                    ],
-                    "value": self.constants.launchpad_version,
-                    "variable": "launchpad_version",
-                    "constants_variable": "launchpad_version",
-                    "description": [
-                        "   - 26.0 Beta 4: Using macOS 26.0 Beta 4 socures.",
-                        "   - 26.0 Beta 2: Using macOS 26.0 Beta 2 socures.",
-                    ],
-                    "condition":self.condition_exp("LP")
-                },
                 "wrap_around 1": {
                     "type": "wrap_around",
                 },
@@ -789,17 +774,6 @@ class SettingsFrame(wx.Frame):
                     ],
                     "condition":self.condition_exp("USB")
                 },     
-                "Allow Launchpad Patch (Exp.)": {
-                    "type": "checkbox",
-                    "value": self.constants.change_launchpad,
-                    "variable": "change_launchpad",
-                    "constants_variable": "change_launchpad",
-                    "description": [
-                        "When enabled, this will patch the LaunchPad",
-                        "on Tahoe.",
-                    ],
-                    #"condition":self.condition_exp("LP")
-                },
                 "Allow APFS Patch For Non-T2": {
                     "type": "checkbox",
                     "value": self.constants.allow_apfs_aligned_patch,

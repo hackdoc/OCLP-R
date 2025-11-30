@@ -41,7 +41,7 @@ class IntelWireless(BaseHardware):
 
     def native_os(self) -> bool:
         """
-        Dropped support with macOS 26, Tahoe
+        Only support with macOS 26, Tahoe
         """
         return  self._xnu_major < os_data.tahoe.value
 
@@ -55,7 +55,7 @@ class IntelWireless(BaseHardware):
 
     def patches(self) -> dict:
         """
-        Patches for Modern Wireless
+        Patches for Intel Wireless
         """
         if self.native_os() is True:
             return {}

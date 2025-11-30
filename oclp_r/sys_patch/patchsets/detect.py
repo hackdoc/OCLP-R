@@ -41,19 +41,21 @@ from .hardware.misc import (
     display_backlight,
     gmux,
     keyboard_backlight,
-    legacy_audio,
-    legacy_usb11,
-    modern_audio,
     apfs_aligned,
-    Launch,
-    modern_usb,
     pcie_webcam,
     t1_security,
     cpu_missing_avx,
-    voodoo_audio,
     
 )
-
+from .hardware.USB import (
+    modern_usb,
+    legacy_usb11,
+)
+from .hardware.audio import(
+    legacy_audio,
+    modern_audio,
+    voodoo_audio,
+)
 from ... import constants
 
 from ...datasets import sip_data
@@ -138,7 +140,6 @@ class HardwarePatchsetDetection:
             intel_wireless_tahoe.IntelWireless,
             modern_audio.ModernAudio,
             apfs_aligned.APFSP,
-            Launch.LaunchPad,
             voodoo_audio.VoodooAudio,
             modern_usb.LegacyUSBHost,
             display_backlight.DisplayBacklight,

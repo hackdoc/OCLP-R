@@ -581,15 +581,6 @@ class PatchSysVolume:
 
         self._patch_root_vol()
 
-    def load_launchpad(self):
-        if self.constants.change_launchpad is True:
-            logging.info("- LaunchPad patching enabled, runing command")
-            subprocess.run("mkdir -p /Library/Preferences/FeatureFlags/Domain",capture_output=True,text=True,shell=True)
-            subprocess.run("defaults write /Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist SpotlightPlus -dict Enabled -bool false",capture_output=True,text=True,shell=True)
-        else:
-            logging.info("- LaunchPad patching disabled, skiping")
-            subprocess.run("mkdir -p /Library/Preferences/FeatureFlags/Domain",capture_output=True,text=True,shell=True)
-            subprocess.run("defaults write /Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist SpotlightPlus -dict Enabled -bool true",capture_output=True,text=True,shell=True)
     def start_unpatch(self) -> None:
         """
         Entry function for unpatching the root volume

@@ -61,7 +61,7 @@ class ModernAudio(BaseHardware):
         """
         Type of hardware variant
         """
-        return HardwareVariant.MISCELLANEOUS
+        return HardwareVariant.AUDIO
 
 
     def _modern_audio_patches(self) -> dict:
@@ -74,6 +74,12 @@ class ModernAudio(BaseHardware):
                     "/System/Library/Extensions": {
                         "AppleHDA.kext":      f"{self._constants.applehda_version}",
                     },
+                },
+                PatchType.REMOVE_SYSTEM_VOLUME:{
+                    "/Library/Extensions":[
+                        "AppleHDADisabler.kext" ,
+                        "VoodooHDA.kext",
+                    ],
                 },
             },
         }

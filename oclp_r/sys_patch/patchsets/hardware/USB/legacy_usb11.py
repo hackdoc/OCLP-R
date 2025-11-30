@@ -68,7 +68,7 @@ class USB11Controller(BaseHardware):
         """
         Type of hardware variant
         """
-        return HardwareVariant.MISCELLANEOUS
+        return HardwareVariant.USB
 
 
     def _base_patches(self) -> dict:

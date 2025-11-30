@@ -48,7 +48,6 @@ class Constants:
         self.cslvfixup_version:          str = "2.6.1"  #      CSLVFixup
         self.autopkg_version:            str = "1.0.4"  #      AutoPkgInstaller
         self.cryptexfixup_version:       str = "1.0.4"  #      CryptexFixup
-        self.launchpad_version:          str = "26.0 Beta 4"
 
 
         ## Apple
@@ -165,7 +164,7 @@ class Constants:
         ## Hardware
         self.computer: device_probe.Computer = None  # type: ignore
         self.custom_model:     Optional[str] = None
-        self.change_launchpad:bool = False
+        
         self.applehda_version:str="15.6"
 
         ## OpenCore Settings

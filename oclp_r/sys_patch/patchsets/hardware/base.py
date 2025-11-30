@@ -23,6 +23,7 @@ class HardwareVariant(StrEnum):
     NETWORKING:    str = "Networking"
     AUDIO:         str = "Audio"
     MISCELLANEOUS: str = "Miscellaneous"
+    USB:           str = "USB"
 
 
 class HardwareVariantGraphicsSubclass(StrEnum):

@@ -48,7 +48,7 @@ class LegacyUSBHost(BaseHardware):
         """
         Type of hardware variant
         """
-        return HardwareVariant.MISCELLANEOUS
+        return HardwareVariant.USB
 
 
     def _legacy_usb_patches(self) -> dict:

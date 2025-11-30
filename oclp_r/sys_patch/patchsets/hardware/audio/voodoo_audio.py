@@ -40,7 +40,7 @@ class VoodooAudio(BaseHardware):
         """
         Type of hardware variant
         """
-        return HardwareVariant.MISCELLANEOUS
+        return HardwareVariant.AUDIO
 
 
     def _voodoo_audio_patches(self) -> dict:
