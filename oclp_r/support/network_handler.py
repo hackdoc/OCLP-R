@@ -529,6 +529,22 @@ class DownloadObject:
             return True
         return False
 
+    def delete_temp_files(self) -> None:
+        """
+        Delete temporary files created during download
+        """
+        try:
+            # Delete the partially downloaded file
+            if self.filepath.exists():
+                self.filepath.unlink()
+                logging.info(f"Deleted partially downloaded file: {self.filepath}")
+            
+            # Delete the progress file
+            if self.progress_file.exists():
+                self.progress_file.unlink()
+                logging.info(f"Deleted progress file: {self.progress_file}")
+        except Exception as e:
+            logging.warning(f"Failed to delete temporary files: {str(e)}")
 
     def stop(self) -> None:
         """
@@ -540,3 +556,7 @@ class DownloadObject:
         self.should_stop = True
         if self.active_thread and self.active_thread.is_alive():
             self.active_thread.join(timeout=10)
+        
+        # Delete temporary files if download was cancelled by user
+        if not self.download_complete:
+            self.delete_temp_files()

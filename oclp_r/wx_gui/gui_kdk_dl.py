@@ -294,7 +294,10 @@ class KDKDownloadFrame(wx.Frame):
             )
             if download_obj.download_complete is False:
                 import os
-                os.remove(self.constants.user_download_file+"/"+file_name)
+                try:
+                    os.remove(self.constants.user_download_file+"/"+file_name)
+                except:
+                    pass
                 self.on_return_to_main_menu()
                 return
             self.on_return_to_main_menu()
