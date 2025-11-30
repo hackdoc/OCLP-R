@@ -534,10 +534,9 @@ class DownloadObject:
         """
         Stop the download
 
-        If the download is active, this function will hold the thread until stopped
+        If the download is active, this function will hold the thread until stopped or timeout
         """
 
         self.should_stop = True
-        if self.active_thread:
-            while self.active_thread.is_alive():
-                time.sleep(1)
+        if self.active_thread and self.active_thread.is_alive():
+            self.active_thread.join(timeout=10)

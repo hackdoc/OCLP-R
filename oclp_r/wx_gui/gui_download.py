@@ -103,6 +103,14 @@ class DownloadFrame(wx.Frame):
         if wx.MessageBox("Are you sure you want to cancel the download?", "Cancel Download", wx.YES_NO | wx.ICON_QUESTION | wx.NO_DEFAULT) == wx.YES:
             logging.info("User cancelled download")
             self.user_cancelled = True
-            self.download_obj.stop()
+            # Show a status message while stopping the download
+            status_dialog = wx.MessageDialog(self.frame_modal, "Cancelling download, please wait...", "Cancelling", wx.CANCEL | wx.STAY_ON_TOP)
+            status_dialog.Show()
+            wx.Yield()
+            
+            try:
+                self.download_obj.stop()
+            finally:
+                status_dialog.Destroy()
 
 
