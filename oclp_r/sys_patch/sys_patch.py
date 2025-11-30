@@ -224,7 +224,6 @@ class PatchSysVolume:
 
         if self._create_new_apfs_snapshot() is False:
             return False
-        self.load_launchpad()
         self._unmount_root_vol()
 
         logging.info("- Patching complete")
