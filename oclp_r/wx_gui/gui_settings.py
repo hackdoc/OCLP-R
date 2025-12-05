@@ -784,16 +784,6 @@ class SettingsFrame(wx.Frame):
                         "on Tahoe.",
                     ],
                 },     
-                "Allow Intel Wireless Patch (exp.)":{
-                    "type": "checkbox",
-                    "value": self.constants.intel_wireless_tahoe,
-                    "variable": "intel_wireless_tahoe",
-                    "constants_variable": "intel_wireless_tahoe",
-                    "description": [
-                        "When enabled, this will patch the Intel Wireless",
-                        "on Tahoe.",
-                    ],
-                },
                 "AppleHDA.kext Version": {
                     "type": "choice",
                     "choices": [

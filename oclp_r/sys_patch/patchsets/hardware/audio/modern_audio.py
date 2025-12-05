@@ -10,7 +10,7 @@ from .....constants import Constants
 
 from .....datasets.os_data import os_data
 
-from .....support   import utilities
+from .....support import utilities
 
 
 class ModernAudio(BaseHardware):
@@ -24,25 +24,27 @@ class ModernAudio(BaseHardware):
         Currently defaulted to AMFI needing to be disabled
         """
         return AmfiConfigDetectLevel.NO_CHECK
+
     def name(self) -> str:
         """
         Display name for end users
         """
         return f"{self.hardware_variant()}: Modern Audio"
 
-
     def present(self) -> bool:
         """
         AppleHDA was outright removed in macOS 26, so this patch set is always present if OS requires it
         """
-        if utilities.check_kext_loaded("org.voodoo.driver.VoodooHDA") !="" and self._constants.audio_type!="AppleHDA":
-            self._constants.audio_type="AppleHDA"
-        return self._constants.audio_type=="AppleHDA" and utilities.check_kext_loaded("as.vit9696.AppleALC") !=""
+        if utilities.check_kext_loaded("org.voodoo.driver.VoodooHDA") != "" and self._constants.audio_type != "AppleHDA":
+            self._constants.audio_type = "AppleHDA"
+        return self._constants.audio_type == "AppleHDA" and utilities.check_kext_loaded("as.vit9696.AppleALC") != ""
+
     def requires_kernel_debug_kit(self) -> bool:
         """
         Apple no longer provides standalone kexts in the base OS
         """
         return True
+
     def native_os(self) -> bool:
         """
         - Everything before macOS Tahoe 26 is considered native
@@ -51,18 +53,16 @@ class ModernAudio(BaseHardware):
             return True
 
         # Technically, macOS Tahoe Beta 1 is also native, so return True
-        if self._os_build == "25A5279m" and self._constants.applehda_version=="26.0 Beta 1":
+        if self._os_build == "25A5279m" and self._constants.applehda_version == "26.0 Beta 1":
             return True
 
         return False
-
 
     def hardware_variant(self) -> HardwareVariant:
         """
         Type of hardware variant
         """
         return HardwareVariant.AUDIO
-
 
     def _modern_audio_patches(self) -> dict:
         """
@@ -75,15 +75,15 @@ class ModernAudio(BaseHardware):
                         "AppleHDA.kext":      f"{self._constants.applehda_version}",
                     },
                 },
-                PatchType.REMOVE_SYSTEM_VOLUME:{
-                    "/Library/Extensions":[
+
+                PatchType.REMOVE_SYSTEM_VOLUME: {
+                    "/Library/Extensions": [
                         "AppleHDADisabler.kext" ,
                         "VoodooHDA.kext",
                     ],
                 },
             },
         }
-
 
     def patches(self) -> dict:
         """

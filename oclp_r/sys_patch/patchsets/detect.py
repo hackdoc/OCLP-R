@@ -35,7 +35,6 @@ from .hardware.graphics import (
 from .hardware.networking import (
     legacy_wireless,
     modern_wireless,
-    intel_wireless_tahoe,
 )
 from .hardware.misc import (
     display_backlight,
@@ -122,22 +121,17 @@ class HardwarePatchsetDetection:
             intel_haswell.IntelHaswell,
             intel_broadwell.IntelBroadwell,
             intel_skylake.IntelSkylake,
-
             nvidia_tesla.NvidiaTesla,
             nvidia_kepler.NvidiaKepler,
             nvidia_webdriver.NvidiaWebDriver,
-
             amd_terascale_1.AMDTeraScale1,
             amd_terascale_2.AMDTeraScale2,
             amd_legacy_gcn.AMDLegacyGCN,
             amd_polaris.AMDPolaris,
             amd_vega.AMDVega,
-
             legacy_wireless.LegacyWireless,
             modern_wireless.ModernWireless,
-            intel_wireless_tahoe.IntelWireless,
             legacy_audio.LegacyAudio,
-            intel_wireless_tahoe.IntelWireless,
             modern_audio.ModernAudio,
             apfs_aligned.APFSP,
             voodoo_audio.VoodooAudio,

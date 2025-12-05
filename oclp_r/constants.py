@@ -266,8 +266,6 @@ class Constants:
         ###https://github.moeyy.xyz
         ###https://gitapi.simplehac.top
         self.github_mirror: str = ""
-        # Open Intel Wireless
-        self.intel_wireless_tahoe: bool = False
         self.api_link()
 
     def api_link(self):
