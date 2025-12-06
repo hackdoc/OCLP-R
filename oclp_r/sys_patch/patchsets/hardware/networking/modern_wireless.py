@@ -42,6 +42,12 @@ class ModernWireless(BaseHardware):
         Dropped support with macOS 14, Sonoma
         """
         return self._xnu_major < os_data.sonoma.value
+    
+    def extended_os(self) -> bool:
+        """
+        Extended support with macOS 14, Sonoma
+        """
+        return self._xnu_major == os_data.sonoma.value
 
     def hardware_variant(self) -> HardwareVariant:
         """
@@ -53,7 +59,7 @@ class ModernWireless(BaseHardware):
         """
         Extended modern wireless patches
         """
-        if self.native_os() is True:
+        if self.native_os() is True or self.extended_os() is False:
             return {}
 
         return {
@@ -106,7 +112,7 @@ class ModernWireless(BaseHardware):
             **self._patches_modern_wireless(),
         }
 
-        if self._xnu_major == os_data.sonoma:
+        if self._xnu_major == os_data.sonoma.value:
             _base.update({
                 **self._patches_modern_wireless_sonoma(),
             })
