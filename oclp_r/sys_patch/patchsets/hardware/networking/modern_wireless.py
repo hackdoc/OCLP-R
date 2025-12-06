@@ -23,8 +23,7 @@ class ModernWireless(BaseHardware):
         """
         Targeting Modern Wireless
         """
-        if self._xnu_major >= os_data.tahoe.value:
-            return False
+        
         return isinstance(self._computer.wifi, device_probe.Broadcom) and (
             self._computer.wifi.chipset in [
                 device_probe.Broadcom.Chipsets.AirPortBrcm4360,
