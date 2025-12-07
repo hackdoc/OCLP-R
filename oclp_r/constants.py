@@ -27,7 +27,7 @@ class Constants:
         self.url_patcher_support_pkg:         str = "https://github.com/hackdoc/PatcherSupportPkg/releases/download/"
         self.discord_link:                    str = "https://discord.gg/rqdPgH8xSN"
         self.guide_link:                      str = "https://hackdoc.github.io/oclpr/"
-        self.repo_link:                       str = "https://github.com/hackdoc/OCLP-R"
+        self.repo_link:                       str = "https://github.com/hackdoc/OCLP-R/releases/"
         self.installer_pkg_url:               str = f"{self.repo_link}/releases/download/{self.patcher_version}/AutoPkg-Assets.pkg"
         self.installer_pkg_url_nightly:       str = "http://nightly.link/hackdoc/OCLP-R/workflows/build-app-wxpython/main/AutoPkg-Assets.pkg.zip"
         self.user_download_file:              str = f"/Users/{getpass.getuser()}/Downloads"
@@ -46,8 +46,8 @@ class Constants:
         self.applealc_version:           str = "1.6.3"  #      AppleALC
         self.restrictevents_version:     str = "1.1.7"  #      RestrictEvents
         self.featureunlock_version:      str = "1.1.7"  #      FeatureUnlock
-        self.debugenhancer_version:      str = "1.1.0"  #      DebugEnhancer
-        self.cpufriend_version:          str = "1.2.9"  #      CPUFriend
+        self.debugenhancer_version:      str = "1.1.1"  #      DebugEnhancer
+        self.cpufriend_version:          str = "1.3.0"  #      CPUFriend
         self.bluetool_version:           str = "2.6.9"  #      BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version:          str = "2.6.1"  #      CSLVFixup
         self.autopkg_version:            str = "1.0.4"  #      AutoPkgInstaller
