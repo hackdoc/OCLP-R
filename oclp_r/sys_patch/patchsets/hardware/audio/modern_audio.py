@@ -37,7 +37,7 @@ class ModernAudio(BaseHardware):
         """
         if utilities.check_kext_loaded("org.voodoo.driver.VoodooHDA") != "" and self._constants.audio_type != "AppleHDA":
             self._constants.audio_type = "AppleHDA"
-        return self._constants.audio_type == "AppleHDA" and utilities.check_kext_loaded("as.vit9696.AppleALC") != ""
+        return self._constants.audio_type == "AppleHDA"
 
     def requires_kernel_debug_kit(self) -> bool:
         """
@@ -74,16 +74,6 @@ class ModernAudio(BaseHardware):
                     "/System/Library/Extensions": {
                         "AppleHDA.kext":      f"{self._constants.applehda_version}",
                     },
-                },
-
-                PatchType.REMOVE_SYSTEM_VOLUME: {
-                    "/Library/Extensions": [
-                        "AppleHDADisabler.kext" ,
-                        "VoodooHDA.kext",
-                    ],
-                    "/Library/PreferencePanes" : [
-                        "VoodooHDA.prefPane",
-                    ],
                 },
             },
         }
