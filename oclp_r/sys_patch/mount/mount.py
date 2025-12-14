@@ -67,6 +67,11 @@ class RootVolumeMount:
         if self.xnu_major >= os_data.os_data.big_sur.value:
             if Path("/System/Volumes/Update/mnt1/System/Library/CoreServices/SystemVersion.plist").exists():
                 return "/System/Volumes/Update/mnt1"
+            result_unmount = subprocess_wrapper.run_as_root(["/usr/sbin/diskutil", "unmount", f"/dev/{self.root_volume_identifier}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)            
+            if result_unmount.returncode != 0:
+                logging.error("Failed to unmount root volume")
+                subprocess_wrapper.log(result_unmount)
+                return None
             result = subprocess_wrapper.run_as_root(["/sbin/mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_volume_identifier}", "/System/Volumes/Update/mnt1"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.error("Failed to mount root volume")
