@@ -70,8 +70,7 @@ class RootVolumeMount:
             
             result_unmount = subprocess_wrapper.run_as_root(["/usr/sbin/diskutil", "unmount", f"/dev/{self.root_volume_identifier}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)            
             if result_unmount.returncode != 0:
-                logging.info("Maybe disk has already been unmounted.")
-                subprocess_wrapper.log(result_unmount)
+                logging.info(f"{self.root_volume_identifier} has already been unmounted.")
 
             result = subprocess_wrapper.run_as_root(["/sbin/mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_volume_identifier}", "/System/Volumes/Update/mnt1"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
@@ -79,7 +78,6 @@ class RootVolumeMount:
                 subprocess_wrapper.log(result)
                 return None
             return "/System/Volumes/Update/mnt1"
-
         return None
 
 
