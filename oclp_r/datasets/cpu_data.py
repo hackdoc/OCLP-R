@@ -17,9 +17,14 @@ class CPUGen(enum.IntEnum):
     broadwell     = 8    # 5000
     skylake       = 9    # 6000
     kaby_lake     = 10   # 7000
-    coffee_lake   = 11   # 8000/9000
+    coffee_lake   = 11   # 8000/9000/10000
     comet_lake    = 12   # 10000
     ice_lake      = 13   # 10000
 
     apple_dtk     = 100  # A12
     apple_silicon = 101  # A14 and newer (not tracked beyond this point)
+
+    # Not supported for Mac (intel 11000-13000)
+    rocket_lake   = 14   # 11000
+    alder_lake    = 15   # 12000
+    Raptor_lake   = 16   # 13000
