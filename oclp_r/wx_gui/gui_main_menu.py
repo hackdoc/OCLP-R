@@ -12,6 +12,8 @@ import markdown2
 import threading
 import webbrowser
 
+from . import gui_KDK_download, gui_metallib_download
+
 from .. import constants
 
 from ..support import (
@@ -30,8 +32,6 @@ from ..wx_gui import (
     gui_settings,
     gui_sys_patch_display,
     gui_update,
-    gui_kdk_dl,
-    gui_ml_dl,
 )
 
 
@@ -353,14 +353,14 @@ class MainFrame(wx.Frame):
             screen_location=self.GetPosition()
         )
     def on_download_kdk(self, event: wx.Event = None):
-        gui_kdk_dl.KDKDownloadFrame(
+        gui_KDK_download.KDKDownloadFrame(
             parent=self,
             title=self.title,
             global_constants=self.constants,
             screen_location=self.GetPosition()
         )
     def on_download_ml(self, event: wx.Event = None):
-        gui_ml_dl.MetallibDownloadFrame(
+        gui_metallib_download.MetallibDownloadFrame(
             parent=self,
             title=self.title,
             global_constants=self.constants,
