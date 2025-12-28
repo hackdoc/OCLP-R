@@ -17,8 +17,8 @@ class Constants:
         self.metallib_api_link:               str = ""
 
         # Patcher Versioning
-        self.patcher_version:                 str = "3.0.0"  # OCLP-R
-        self.patcher_support_pkg_version:     str = "1.10.1-pre"  # PatcherSupportPkg
+        self.patcher_version:                 str = "3.0.1"  # OCLP-R
+        self.patcher_support_pkg_version:     str = "1.11.0"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2025 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
         
@@ -129,7 +129,7 @@ class Constants:
         ## flagersgit
         ## https://github.com/flagersgit/KDKlessWorkaround
         self.kdkless_version: str = "1.0.0"
-        self.audio_type :  str ="AppleHDA"#AppleALC || VoodooHDA
+        
         ## Jazzzny
         self.legacy_keyboard: str = "1.0.0"  # LegacyKeyboardInjector - Jazzzny
 
@@ -141,6 +141,7 @@ class Constants:
 
         # Patcher Settings
         ## Internal settings
+        self.audio_type :  str ="AppleHDA"
         self.change_control_center:     bool = False
         self.allow_oc_everywhere:       bool = False  # Set whether Patcher can be run on unsupported Macs
         self.gui_mode:                  bool = False  # Determine whether running in a GUI or TUI

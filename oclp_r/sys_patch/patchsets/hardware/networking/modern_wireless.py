@@ -28,7 +28,6 @@ class ModernWireless(BaseHardware):
             self._computer.wifi.chipset in [
                 device_probe.Broadcom.Chipsets.AirPortBrcm4360,
                 device_probe.Broadcom.Chipsets.AirportBrcmNIC,
-                # We don't officially support this chipset, however we'll throw a bone to hackintosh users
                 device_probe.Broadcom.Chipsets.AirPortBrcmNICThirdParty,
             ]
         ) or isinstance(self._computer.wifi, device_probe.IntelWirelessCard) and (
@@ -42,43 +41,12 @@ class ModernWireless(BaseHardware):
         Dropped support with macOS 14, Sonoma
         """
         return self._xnu_major < os_data.sonoma.value
-    
-    def extended_os(self) -> bool:
-        """
-        Extended support with macOS 14, Sonoma
-        """
-        return self._xnu_major == os_data.sonoma.value
-
+ 
     def hardware_variant(self) -> HardwareVariant:
         """
         Type of hardware variant
         """
         return HardwareVariant.NETWORKING
-
-    def _patches_modern_wireless_sonoma(self) -> dict:
-        """
-        Extended modern wireless patches
-        """
-        if self.native_os() is True or self.extended_os() is False:
-            return {}
-
-        return {
-            "Modern Wireless Extended": {
-                PatchType.OVERWRITE_SYSTEM_VOLUME: {
-                    "/usr/libexec": {
-                        "airportd": f"13.7.2-{self._xnu_major}",
-                    },
-                },
-                PatchType.MERGE_SYSTEM_VOLUME: {
-                    "/System/Library/Frameworks": {
-                        "CoreWLAN.framework": f"13.7.2-{self._xnu_major}",
-                    },
-                    "/System/Library/PrivateFrameworks": {
-                        "CoreWiFi.framework":  f"13.7.2-{self._xnu_major}",
-                    },
-                },
-            },
-        }
 
     def _patches_modern_wireless(self) -> dict:
         """
@@ -86,18 +54,22 @@ class ModernWireless(BaseHardware):
         """
         if self.native_os() is True:
             return {}
-
         return {
-            "Modern Wireless Common": {
+            "Modern Wireless": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/usr/libexec": {
                         "wifip2pd": f"13.7.2-{self._xnu_major}",
+                        **({ "airportd": f"13.7.2-{self._xnu_major}" } if self._xnu_major == os_data.sonoma else {}),
                     },
                 },
                 PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/PrivateFrameworks": {
                         "IO80211.framework":        f"13.7.2-{self._xnu_major}",
                         "WiFiPeerToPeer.framework": f"13.7.2-{self._xnu_major}",
+                        **({ "CoreWiFi.framework": f"13.7.2-{self._xnu_major}" } if self._xnu_major == os_data.sonoma else {}),
+                    },
+                    "/System/Library/Frameworks": {
+                       **({ "CoreWLAN.framework": f"13.7.2-{self._xnu_major}" } if self._xnu_major == os_data.sonoma else {}),
                     },
                 },
             },
@@ -107,14 +79,7 @@ class ModernWireless(BaseHardware):
         """
         Dictionary of patches
         """
-
         _base = {
             **self._patches_modern_wireless(),
         }
-
-        if self._xnu_major == os_data.sonoma.value:
-            _base.update({
-                **self._patches_modern_wireless_sonoma(),
-            })
-
         return _base

@@ -1,5 +1,4 @@
 name: CI - Validation
-
 on:
   push:
     paths-ignore: 
@@ -7,7 +6,6 @@ on:
   workflow_dispatch:
   release:
     types: [published]
-#/usr/local/aria2/bin/
 jobs:
   build:
     name: Validate
@@ -24,6 +22,4 @@ jobs:
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install --upgrade pip
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install -r requirements.txt
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install packaging
-          rm -rf Univ*
-          aria2c -x 16 "https://github.com/hackdoc/PatcherSupportPkg/releases/download/1.10.1/Universal-Binaries.dmg"
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 OCLP-R-GUI.command --validate

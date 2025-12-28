@@ -29,8 +29,6 @@ jobs:
           rm -rf *pay*.dmg
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install -r requirements.txt
 
-          aria2c -x 16 "https://github.com/hackdoc/PatcherSupportPkg/releases/download/1.10.1/Universal-Binaries.dmg"
-
       - name: Force Universal2 charset for Python
         run: |
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip uninstall -y charset_normalizer
@@ -69,8 +67,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           #tag_name: push-${{ github.sha }}
-          tag_name: 3.0.0Pre
-          name: 3.0.0 Tahoe Test Version
+          tag_name: 3.0.1
+          name: 3.0.1 Tahoe Test
           body: ${{ github.event.head_commit.message }}
           prerelease: true
           files: |
