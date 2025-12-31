@@ -18,6 +18,8 @@ from ..wx_gui import (
     gui_support,
     gui_sys_patch_start,
 )
+from ..support import translate_language
+
 
 
 class SysPatchDisplayFrame(wx.Frame):
@@ -25,7 +27,8 @@ class SysPatchDisplayFrame(wx.Frame):
     Create a modal frame for displaying root patches
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-        logging.info("Initializing Root Patch Display Frame")
+        self.trans = translate_language.TranslateLanguage(global_constants).gui_sys_patch_display()
+        logging.info(self.trans["Initializing Root Patch Display Frame"])
 
         if parent:
             self.frame = parent
@@ -47,7 +50,7 @@ class SysPatchDisplayFrame(wx.Frame):
 
         if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
             if self.available_patches is False:
-                gui_support.RestartHost(self.frame).restart(message="No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?")
+                gui_support.RestartHost(self.frame).restart(message=self.trans["No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?"])
 
 
     def _generate_elements_display_patches(self, frame: wx.Frame = None) -> None:
@@ -64,12 +67,12 @@ class SysPatchDisplayFrame(wx.Frame):
         """
         frame = self if not frame else frame
 
-        title_label = wx.StaticText(frame, label="Post-Install Menu", pos=(-1, 10))
+        title_label = wx.StaticText(frame, label=self.trans["Post-Install Menu"], pos=(-1, 10))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
         # Label: Fetching patches...
-        available_label = wx.StaticText(frame, label="Fetching patches for host", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 10))
+        available_label = wx.StaticText(frame, label=self.trans["Fetching patches for host"], pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 10))
         available_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
         available_label.Centre(wx.HORIZONTAL)
 
@@ -100,14 +103,14 @@ class SysPatchDisplayFrame(wx.Frame):
         progress_bar.Hide()
         progress_bar_animation.stop_pulse()
 
-        available_label.SetLabel("Available patches for your system:")
+        available_label.SetLabel(self.trans["Available patches for your system:"])
         available_label.Centre(wx.HORIZONTAL)
 
 
         can_unpatch: bool = not patches[HardwarePatchsetValidation.UNPATCHING_NOT_POSSIBLE]
 
         if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
-            logging.info("No applicable patches available")
+            logging.info(self.trans["No applicable patches available"])
             patches = {}
 
         # Check if OCLP has already applied the same patches
@@ -115,7 +118,7 @@ class SysPatchDisplayFrame(wx.Frame):
 
         if not patches:
             # Prompt user with no patches found
-            patch_label = wx.StaticText(frame, label="No patches required", pos=(-1, available_label.GetPosition()[1] + 20))
+            patch_label = wx.StaticText(frame, label=self.trans["No patches required"], pos=(-1, available_label.GetPosition()[1] + 20))
             patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
             patch_label.Centre(wx.HORIZONTAL)
 
@@ -123,7 +126,7 @@ class SysPatchDisplayFrame(wx.Frame):
             # Add Label for each patch
             i = 0
             if no_new_patches is True:
-                patch_label = wx.StaticText(frame, label="All applicable patches already installed", pos=(-1, available_label.GetPosition()[1] + 20))
+                patch_label = wx.StaticText(frame, label=self.trans["All applicable patches already installed"], pos=(-1, available_label.GetPosition()[1] + 20))
                 patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
                 patch_label.Centre(wx.HORIZONTAL)
                 i = i + 20
@@ -152,7 +155,7 @@ class SysPatchDisplayFrame(wx.Frame):
 
             if patches[HardwarePatchsetValidation.PATCHING_NOT_POSSIBLE] is True:
                 # Cannot patch due to the following reasons:
-                patch_label = wx.StaticText(frame, label="Cannot patch due to the following reasons:", pos=(-1, patch_label.GetPosition()[1] + 25))
+                patch_label = wx.StaticText(frame, label=self.trans["Cannot patch due to the following reasons:"], pos=(-1, patch_label.GetPosition()[1] + 25))
                 patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
                 patch_label.Centre(wx.HORIZONTAL)
 
@@ -196,7 +199,7 @@ class SysPatchDisplayFrame(wx.Frame):
 
                     patch_text = f"{self.constants.computer.oclp_sys_version}, {date}"
 
-                    patch_label = wx.StaticText(frame, label="Root Volume last patched:", pos=(-1, patch_label.GetPosition().y + 25))
+                    patch_label = wx.StaticText(frame, label=self.trans["Root Volume last patched:"], pos=(-1, patch_label.GetPosition().y + 25))
                     patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
                     patch_label.Centre(wx.HORIZONTAL)
 
@@ -206,19 +209,19 @@ class SysPatchDisplayFrame(wx.Frame):
 
 
         # Button: Start Root Patching
-        start_button = wx.Button(frame, label="Start Root Patching", pos=(10, patch_label.GetPosition().y + 25), size=(170, 30))
+        start_button = wx.Button(frame, label=self.trans["Start Root Patching"], pos=(10, patch_label.GetPosition().y + 25), size=(170, 30))
         start_button.Bind(wx.EVT_BUTTON, lambda event: self.on_start_root_patching(patches))
         start_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         start_button.Centre(wx.HORIZONTAL)
 
         # Button: Revert Root Patches
-        revert_button = wx.Button(frame, label="Revert Root Patches", pos=(10, start_button.GetPosition().y + start_button.GetSize().height +5), size=(170, 30))
+        revert_button = wx.Button(frame, label=self.trans["Revert Root Patches"], pos=(10, start_button.GetPosition().y + start_button.GetSize().height +5), size=(170, 30))
         revert_button.Bind(wx.EVT_BUTTON, lambda event: self.on_revert_root_patching(patches))
         revert_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         revert_button.Centre(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
-        return_button = wx.Button(frame, label="Return to Main Menu", pos=(10, revert_button.GetPosition().y + revert_button.GetSize().height+10), size=(150, 30))
+        return_button = wx.Button(frame, label=self.trans["Return to Main Menu"], pos=(10, revert_button.GetPosition().y + revert_button.GetSize().height+10), size=(150, 30))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_dismiss if self.init_with_parent else self.on_return_to_main_menu)
         return_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         return_button.Centre(wx.HORIZONTAL)
@@ -301,10 +304,10 @@ class SysPatchDisplayFrame(wx.Frame):
 
         if self.constants.computer.oclp_sys_url != self.constants.commit_info[2]:
             # If commits are different, assume patches are as well
-            print("- Commit URLs differ")
+            print(self.trans["- Commit URLs differ"])
             print(f"- Commit URLs: {self.constants.commit_info[2]}")
-            logging.info("- Commit URLs differ")
-            logging.info(f"- Commit URLs: {self.constants.commit_info[2]}")
+            logging.info(self.trans["- Commit URLs differ"])
+            logging.info(f"{self.trans['- Commit URLs:']} {self.constants.commit_info[2]}")
             return True
 
         oclp_plist = "/System/Library/CoreServices/OCLP-R.plist"
@@ -319,9 +322,9 @@ class SysPatchDisplayFrame(wx.Frame):
                 # Patches should share the same name as the plist key
                 # See sys_patch/patchsets/base.py for more info
                 if patch.split(": ")[1] not in oclp_plist_data:
-                    print(f"- Patch {patch} not installed")
-                    logging.info(f"- Patch {patch} not installed")
+                    print(f"{self.trans['- Patch']} {patch} {self.trans['not installed']}")
+                    logging.info(f"{self.trans['- Patch']} {patch} {self.trans['not installed']}")
                     return True
 
-        logging.info("No new patches detected for system")
+        logging.info(self.trans["No new patches detected for system"])
         return False

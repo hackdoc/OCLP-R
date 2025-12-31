@@ -10,6 +10,9 @@ import re
 
 from pathlib import Path
 
+from oclp_r.constants import Constants
+from oclp_r.support.translate_language import TranslateLanguage
+
 from ..datasets import os_data
 
 from . import (
@@ -28,10 +31,11 @@ APPLICATION_SEARCH_PATH:  str = "/Applications"
 tmp_dir = tempfile.TemporaryDirectory()
 
 
-class InstallerCreation():
+class InstallerCreation:
 
-    def __init__(self) -> None:
+    def __init__(self, global_constants: Constants) -> None:
         pass
+        self.trans = TranslateLanguage(global_constants=global_constants).macos_installer_handler()
 
 
     def install_macOS_installer(self, download_path: str) -> bool:
@@ -45,14 +49,14 @@ class InstallerCreation():
             bool: True if successful, False otherwise
         """
 
-        logging.info("Extracting macOS installer from InstallAssistant.pkg")
+        logging.info(self.trans["Extracting macOS installer from InstallAssistant.pkg"])
         result = subprocess_wrapper.run_as_root(["/usr/sbin/installer", "-pkg", f"{Path(download_path)}/InstallAssistant.pkg", "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.returncode != 0:
-            logging.info("Failed to install InstallAssistant")
+            logging.info(self.trans["Failed to install InstallAssistant"])
             subprocess_wrapper.log(result)
             return False
 
-        logging.info("InstallAssistant installed")
+        logging.info(self.trans["InstallAssistant installed"])
         return True
 
 
@@ -90,7 +94,7 @@ class InstallerCreation():
         global tmp_dir
         ia_tmp = tmp_dir.name
 
-        logging.info(f"Creating temporary directory at {ia_tmp}")
+        logging.info(self.trans["Creating temporary directory at {0}"].format(ia_tmp))
         # Delete all files in tmp_dir
         for file in Path(ia_tmp).glob("*"):
             subprocess.run(["/bin/rm", "-rf", str(file)])
@@ -101,8 +105,8 @@ class InstallerCreation():
             space_available = utilities.get_free_space()
             space_needed = Path(ia_tmp).stat().st_size
             if space_available < space_needed:
-                logging.info("Not enough free space to create installer.sh")
-                logging.info(f"{utilities.human_fmt(space_available)} available, {utilities.human_fmt(space_needed)} required")
+                logging.info(self.trans["Not enough free space to create installer.sh"])
+                logging.info(self.trans["{0} available, {1} required"].format(utilities.human_fmt(space_available), utilities.human_fmt(space_needed)))
                 return False
 
         subprocess.run(generate_copy_arguments(installer_path, ia_tmp))
@@ -110,13 +114,13 @@ class InstallerCreation():
         # Adjust installer_path to point to the copied installer
         installer_path = Path(ia_tmp) / Path(Path(installer_path).name)
         if not Path(installer_path).exists():
-            logging.info(f"Failed to copy installer to {ia_tmp}")
+            logging.info(self.trans["Failed to copy installer to {0}".format(ia_tmp)])
             return False
 
         # Verify code signature before executing
         createinstallmedia_path = str(Path(installer_path) / Path("Contents/Resources/createinstallmedia"))
         if subprocess.run(["/usr/bin/codesign", "-v", "-R=anchor apple", createinstallmedia_path]).returncode != 0:
-            logging.info(f"Installer has broken code signature")
+            logging.info(self.trans["Installer has broken code signature"])
             return False
 
         plist_path = str(Path(installer_path) / Path("Contents/Info.plist"))

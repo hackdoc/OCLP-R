@@ -86,7 +86,7 @@ class GlobalEnviromentSettings:
         if Path(self.global_settings_plist).exists():
             return
         try:
-            plistlib.dump({"Developed by Hackdoc and Hackdoc": True,}, Path(self.global_settings_plist).open("wb"))
+            plistlib.dump({"Developed by Dortania and Hackdoc": True,}, Path(self.global_settings_plist).open("wb"))
         except PermissionError:
             logging.info("Permission error: Unable to write to global settings file")
 

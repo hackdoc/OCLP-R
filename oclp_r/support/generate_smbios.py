@@ -12,7 +12,6 @@ from ..datasets import (
     cpu_data
 )
 
-
 def set_smbios_model_spoof(model):
     try:
         smbios_data.smbios_dictionary[model]["Screen Size"]

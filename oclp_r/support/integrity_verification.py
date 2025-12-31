@@ -14,6 +14,9 @@ import threading
 from typing import Union
 from pathlib import Path
 
+from .. import constants
+from . import translate_language
+
 CHUNK_LENGTH = 4 + 32
 
 
@@ -46,7 +49,7 @@ class ChunklistVerification:
         ...     print(chunk_obj.error_msg)
     """
 
-    def __init__(self, file_path: Path, chunklist_path: Union[Path, bytes]) -> None:
+    def __init__(self, file_path: Path, chunklist_path: Union[Path, bytes], global_constants: constants.Constants = None) -> None:
         if isinstance(chunklist_path, bytes):
             self.chunklist_path: bytes = chunklist_path
         else:
@@ -60,6 +63,7 @@ class ChunklistVerification:
         self.total_chunks:  int = len(self.chunks)
 
         self.status: ChunklistStatus = ChunklistStatus.IN_PROGRESS
+        self.trans = translate_language.TranslateLanguage(global_constants).integrity_verification() if global_constants else None
 
 
     def _generate_chunks(self, chunklist: Union[Path, bytes]) -> dict:
@@ -103,13 +107,19 @@ class ChunklistVerification:
             return
 
         if not Path(self.file_path).exists():
-            self.error_msg = f"File {self.file_path} does not exist"
+            if self.trans:
+                self.error_msg = f"{self.trans['File']} {self.file_path} {self.trans['does not exist']}"
+            else:
+                self.error_msg = f"File {self.file_path} does not exist"
             self.status = ChunklistStatus.FAILURE
             logging.info(self.error_msg)
             return
 
         if not Path(self.file_path).is_file():
-            self.error_msg = f"File {self.file_path} is not a file"
+            if self.trans:
+                self.error_msg = f"{self.trans['File']} {self.file_path} {self.trans['is not a file']}"
+            else:
+                self.error_msg = f"File {self.file_path} is not a file"
             self.status = ChunklistStatus.FAILURE
             logging.info(self.error_msg)
             return
@@ -119,7 +129,10 @@ class ChunklistVerification:
                 self.current_chunk += 1
                 status = hashlib.sha256(f.read(chunk["length"])).digest()
                 if status != chunk["checksum"]:
-                    self.error_msg = f"Chunk {self.current_chunk} checksum status FAIL: chunk sum {binascii.hexlify(chunk['checksum']).decode()}, calculated sum {binascii.hexlify(status).decode()}"
+                    if self.trans:
+                        self.error_msg = f"{self.trans['Chunk']} {self.current_chunk} {self.trans['checksum status FAIL: chunk sum']} {binascii.hexlify(chunk['checksum']).decode()}, {self.trans['calculated sum']} {binascii.hexlify(status).decode()}"
+                    else:
+                        self.error_msg = f"Chunk {self.current_chunk} checksum status FAIL: chunk sum {binascii.hexlify(chunk['checksum']).decode()}, calculated sum {binascii.hexlify(status).decode()}"
                     self.status = ChunklistStatus.FAILURE
                     logging.info(self.error_msg)
                     return

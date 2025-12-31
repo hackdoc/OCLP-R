@@ -15,7 +15,8 @@ from ..detections import device_probe
 from . import (
     utilities,
     generate_smbios,
-    global_settings
+    global_settings,
+    translate_language
 )
 from ..datasets import (
     smbios_data,
@@ -28,7 +29,7 @@ class GenerateDefaults:
 
     def __init__(self, model: str, host_is_target: bool, global_constants: constants.Constants, ignore_settings_file: bool = False) -> None:
         self.constants: constants.Constants = global_constants
-
+        self.trans=translate_language.TranslateLanguage(global_constants=global_constants).defaults()
         self.model: str = model
 
         self.host_is_target: bool = host_is_target
@@ -421,7 +422,7 @@ class GenerateDefaults:
         try:
             plist = plistlib.load(Path(settings_plist).open("rb"))
         except Exception as e:
-            logging.error("Error: Unable to read global settings file")
+            logging.error(self.trans["Error: Unable to read global settings file"])
             logging.error(e)
             return
 
@@ -439,10 +440,10 @@ class GenerateDefaults:
                 original_type = type(getattr(self.constants, constants_key))
                 new_type = type(plist[key])
                 if original_type != new_type:
-                    logging.error(f"Global settings type mismatch for {constants_key}: {original_type} vs {new_type}")
-                    logging.error(f"Removing {key} from global settings")
+                    logging.error(f"{self.trans['Global settings type mismatch for']} {constants_key}: {original_type} {self.trans['vs']} {new_type}")
+                    logging.error(f"{self.trans['Removing']} {key} {self.trans['from global settings']}")
                     global_settings.GlobalEnviromentSettings().delete_property(key)
                     continue
 
-                logging.info(f"Setting {constants_key} to {plist[key]}")
+                logging.info(f"{self.trans['Setting']} {constants_key} {self.trans['to']} {plist[key]}")
                 setattr(self.constants, constants_key, plist[key])

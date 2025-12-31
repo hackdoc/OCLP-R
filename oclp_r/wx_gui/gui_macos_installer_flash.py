@@ -165,7 +165,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         # Fetch local disks
         def _fetch_disks():
-            self.available_disks = macos_installer_handler.InstallerCreation().list_disk_to_format()
+            self.available_disks = macos_installer_handler.InstallerCreation(self.constants).list_disk_to_format()
 
             # Need to clean up output on pre-Sierra
             # Disk images are mixed in with regular disks (ex. payloads.dmg)
@@ -364,7 +364,7 @@ class macOSInstallerFlashFrame(wx.Frame):
     def _prepare_resources(self, installer_path: str, disk: str) -> None:
 
         def prepare_script(self, installer_path: str, disk: str, constants: constants.Constants):
-            self.prepare_result = macos_installer_handler.InstallerCreation().generate_installer_creation_script(constants.payload_path, installer_path, disk)
+            self.prepare_result = macos_installer_handler.InstallerCreation(constants).generate_installer_creation_script(constants.payload_path, installer_path, disk)
 
         thread = threading.Thread(target=prepare_script, args=(self, installer_path, disk, self.constants))
         thread.start()

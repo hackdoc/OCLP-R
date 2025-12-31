@@ -760,7 +760,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         # Start thread to extract installer
         self.result = False
         def extract_installer():
-            self.result = macos_installer_handler.InstallerCreation().install_macOS_installer(self.constants.payload_path)
+            self.result = macos_installer_handler.InstallerCreation(global_constants=self.constants).install_macOS_installer(self.constants.payload_path)
 
         thread = threading.Thread(target=extract_installer)
         thread.start()

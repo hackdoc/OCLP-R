@@ -252,6 +252,7 @@ class Constants:
         self.apfs_trim_timeout:      bool = True   #  Set APFS Trim timeout
         self.custom_sip_value:        int = None   #  Set custom SIP value
         self.allow_apfs_aligned_patch:           bool = True
+        self.language_choose:                   int = 1 #1:en 0:zh
 
         ## Non-Metal OS support
         self.legacy_accel_support = [
