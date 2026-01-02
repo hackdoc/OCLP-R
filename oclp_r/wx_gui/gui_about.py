@@ -6,19 +6,26 @@ import wx
 import wx.adv
 import logging
 
+from oclp_r.support import translate_language
+
+from oclp_r.sys_patch.patchsets.detect import cons
+
 from .. import constants
 
 from ..wx_gui import gui_support
 
+from ..support.translate_language import TranslateLanguage
 
 class AboutFrame(wx.Frame):
 
     def __init__(self, global_constants: constants.Constants) -> None:
         if wx.FindWindowByName("About"):
             return
+        
 
-        logging.info("Generating About frame")
-        super(AboutFrame, self).__init__(None, title="About", size=(350, 350), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        self.trans=TranslateLanguage(global_constants=global_constants).gui_about()
+        logging.info(self.trans["Generating About frame"])
+        super(AboutFrame, self).__init__(None, title=self.trans["About"], size=(350, 350), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         self.constants: constants.Constants = global_constants
         self.Centre()
         self.hyperlink_colour = (25, 179, 231)
@@ -31,20 +38,19 @@ class AboutFrame(wx.Frame):
     def _generate_elements(self, frame: wx.Frame) -> None:
 
         # Set title
-        title = wx.StaticText(frame, label="OCLP-R", pos=(-1, 5))
+        title = wx.StaticText(frame, label=self.trans["OCLP-R"], pos=(-1, 5))
         title.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title.Centre(wx.HORIZONTAL)
 
         # Set version
-        version = wx.StaticText(frame, label=f"Version: {self.constants.patcher_version}", pos=(-1, title.GetPosition()[1] + title.GetSize()[1] + 5))
+        version = wx.StaticText(frame, label=f"{self.trans['Version']}: {self.constants.patcher_version}", pos=(-1, title.GetPosition()[1] + title.GetSize()[1] + 5))
         version.SetFont(gui_support.font_factory(11, wx.FONTWEIGHT_NORMAL))
         version.Centre(wx.HORIZONTAL)
 
         # Description
         description = [
-            "I just wanted to relax, but I got addicted to it.",
-            "I just wanted to protect the last hackintosh.",
-
+            self.trans["I just wanted to relax, but I got addicted to it."],
+            self.trans["I just wanted to protect the last hackintosh."],
         ]
         spacer = 5
         for line in description:

@@ -20,7 +20,7 @@ from . import (
     analytics_handler,
     global_settings
 )
-
+from .translate_language import TranslateLanguage
 
 class InitializeLoggingSupport:
     """
@@ -44,7 +44,7 @@ class InitializeLoggingSupport:
 
     def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
-
+        self.trans=TranslateLanguage(self.constants).logging_handler()
         log_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
 
         self.log_filename: str  = f"OCLP-R_{self.constants.patcher_version}_{log_time}.log"
@@ -79,7 +79,7 @@ class InitializeLoggingSupport:
                 try:
                     base_path.mkdir()
                 except Exception as e:
-                    print(f"Failed to create Hackdoc folder: {e}")
+                    print(self.trans["Failed to create Hackdoc folder: {0}"].format(e))
                     base_path = Path("/Users/Shared")
 
         self.log_filepath = Path(f"{base_path}/{self.log_filename}").expanduser()
@@ -118,7 +118,7 @@ class InitializeLoggingSupport:
             try:
                 log.unlink()
             except Exception as e:
-                logging.error(f"Failed to delete log file: {e}")
+                logging.error(self.trans["Failed to delete log file: {0}"].format(e))
 
 
     def _initialize_logging_configuration(self, log_to_file: bool = True) -> None:
@@ -156,8 +156,8 @@ class InitializeLoggingSupport:
         try:
             self._initialize_logging_configuration()
         except Exception as e:
-            print(f"Failed to initialize logging framework: {e}")
-            print("Retrying without logging to file...")
+            print(self.trans["Failed to initialize logging framework: {0}"].format(e))
+            print(self.trans["Retrying without logging to file..."])
             self._initialize_logging_configuration(log_to_file=False)
 
 
@@ -173,7 +173,7 @@ class InitializeLoggingSupport:
         logging.info(str_msg)
         logging.info('#' * str_len)
 
-        logging.info("Log file set:")
+        logging.info(self.trans["Log file set:"])
         logging.info(f"  {self.log_filepath}")
         # Display relative path to avoid disclosing user's username
         try:
@@ -192,7 +192,7 @@ class InitializeLoggingSupport:
             """
             Reroute traceback in main thread to logging module
             """
-            logging.error("Uncaught exception in main thread", exc_info=(type, value, tb))
+            logging.error(self.trans["Uncaught exception in main thread"], exc_info=(type, value, tb))
             self._display_debug_properties()
 
             if "wx/" in "".join(traceback.format_exception(type, value, tb)):
@@ -202,18 +202,19 @@ class InitializeLoggingSupport:
             if self.constants.cli_mode is True:
                 return
 
-            error_msg = f"OCLP-R encountered the following internal error:\n\n"
+            error_msg = self.trans["OCLP-R encountered the following internal error:\n\n"]
             error_msg += f"{type.__name__}: {value}"
             if tb:
                 error_msg += f"\n\n{traceback.extract_tb(tb)[-1]}"
 
-            error_msg += "\n\nReveal log file?"
+            error_msg += self.trans["\n\nReveal log file?"]
 
             # Ask user if they want to send crash report
             try:
-                result = applescript.AppleScript(f'display dialog "{error_msg}" with title "OCLP-R ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution').run()
+                #result = applescript.AppleScript(self.trans['display dialog "{error_msg}" with title "OCLP-R ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution'].format(error_msg,self.constants.patcher_version)).run()
+                result=applescript.AppleScript(f'display dialog "{error_msg}" with title "OCLP-R ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution').run()
             except Exception as e:
-                logging.error(f"Failed to display crash report dialog: {e}")
+                logging.error(self.trans["Failed to display crash report dialog: {0}"].format(e))
                 return
 
             if result[applescript.AEType(b'bhit')] != "Yes":
@@ -226,7 +227,7 @@ class InitializeLoggingSupport:
             """
             Reroute traceback in spawned thread to logging module
             """
-            logging.error("Uncaught exception in spawned thread", exc_info=(args))
+            logging.error(self.trans["Uncaught exception in spawned thread"], exc_info=(args))
 
         sys.excepthook = custom_excepthook
         threading.excepthook = custom_thread_excepthook
@@ -245,17 +246,17 @@ class InitializeLoggingSupport:
         """
         Display debug properties, primarily after main thread crash
         """
-        logging.info("Host Properties:")
-        logging.info(f"  XNU Version: {self.constants.detected_os}.{self.constants.detected_os_minor}")
-        logging.info(f"  XNU Build: {self.constants.detected_os_build}")
-        logging.info(f"  macOS Version: {self.constants.detected_os_version}")
-        logging.info("Debug Properties:")
-        logging.info(f"  Effective User ID: {os.geteuid()}")
-        logging.info(f"  Effective Group ID: {os.getegid()}")
-        logging.info(f"  Real User ID: {os.getuid()}")
-        logging.info(f"  Real Group ID: {os.getgid()}")
-        logging.info("  Arguments passed to Patcher:")
+        logging.info(self.trans["Host Properties:"])
+        logging.info(self.trans["  XNU Version: {0}.{1}"].format(self.constants.detected_os,self.constants.detected_os_minor))
+        logging.info(self.trans["  XNU Build: {0}"].format(self.constants.detected_os_build))
+        logging.info(self.trans["  macOS Version: {0}"].format(self.constants.detected_os_version))
+        logging.info(self.trans["Debug Properties:"])
+        logging.info(self.trans["  Effective User ID: {0}"].format(os.geteuid()))
+        logging.info(self.trans["  Effective Group ID: {0}"].format(os.getegid()))
+        logging.info(self.trans["  Real User ID: {0}"].format(os.getuid()))
+        logging.info(self.trans["  Real Group ID: {0}"].format(os.getgid()))
+        logging.info(self.trans["  Arguments passed to Patcher:"])
         for arg in sys.argv:
             logging.info(f"    {arg}")
 
-        logging.info(f"Host Properties:\n{pprint.pformat(self.constants.computer.__dict__, indent=4)}")
+        logging.info(f"{self.trans["Host Properties:"]}\n{pprint.pformat(self.constants.computer.__dict__, indent=4)}")

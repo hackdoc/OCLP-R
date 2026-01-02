@@ -13,7 +13,7 @@ from packaging import version
 from . import network_handler
 
 from .. import constants
-
+from .translate_language import TranslateLanguage
 
 REPO_LATEST_RELEASE_URL: str = "https://api.github.com/repos/hackdoc/OCLP-R/releases/latest"
 
@@ -21,10 +21,11 @@ REPO_LATEST_RELEASE_URL: str = "https://api.github.com/repos/hackdoc/OCLP-R/rele
 class CheckBinaryUpdates:
     def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
+        self.trans = TranslateLanguage(self.constants).updates()
         try:
             self.binary_version = version.parse(self.constants.patcher_version)
         except version.InvalidVersion:
-            assert self.constants.special_build is True, "Invalid version number for binary"
+            assert self.constants.special_build is True, self.trans["Invalid version number for binary"]
             # Special builds will not have a proper version number
             self.binary_version = version.parse("0.0.0")
 
@@ -115,7 +116,7 @@ class CheckBinaryUpdates:
             return None
 
         for asset in data_set["assets"]:
-            logging.info(f"Found asset: {asset['name']}")
+            logging.info(self.trans["Found asset: {0}"].format(asset['name']))
             if asset["name"] == "OCLP-R.pkg":
                 begi=f"https://github.com/hackdoc/OCLP-R/releases/{latest_remote_version}"
                 if self.constants.github_proxy_link=="Default":

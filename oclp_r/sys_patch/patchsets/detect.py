@@ -69,35 +69,38 @@ from ...detections import (
     amfi_detect,
     device_probe
 )
+from ...support import translate_language
 
+cons=constants.Constants()
+trans=translate_language.TranslateLanguage_sys_patch(cons).detect()
 
 class HardwarePatchsetSettings(StrEnum):
     """
     Enum for patch settings
     """
-    KERNEL_DEBUG_KIT_REQUIRED     = "Settings: Kernel Debug Kit required"
-    KERNEL_DEBUG_KIT_MISSING      = "Settings: Kernel Debug Kit missing"
-    METALLIB_SUPPORT_PKG_REQUIRED = "Settings: MetallibSupportPkg.pkg required"
-    METALLIB_SUPPORT_PKG_MISSING  = "Settings: MetallibSupportPkg.pkg missing"
+    KERNEL_DEBUG_KIT_REQUIRED     = trans["Settings: Kernel Debug Kit required"]
+    KERNEL_DEBUG_KIT_MISSING      = trans["Settings: Kernel Debug Kit missing"]
+    METALLIB_SUPPORT_PKG_REQUIRED = trans["Settings: MetallibSupportPkg.pkg required"]
+    METALLIB_SUPPORT_PKG_MISSING  = trans["Settings: MetallibSupportPkg.pkg missing"]
 
 
 class HardwarePatchsetValidation(StrEnum):
     """
     Enum for validation settings
     """
-    UNSUPPORTED_HOST_OS           = "Validation: Unsupported Host OS"
-    MISSING_NETWORK_CONNECTION    = "Validation: Missing Network Connection"
-    FILEVAULT_ENABLED             = "Validation: FileVault is enabled"
-    SIP_ENABLED                   = "Validation: System Integrity Protection is enabled"
-    SECURE_BOOT_MODEL_ENABLED     = "Validation: SecureBootModel is enabled"
-    AMFI_ENABLED                  = "Validation: AMFI is enabled"
-    WHATEVERGREEN_MISSING         = "Validation: WhateverGreen.kext missing"
-    FORCE_OPENGL_MISSING          = "Validation: Force OpenGL property missing"
-    FORCE_COMPAT_MISSING          = "Validation: Force compat property missing"
-    NVDA_DRV_MISSING              = "Validation: nvda_drv(_vrl) variable missing"
-    PATCHING_NOT_POSSIBLE         = "Validation: Patching not possible"
-    UNPATCHING_NOT_POSSIBLE       = "Validation: Unpatching not possible"
-    REPATCHING_NOT_SUPPORTED      = "Validation: Root volume dirty"
+    UNSUPPORTED_HOST_OS           = trans["Validation: Unsupported Host OS"]
+    MISSING_NETWORK_CONNECTION    = trans["Validation: Missing Network Connection"]
+    FILEVAULT_ENABLED             = trans["Validation: FileVault is enabled"]
+    SIP_ENABLED                   = trans["Validation: System Integrity Protection is enabled"]
+    SECURE_BOOT_MODEL_ENABLED     = trans["Validation: SecureBootModel is enabled"]
+    AMFI_ENABLED                  = trans["Validation: AMFI is enabled"]
+    WHATEVERGREEN_MISSING         = trans["Validation: WhateverGreen.kext missing"]
+    FORCE_OPENGL_MISSING          = trans["Validation: Force OpenGL property missing"]
+    FORCE_COMPAT_MISSING          = trans["Validation: Force compat property missing"]
+    NVDA_DRV_MISSING              = trans["Validation: nvda_drv(_vrl) variable missing"]
+    PATCHING_NOT_POSSIBLE         = trans["Validation: Patching not possible"]
+    UNPATCHING_NOT_POSSIBLE       = trans["Validation: Unpatching not possible"]
+    REPATCHING_NOT_SUPPORTED      = trans["Validation: Root volume dirty"]
 
 
 class HardwarePatchsetDetection:
@@ -114,7 +117,7 @@ class HardwarePatchsetDetection:
         self._os_build   = os_build   or self._constants.detected_os_build
         self._os_version = os_version or self._constants.detected_os_version
         self._validation = validation
-
+        self.trans = trans
         self._hardware_variants = [
             intel_iron_lake.IntelIronLake,
             intel_sandy_bridge.IntelSandyBridge,
@@ -203,12 +206,12 @@ class HardwarePatchsetDetection:
         try:
             content = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", "/"], capture_output=True).stdout)
         except plistlib.InvalidFileException:
-            raise RuntimeError("Failed to parse diskutil output.")
-
+            raise RuntimeError(self.trans["Failed to parse diskutil output."])
+        
         seal = content["Sealed"]
 
         if "Broken" in seal:
-            logging.error(f"System volume is tainted, unpatching is required")
+            logging.error(self.trans["System volume is tainted, unpatching is required"])
             return True
 
         return False
@@ -216,21 +219,27 @@ class HardwarePatchsetDetection:
         """
         Determine if repatching is not allowed
         """
-        oclp_patch_path = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
+        oclp_patch_path = "/System/Library/CoreServices/oclp-r.plist"
         if not Path(oclp_patch_path).exists():
             return self._is_root_volume_dirty()
 
         oclp_plist = plistlib.load(open(oclp_patch_path, "rb"))
 
         if self._constants.computer.oclp_sys_url != self._constants.commit_info[2]:
-            logging.error("Installed patches are from different commit, unpatching is required")
+            logging.error(self.trans["Installed patches are from different commit, unpatching is required"])
             return True
 
-        wireless_keys = {"Legacy Wireless", "Modern Wireless"}
+
+
+        wireless_keys = {"Legacy Wireless", "Modern Wireless", "Modern Wireless Common", "Modern Wireless Extended"}
 
         # Keep in sync with generate_patchset_plist
         metadata_keys = {
-            "OpenCore Legacy Patcher",
+            "oclp-r",
+            "oclp-R",
+            "OCLP-r",
+            "OCLP-R",
+           # "OpenCore Legacy Patcher",
             "PatcherSupportPkg",
             "Time Patched",
             "Commit URL",
@@ -242,7 +251,7 @@ class HardwarePatchsetDetection:
 
         existing_patches = set(oclp_plist) - wireless_keys - metadata_keys
         if existing_patches:
-            logging.error(f"Patch(es) already installed: {', '.join(existing_patches)}, unpatching is required")
+            logging.error(self.trans["Patch(es) already installed: {0}, unpatching is required"].format(", ".join(existing_patches)))
             return True
 
         return False

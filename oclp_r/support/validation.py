@@ -26,7 +26,7 @@ from ..sys_patch.patchsets import (
     PatchType,
     DynamicPatchset
 )
-
+from .translate_language import TranslateLanguage
 
 class PatcherValidation:
     """
@@ -34,12 +34,12 @@ class PatcherValidation:
 
     Primarily for Continuous Integration
     """
-
+    
     def __init__(self, global_constants: constants.Constants, verify_unused_files: bool = False) -> None:
         self.constants: constants.Constants = global_constants
         self.verify_unused_files = verify_unused_files
         self.active_patchset_files = []
-
+        self.trans=TranslateLanguage(self.constants).validation()
         self.constants.validate = True
 
         self.valid_dumps = [
@@ -83,16 +83,16 @@ class PatcherValidation:
         """
 
         for model in model_array.SupportedSMBIOS:
-            logging.info(f"Validating predefined model: {model}")
+            logging.info(self.trans["Validating predefined model: {model}"].format(model=model))
             self.constants.custom_model = model
             build.BuildOpenCore(self.constants.custom_model, self.constants)
             result = subprocess.run([self.constants.ocvalidate_path, f"{self.constants.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
-                logging.info("Error on build!")
+                logging.info(self.trans["Error on build!"])
                 subprocess_wrapper.log(result)
-                raise Exception(f"Validation failed for predefined model: {model}")
+                raise Exception(self.trans["Validation failed for predefined model: {model}"].format(model=model))
             else:
-                logging.info(f"Validation succeeded for predefined model: {model}")
+                logging.info(self.trans["Validation succeeded for predefined model: {model}"].format(model=model))
 
 
     def _build_dumps(self) -> None:
@@ -104,15 +104,15 @@ class PatcherValidation:
         for model in self.valid_dumps:
             self.constants.computer = model
             self.constants.custom_model = ""
-            logging.info(f"Validating dumped model: {self.constants.computer.real_model}")
+            logging.info(self.trans["Validating dumped model: {model}"].format(self.constants.computer.real_model))
             build.BuildOpenCore(self.constants.computer.real_model, self.constants)
             result = subprocess.run([self.constants.ocvalidate_path, f"{self.constants.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
-                logging.info("Error on build!")
+                logging.info(self.trans["Error on build!"])
                 subprocess_wrapper.log(result)
-                raise Exception(f"Validation failed for predefined model: {self.constants.computer.real_model}")
+                raise Exception(self.trans["Validation failed for predefined model: {model}"].format(self.constants.computer.real_model))
             else:
-                logging.info(f"Validation succeeded for predefined model: {self.constants.computer.real_model}")
+                logging.info(self.trans["Validation succeeded for predefined model: {model}"].format(self.constants.computer.real_model))
 
 
     def _validate_root_patch_files(self, major_kernel: int, minor_kernel: int) -> None:
@@ -133,7 +133,7 @@ class PatcherValidation:
             # Check if any unknown PathType is present
             for install_type in patchset[patch_core]:
                 if install_type not in PatchType:
-                    raise Exception(f"Unknown PatchType: {install_type}")
+                    raise Exception(self.trans["Unknown PatchType: {install_type}"].format(install_type=install_type))
 
             for install_type in [PatchType.OVERWRITE_SYSTEM_VOLUME, PatchType.OVERWRITE_DATA_VOLUME, PatchType.MERGE_SYSTEM_VOLUME, PatchType.MERGE_DATA_VOLUME]:
                 if install_type in patchset[patch_core]:
@@ -155,15 +155,15 @@ class PatcherValidation:
 
                             source_file = str(self.constants.payload_local_binaries_root_path) + "/" + patchset[patch_core][install_type][install_directory][install_file] + install_directory + "/" + install_file
                             if not Path(source_file).exists():
-                                logging.info(f"File not found: {source_file}")
-                                raise Exception(f"Failed to find {source_file}")
+                                logging.info(self.trans["File not found: {source_file}"].format(source_file=source_file))
+                                raise Exception(self.trans["Failed to find {source_file}"].format(source_file=source_file))
                             if self.verify_unused_files is True:
                                 if source_file not in self.active_patchset_files:
                                     self.active_patchset_files.append(source_file)
 
-        logging.info(f"Validating against Darwin {major_kernel}.{minor_kernel}")
+        logging.info(self.trans["Validating against Darwin {major_kernel}.{minor_kernel}"].format(major_kernel=major_kernel, minor_kernel=minor_kernel))
         if not sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, f"OCLP-R-{major_kernel}.{minor_kernel}.plist", None, None):
-            raise Exception("Failed to generate patchset plist")
+            raise Exception(self.trans["Failed to generate patchset plist"])
 
         # Remove the plist file after validation
         Path(self.constants.payload_path / f"OCLP-R-{major_kernel}.{minor_kernel}.plist").unlink()
@@ -190,10 +190,10 @@ class PatcherValidation:
             )
 
             if output.returncode != 0:
-                logging.info("Failed to unmount Universal-Binaries.dmg")
+                logging.info(self.trans["Failed to unmount Universal-Binaries.dmg"].format())
                 subprocess_wrapper.log(output)
 
-                raise Exception("Failed to unmount Universal-Binaries.dmg")
+                raise Exception(self.trans["Failed to unmount Universal-Binaries.dmg"].format())
 
 
     def _validate_sys_patch(self) -> None:
@@ -205,10 +205,10 @@ class PatcherValidation:
             dl_obj = network_handler.DownloadObject(f"https://github.com/hackdoc/PatcherSupportPkg/releases/download/{self.constants.patcher_support_pkg_version}/Universal-Binaries.dmg", self.constants.payload_local_binaries_root_path_dmg)
             dl_obj.download(spawn_thread=False)
             if dl_obj.download_complete is False:
-                logging.info("Failed to download Universal-Binaries.dmg")
-                raise Exception("Failed to download Universal-Binaries.dmg")
+                logging.info(self.trans["Failed to download Universal-Binaries.dmg"].format())
+                raise Exception(self.trans["Failed to download Universal-Binaries.dmg"].format())
 
-        logging.info("Validating Root Patch File integrity")
+        logging.info(self.trans["Validating Root Patch File integrity"].format())
 
         self._unmount_dmg()
 
@@ -224,12 +224,12 @@ class PatcherValidation:
         )
 
         if output.returncode != 0:
-            logging.info("Failed to mount Universal-Binaries.dmg")
+            logging.info(self.trans["Failed to mount Universal-Binaries.dmg"].format())
             subprocess_wrapper.log(output)
 
-            raise Exception("Failed to mount Universal-Binaries.dmg")
+            raise Exception(self.trans["Failed to mount Universal-Binaries.dmg"].format())
 
-        logging.info("Mounted Universal-Binaries.dmg")
+        logging.info(self.trans["Mounted Universal-Binaries.dmg"].format())
 
         atexit.register(self._unmount_dmg)
 
@@ -237,7 +237,7 @@ class PatcherValidation:
             for i in range(0, 10):
                 self._validate_root_patch_files(supported_os, i)
 
-        logging.info("Validating SNB Board ID patcher")
+        logging.info(self.trans["Validating SNB Board ID patcher"].format())
         self.constants.computer.reported_board_id = "Mac-7BA5B2DFE22DDD8C"
         sys_patch_helpers.SysPatchHelpers(self.constants).snb_board_id_patch(self.constants.payload_local_binaries_root_path)
 
@@ -254,10 +254,10 @@ class PatcherValidation:
         )
 
         if output.returncode != 0:
-            logging.info("Failed to unmount Universal-Binaries.dmg")
+            logging.info(self.trans["Failed to unmount Universal-Binaries.dmg"].format())
             subprocess_wrapper.log(output)
 
-            raise Exception("Failed to unmount Universal-Binaries.dmg")
+            raise Exception(self.trans["Failed to unmount Universal-Binaries.dmg"].format())
 
         subprocess.run(
             [
@@ -306,7 +306,7 @@ class PatcherValidation:
             unused_files.append(relative_path)
 
         if len(unused_files) > 0:
-            logging.info("Unused files found:")
+            logging.info(self.trans["Unused files found:"])
             for file in unused_files:
                 logging.info(f"  {file}")
 

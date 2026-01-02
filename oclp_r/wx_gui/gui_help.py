@@ -9,6 +9,8 @@ import webbrowser
 from .. import constants
 
 from ..wx_gui import gui_support
+from ..support.translate_language import TranslateLanguage
+
 
 
 class HelpFrame(wx.Frame):
@@ -16,7 +18,8 @@ class HelpFrame(wx.Frame):
     Append to main menu through a modal dialog
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None) -> None:
-        logging.info("Initializing Help Frame")
+        self.trans= TranslateLanguage(global_constants=global_constants).gui_help()
+        logging.info(f"{self.trans['Initializing Help Frame']}")
         self.dialog = wx.Dialog(parent, title=title, size=(300, 200))
 
         self.constants: constants.Constants = global_constants
@@ -39,18 +42,18 @@ class HelpFrame(wx.Frame):
 
         frame = self if not frame else frame
 
-        title_label = wx.StaticText(frame, label="Patcher Resources", pos=(-1,5))
+        title_label = wx.StaticText(frame, label=self.trans["Patcher Resources"], pos=(-1,5))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
-        text_label = wx.StaticText(frame, label="Following resources are available:", pos=(-1,30))
+        text_label = wx.StaticText(frame, label=self.trans["Following resources are available:"], pos=(-1,30))
         text_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         text_label.Centre(wx.HORIZONTAL)
 
         buttons = {
-            "Official Guide":           self.constants.guide_link,
-            "Official Phone Support":   "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            "Community Discord Server": self.constants.discord_link,
+            self.trans["Official Guide"]:           self.constants.guide_link,
+            self.trans["Official Phone Support"]:   "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            self.trans["Community Discord Server"]: self.constants.discord_link,
         }
 
         for button in buttons:
@@ -59,7 +62,7 @@ class HelpFrame(wx.Frame):
             help_button.Centre(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
-        return_button = wx.Button(frame, label="Return to Main Menu", pos=(-1, help_button.GetPosition()[1] + help_button.GetSize()[1]+7), size=(150, 30))
+        return_button = wx.Button(frame, label=self.trans["Return to Main Menu"], pos=(-1, help_button.GetPosition()[1] + help_button.GetSize()[1]+7), size=(150, 30))
         return_button.Bind(wx.EVT_BUTTON, lambda event: frame.Close())
         return_button.Centre(wx.HORIZONTAL)
 

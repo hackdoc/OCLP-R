@@ -16,7 +16,7 @@ from ..datasets import (
     smbios_data,
     bluetooth_data
 )
-
+from ..support.translate_language import TranslateLanguage_efi_builder
 
 class BuildBluetooth:
     """
@@ -26,6 +26,7 @@ class BuildBluetooth:
     """
 
     def __init__(self, model: str, global_constants: constants.Constants, config: dict) -> None:
+        self.trans = TranslateLanguage_efi_builder(global_constants=global_constants).bluetooth()
         self.model: str = model
         self.config: dict = config
         self.constants: constants.Constants = global_constants
@@ -60,7 +61,7 @@ class BuildBluetooth:
         On-Model Hardware Detection Handling
         """
         if self.computer.bluetooth_chipset in ["BRCM2070 Hub", "BRCM2046 Hub"]:
-            logging.info("- Fixing Legacy Bluetooth for macOS Monterey")
+            logging.info(self.trans["- Fixing Legacy Bluetooth for macOS Monterey"])
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -btlfxallowanyaddr"
@@ -71,19 +72,19 @@ class BuildBluetooth:
             # Due to this, BlueToolFixup is required to resolve Firmware Uploading on legacy chipsets
             if self.computer.wifi:
                 if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm4360:
-                    logging.info("- Fixing Legacy Bluetooth for macOS Monterey")
+                    logging.info(self.trans["- Fixing Legacy Bluetooth for macOS Monterey"])
                     support.BuildSupport(self.model, self.constants, self.config).enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
 
             # Older Mac firmwares (pre-2012) don't support the new chipsets correctly (regardless of WiFi card)
             if self.model in smbios_data.smbios_dictionary:
                 if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.ivy_bridge.value:
-                    logging.info("- Fixing Legacy Bluetooth for macOS Monterey")
+                    logging.info(self.trans["- Fixing Legacy Bluetooth for macOS Monterey"])
                     support.BuildSupport(self.model, self.constants, self.config).enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
                     self._bluetooth_firmware_incompatibility_workaround()
         elif self.computer.bluetooth_chipset == "3rd Party Bluetooth 4.0 Hub":
-            logging.info("- Detected 3rd Party Bluetooth Chipset")
+            logging.info(self.trans["- Detected 3rd Party Bluetooth Chipset"])
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
-            logging.info("- Enabling Bluetooth FeatureFlags")
+            logging.info(self.trans["- Enabling Bluetooth FeatureFlags"])
             self.config["Kernel"]["Quirks"]["ExtendBTFeatureFlags"] = True
 
 
@@ -98,7 +99,7 @@ class BuildBluetooth:
             return
 
         if smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] <= bluetooth_data.bluetooth_data.BRCM20702_v1.value:
-            logging.info("- Fixing Legacy Bluetooth for macOS Monterey")
+            logging.info(self.trans["- Fixing Legacy Bluetooth for macOS Monterey"])
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
             if smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] <= bluetooth_data.bluetooth_data.BRCM2070.value:
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -btlfxallowanyaddr"

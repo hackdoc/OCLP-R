@@ -300,7 +300,7 @@ class SysPatchDisplayFrame(wx.Frame):
         Thus we'll need to see if the exact same OCLP build was used already
         """
 
-        logging.info("Checking if new patches are needed")
+        logging.info(self.trans["Checking if new patches are needed"])
 
         if self.constants.computer.oclp_sys_url != self.constants.commit_info[2]:
             # If commits are different, assume patches are as well

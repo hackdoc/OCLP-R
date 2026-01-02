@@ -1,17 +1,26 @@
 from ..constants import Constants
-"""
-def xxx():
-    if self.language_point==1:
-        trans={...}
-        return trans
-    elif self.language_point==0:
-        trans={...}
-        return trans
-"""
+
 class TranslateLanguage:
     def __init__(self, global_constants: Constants) -> None:
         self.constants: Constants = global_constants
         self.language_point = self.constants.language_choose
+    def application_entry(self):
+        if self.language_point==1:
+            trans={
+                "Current working directory:":"Current working directory:",
+                "Current working directory was invalid, switched to:":"Current working directory was invalid, switched to:",
+                "Detected arguments, switching to CLI mode":"Detected arguments, switching to CLI mode",
+                "Main entry point":"Main entry point",
+            }
+            return trans
+        elif self.language_point==0:
+            trans={
+                "Current working directory:":"当前工作目录：",
+                "Current working directory was invalid, switched to:":"当前工作目录无效，已切换到：",
+                "Detected arguments, switching to CLI mode":"检测到参数，切换到CLI模式",
+                "Main entry point":"主入口点",
+            }
+            return trans
     def gengrate_smbios(self):
         if self.language_point==1:
             trans={
@@ -21,8 +30,8 @@ class TranslateLanguage:
             return trans
         elif self.language_point==0:
             trans={
-                "Unknown SMBIOS for spoofing:":"未知 SMBIOS 用于 spoofing：",
-                "- Failed to find FirmwareFeatures, falling back on defaults":"- 未找到 FirmwareFeatures，回退到默认值",
+                "Unknown SMBIOS for spoofing:":"未知 SMBIOS 用于 spoofing:",
+                "- Failed to find FirmwareFeatures, falling back on defaults":"- 未找到 FirmwareFeatures, 回退到默认值",
             }
             return trans
     def arguements(self):
@@ -139,29 +148,29 @@ If you plan to create the USB for another machine, please select the "Change Mod
         elif self.language_point==0:
             trans = {
                 "Set Validation Mode": "设置验证模式",
-                "- Running from Installer Sandbox, blocking OS updaters": "- 从安装程序沙箱运行，阻止操作系统更新程序",
+                "- Running from Installer Sandbox, blocking OS updaters": "- 从安装程序沙箱运行, 阻止操作系统更新程序",
                 "Set System Volume patching": "设置系统卷修补",
                 "Set System Volume unpatching": "设置系统卷取消修补",
                 "Set Auto patching": "设置自动修补",
                 "Preparing host for macOS update": "准备主机以进行 macOS 更新",
-                "No update staged, skipping": "没有暂存的更新，跳过",
+                "No update staged, skipping": "没有暂存的更新, 跳过",
                 "Preparing for update to": "准备更新到",
-                "Another instance of OS caching is running, exiting": "另一个操作系统缓存实例正在运行，退出",
+                "Another instance of OS caching is running, exiting": "另一个操作系统缓存实例正在运行, 退出",
                 "- Failed to load plist for": "- 无法加载 plist 文件",
                 "- Removing": "- 正在删除",
-                "- Using custom model:": "- 使用自定义型号：",
+                "- Using custom model:":"- 使用自定义型号:",
                 """Your model is not supported by this patcher for running unsupported OSes!"
 
-If you plan to create the USB for another machine, please select the "Change Model" option in the menu.""": """您的型号不受此修补程序支持以运行不支持的操作系统！
+If you plan to create the USB for another machine, please select the "Change Model" option in the menu.""": """您的型号不受此修补程序支持以运行不支持的操作系统!
 
 如果您计划为另一台机器创建 USB，请在菜单中选择"更改型号"选项。""",
-                "- Using detected model:": "- 使用检测到的型号：",
+                "- Using detected model:":"- 使用检测到的型号:",
                 "- Set verbose configuration": "- 设置详细配置",
                 "- Set OpenCore DEBUG configuration": "- 设置 OpenCore 调试配置",
                 "- Set kext DEBUG configuration": "- 设置 kext 调试配置",
                 "- Set HidePicker configuration": "- 设置隐藏选择器配置",
                 "- Set Disable SIP configuration": "- 设置禁用 SIP 配置",
-                "- Set Disable SecureBootModel configuration": "- 设置禁用安全启动模型配置",
+                "- Set Disable SecureBootModel configuration": "- 设置禁用安全启动机型配置",
                 "- Set Vault configuration": "- 设置 Vault 配置",
                 "- Set FireWire Boot configuration": "- 设置 FireWire 启动配置",
                 "- Set NVMe Boot configuration": "- 设置 NVMe 启动配置",
@@ -169,10 +178,10 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "- Set Disable Thunderbolt configuration": "- 设置禁用 Thunderbolt 配置",
                 "- Forcing SurPlus override configuration": "- 强制 SurPlus 覆盖配置",
                 "- Set Moderate SMBIOS Patching configuration": "- 设置适度 SMBIOS 修补配置",
-                "- Unknown SMBIOS arg passed:": "- 传递了未知的 SMBIOS 参数：",
+                "- Unknown SMBIOS arg passed:":"- 传递了未知的 SMBIOS 参数:",
                 "- Building for natively supported model": "- 为原生支持的型号构建",
                 "Cleaning /Library/Extensions":"正在清理/Library/Extensions",
-                "Failed to load plist for":"加载plist失败：",
+                "Failed to load plist for":"加载plist失败: ",
                 "Set OpenCore Build":"设置OpenCore构建",
                 "Initializing Download Frame":"正在初始化下载框架",
                 "Initializing Build Frame":"正在初始化构建框架",
@@ -195,17 +204,17 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "KDK required":"需要KDK",
                 "MetallibSupportPkg required":"需要MetallibSupportPkg",
                 "No additional resources required":"不需要额外的资源",
-                "KDK download complete, validating with hdiutil":"KDK下载完成，正在用hdiutil验证",
+                "KDK download complete, validating with hdiutil":"KDK下载完成, 正在用hdiutil验证",
                 "KDK checksum validation passed":"KDK校验和验证通过",
                 "Mounting KDK":"正在挂载KDK",
                 "KDK installed successfully":"KDK安装成功",
                 "Failed to install KDK":"安装KDK失败",
                 "Metallib installed successfully":"Metallib安装成功",
                 "Failed to install Metallib":"安装Metallib失败",
-                "KDK missing, generating KDK download frame":"缺少KDK，正在生成KDK下载框架",
+                "KDK missing, generating KDK download frame":"缺少KDK, 正在生成KDK下载框架",
                 "KDK download complete":"KDK下载完成",
-                "MetallibSupportPkg missing, generating Metallib download frame":"缺少MetallibSupportPkg，正在生成Metallib下载框架",
-                "Metallib download complete, installing Metallib PKG":"Metallib下载完成，正在安装Metallib PKG",
+                "MetallibSupportPkg missing, generating Metallib download frame":"缺少MetallibSupportPkg, 正在生成Metallib下载框架",
+                "Metallib download complete, installing Metallib PKG":"Metallib下载完成, 正在安装Metallib PKG",
                 "Metallib installation complete":"Metallib安装完成",
                 "User cancelled OS caching":"用户取消了系统缓存",
                 "No applicable patches available":"没有可用的适用补丁",
@@ -227,8 +236,9 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Patch {patch} not installed":"补丁 {patch} 未安装",
                 "Using Real Model: {model}":"使用真实型号: {model}",
                 "Using Custom Model: {model}":"使用自定义型号: {model}",
-                "user_download_file:{path}":"user_download_file:{path}",
+                "user_download_file:{path}":"用户下载的文件: {path}",
                 "Choose Path: {path}":"选择路径: {path}",
+                "Choose":"选择",
                 "Updating Local Setting: {variable} = {value}":"正在更新本地设置: {variable} = {value}",
                 "Updating Global Setting: {variable} = {value}":"正在更新全局设置: {variable} = {value}",
                 "Updating System Defaults: {variable} = {value} ({type})":"正在更新系统默认值: {variable} = {value} ({type})",
@@ -247,7 +257,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
             trans = {
                 "Set Validation Mode": "设置验证模式",
-                "- Running from Installer Sandbox, blocking OS updaters": "- 从安装程序沙箱运行，阻止操作系统更新程序",
+                "- Running from Installer Sandbox, blocking OS updaters": "- 从安装程序沙箱运行, 阻止操作系统更新程序",
                 "Set System Volume patching": "设置系统卷修补",
                 "Set System Volume unpatching": "设置系统卷取消修补",
                 "Set Auto patching": "设置自动修补",
@@ -269,7 +279,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "- Set kext DEBUG configuration": "- 设置 kext 调试配置",
                 "- Set HidePicker configuration": "- 设置隐藏选择器配置",
                 "- Set Disable SIP configuration": "- 设置禁用 SIP 配置",
-                "- Set Disable SecureBootModel configuration": "- 设置禁用安全启动模型配置",
+                "- Set Disable SecureBootModel configuration": "- 设置禁用安全启动机型配置",
                 "- Set Vault configuration": "- 设置 Vault 配置",
                 "- Set FireWire Boot configuration": "- 设置 FireWire 启动配置",
                 "- Set NVMe Boot configuration": "- 设置 NVMe 启动配置",
@@ -280,7 +290,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "- Unknown SMBIOS arg passed:": "- 传递了未知的 SMBIOS 参数：",
                 "- Building for natively supported model": "- 为原生支持的型号构建",
                 "Cleaning /Library/Extensions":"正在清理/Library/Extensions",
-                "Failed to load plist for":"加载plist失败：",
+                "Failed to load plist for":"加载plist失败:",
                 "Set OpenCore Build":"设置OpenCore构建"
             }
         return trans
@@ -296,7 +306,8 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Failed to fetch KDK list, falling back to local KDK matching":"Failed to fetch KDK list, falling back to local KDK matching",
                 "Checking for KDKs loosely matching {0}":"Checking for KDKs loosely matching {0}",
                 "Found matching KDK: {0}":"Found matching KDK: {0}",
-                "Couldn't find KDK matching {0} ({1}) or {2} was installed.\nPlease ensure you have a network connection or manually install a KDK.":"Couldn't find KDK matching {0} ({1}) or {2} was installed.\nPlease ensure you have a network connection or manually install a KDK.",
+                "Couldn't find KDK matching {0} ({1}) or {2} was installed.":"Couldn't find KDK matching {0} ({1}) or {2} was installed.",
+                "Please ensure you have a network connection or manually install a KDK.":"Please ensure you have a network connection or manually install a KDK.",
                 "No direct match found for {0}, falling back to closest match":"No direct match found for {0}, falling back to closest match",
                 "Closest Match: {0} ({1})":"Closest Match: {0} ({1})",
                 "Direct match found for {0} ({1})":"Direct match found for {0} ({1})",
@@ -319,7 +330,9 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "KDK restoration skipped, running in passive mode":"KDK restoration skipped, running in passive mode",
                 "KDK does not exist: {0}":"KDK does not exist: {0}",
                 "Error: Kernel Debug Kit checksum verification failed!":"Error: Kernel Debug Kit checksum verification failed!",
-                "Kernel Debug Kit checksum verification failed, please try again.\n\nIf this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)":"Kernel Debug Kit checksum verification failed, please try again.\n\nIf this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)",
+                "Kernel Debug Kit checksum verification failed, please try again.":"Kernel Debug Kit checksum verification failed, please try again.",
+                "":"",
+                "If this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)":"If this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)",
                 "Kernel Debug Kit checksum verified":"Kernel Debug Kit checksum verified",
                 "Installing KDK package: {0}":"Installing KDK package: {0}",
                 "- This may take a while...":"- This may take a while...",
@@ -342,47 +355,50 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Pulling KDK list from KdkSupportPkg API":"从 KdkSupportPkg API 获取 KDK 列表",
                 "Could not fetch KDK list":"无法获取 KDK 列表",
                 "KDKs are not required for macOS Monterey or older":"macOS Monterey 或更早版本不需要 KDK",
-                "KDK already installed ({0}), skipping":"KDK 已安装 ({0})，跳过",
-                "Failed to fetch KDK list, falling back to local KDK matching":"获取 KDK 列表失败，回退到本地 KDK 匹配",
+                "KDK already installed ({0}), skipping":"KDK 已安装 ({0}), 跳过",
+                "Failed to fetch KDK list, falling back to local KDK matching":"获取 KDK 列表失败, 回退到本地 KDK 匹配",
                 "Checking for KDKs loosely matching {0}":"检查与 {0} 松散匹配的 KDK",
                 "Found matching KDK: {0}":"找到匹配的 KDK: {0}",
-                "Couldn't find KDK matching {0} ({1}) or {2} was installed.\nPlease ensure you have a network connection or manually install a KDK.":"找不到与 {0} ({1}) 或 {2} 匹配的 KDK。\n请确保您有网络连接或手动安装 KDK。",
-                "No direct match found for {0}, falling back to closest match":"未找到 {0} 的直接匹配，回退到最接近的匹配",
+                "Couldn't find KDK matching {0} ({1}) or {2} was installed.":"找不到与 {0} ({1}) 或 {2} 匹配的 KDK.",
+                "Please ensure you have a network connection or manually install a KDK.":"请确保您有网络连接或手动安装 KDK.",
+                "No direct match found for {0}, falling back to closest match":"未找到 {0} 的直接匹配, 回退到最接近的匹配",
                 "Closest Match: {0} ({1})":"最接近的匹配: {0} ({1})",
                 "Direct match found for {0} ({1})":"找到 {0} ({1}) 的直接匹配",
                 "Following KDK is recommended:":"建议使用以下 KDK:",
                 "- KDK Build: {0}":"- KDK 构建版本: {0}",
                 "- KDK Version: {0}":"- KDK 版本: {0}",
                 "- KDK URL: {0}":"- KDK URL: {0}",
-                "No download required, KDK already installed":"不需要下载，KDK 已安装",
-                "Could not retrieve KDK catalog, no KDK to download":"无法检索 KDK 目录，没有可下载的 KDK",
+                "No download required, KDK already installed":"不需要下载, KDK 已安装",
+                "Could not retrieve KDK catalog, no KDK to download":"无法检索 KDK 目录, 没有可下载的 KDK",
                 "Returning DownloadObject for KDK: {0}":"返回 KDK 的 DownloadObject: {0}",
                 "Failed to generate KDK Info.plist: {0}":"生成 KDK Info.plist 失败: {0}",
-                "Corrupted KDK found ({0}), removing due to missing SystemVersion.plist":"发现损坏的 KDK ({0})，由于缺少 SystemVersion.plist 而移除",
-                "Corrupted KDK found ({0}), removing due to missing ProductBuildVersion":"发现损坏的 KDK ({0})，由于缺少 ProductBuildVersion 而移除",
-                "pkg receipt missing for {0}, falling back to legacy validation":"{0} 的 pkg 收据缺失，回退到传统验证",
-                "Corrupted KDK found ({0}), removing due to missing file: {1}":"发现损坏的 KDK ({0})，由于缺少文件 {1} 而移除",
-                "Corrupted KDK found, removing due to missing: {0}":"发现损坏的 KDK，由于缺少 {0} 而移除",
+                "Corrupted KDK found ({0}), removing due to missing SystemVersion.plist":"发现损坏的 KDK ({0}), 由于缺少 SystemVersion.plist 而移除",
+                "Corrupted KDK found ({0}), removing due to missing ProductBuildVersion":"发现损坏的 KDK ({0}), 由于缺少 ProductBuildVersion 而移除",
+                "pkg receipt missing for {0}, falling back to legacy validation":"{0} 的 pkg 收据缺失, 回退到传统验证",
+                "Corrupted KDK found ({0}), removing due to missing file: {1}":"发现损坏的 KDK ({0}), 由于缺少文件 {1} 而移除",
+                "Corrupted KDK found, removing due to missing: {0}":"发现损坏的 KDK, 由于缺少 {0} 而移除",
                 "Found KDK backup: {0}":"找到 KDK 备份: {0}",
                 "Attempting KDK restoration":"尝试恢复 KDK",
                 "Successfully restored KDK":"成功恢复 KDK",
-                "KDK restoration skipped, running in passive mode":"跳过 KDK 恢复，以被动模式运行",
+                "KDK restoration skipped, running in passive mode":"跳过 KDK 恢复, 以被动模式运行",
                 "KDK does not exist: {0}":"KDK 不存在: {0}",
                 "Error: Kernel Debug Kit checksum verification failed!":"错误: Kernel Debug Kit 校验和验证失败!",
-                "Kernel Debug Kit checksum verification failed, please try again.\n\nIf this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)":"Kernel Debug Kit 校验和验证失败，请重试。\n\n如果问题持续存在，请确保您在稳定的网络连接上下载（例如：以太网）",
+                "Kernel Debug Kit checksum verification failed, please try again.":"Kernel Debug Kit 校验和验证失败, 请重试.",
+                "":"",
+                "If this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)":"如果问题持续存在, 请确保您在稳定的网络连接上下载 (例如: 以太网)",
                 "Kernel Debug Kit checksum verified":"Kernel Debug Kit 校验和已验证",
                 "Installing KDK package: {0}":"正在安装 KDK 包: {0}",
                 "- This may take a while...":"- 这可能需要一段时间...",
                 "Failed to install KDK:":"安装 KDK 失败:",
                 "Extracting downloaded KDK disk image":"正在提取下载的 KDK 磁盘映像",
                 "Failed to mount KDK:":"挂载 KDK 失败:",
-                "Failed to find KDK package in DMG, likely corrupted!!!":"在 DMG 中找不到 KDK 包，可能已损坏!!!",
+                "Failed to find KDK package in DMG, likely corrupted!!!":"在 DMG 中找不到 KDK 包, 可能已损坏!!!",
                 "Successfully installed KDK":"成功安装 KDK",
-                "KDK does not exist, cannot create backup":"KDK 不存在，无法创建备份",
-                "KDK Info.plist does not exist, cannot create backup":"KDK Info.plist 不存在，无法创建备份",
-                "Malformed KDK Info.plist provided, cannot create backup":"提供的 KDK Info.plist 格式错误，无法创建备份",
+                "KDK does not exist, cannot create backup":"KDK 不存在, 无法创建备份",
+                "KDK Info.plist does not exist, cannot create backup":"KDK Info.plist 不存在, 无法创建备份",
+                "Malformed KDK Info.plist provided, cannot create backup":"提供的 KDK Info.plist 格式错误, 无法创建备份",
                 "Creating backup: {0}":"正在创建备份: {0}",
-                "Backup already exists, skipping":"备份已存在，跳过",
+                "Backup already exists, skipping":"备份已存在, 跳过",
                 "Failed to create KDK backup:":"创建 KDK 备份失败:",
                 "Cleaning unused KDKs":"正在清理未使用的 KDK"
             }
@@ -408,10 +424,15 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "  Real User ID: {0}":"  Real User ID: {0}",
                 "  Real Group ID: {0}":"  Real Group ID: {0}",
                 "  Arguments passed to Patcher:":"  Arguments passed to Patcher:",
-                "Failed to delete log file: {0}":"Failed to delete log file: {0}"
+                "Failed to delete log file: {0}":"Failed to delete log file: {0}",
+                "Uncaught exception in main thread":"Uncaught exception in main thread",
+                "Uncaught exception in spawned thread":"Uncaught exception in spawned thread",
+                'display dialog "{error_msg}" with title "OCLP-R ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution':'display dialog "{error_msg}" with title "OCLP-R ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution',
             }
         elif self.language_point==0:
             trans={
+                "Uncaught exception in spawned thread":"未捕获的子线程异常",
+                'display dialog "{error_msg}" with title "OCLP-R ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution':'显示标题为"OCLP-R ({self.constants.patcher_version})"的对话框"{error_msg}"，按钮为“是”和“否”，默认按钮为"是"，并带有警告图标.',
                 "Failed to create Hackdoc folder: {0}":"创建 Hackdoc 文件夹失败: {0}",
                 "Failed to initialize logging framework: {0}":"初始化日志框架失败: {0}",
                 "Retrying without logging to file...":"重试不记录到文件...",
@@ -430,7 +451,8 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "  Real User ID: {0}":"  实际用户 ID: {0}",
                 "  Real Group ID: {0}":"  实际组 ID: {0}",
                 "  Arguments passed to Patcher:":"  传递给补丁程序的参数:",
-                "Failed to delete log file: {0}":"删除日志文件失败: {0}"
+                "Failed to delete log file: {0}":"删除日志文件失败: {0}",
+                "Uncaught exception in main thread":"未捕获的主线程异常",
             }
         return trans
     def macos_installer_handler(self):
@@ -452,7 +474,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "InstallAssistant installed":"InstallAssistant 已安装",
                 "Creating temporary directory at {0}":"正在 {0} 创建临时目录",
                 "Not enough free space to create installer.sh":"没有足够的可用空间来创建 installer.sh",
-                "{0} available, {1} required":"可用空间 {0}，需要 {1}",
+                "{0} available, {1} required":"可用空间 {0}, 需要 {1}",
                 "Failed to copy installer to {0}":"无法将安装程序复制到 {0}",
                 "Installer has broken code signature":"安装程序的代码签名已损坏"
             }
@@ -470,7 +492,8 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Checking for metallibs loosely matching {0}":"Checking for metallibs loosely matching {0}",
                 "Found matching metallib: {0}":"Found matching metallib: {0}",
                 "Couldn't find metallib matching {0} or {1}, please install one manually":"Couldn't find metallib matching {0} or {1}, please install one manually",
-                "Could not contact MetallibSupportPkg API, and no metallib matching {0} ({1}) or {2} was installed.\nPlease ensure you have a network connection or manually install a metallib.":"Could not contact MetallibSupportPkg API, and no metallib matching {0} ({1}) or {2} was installed.\nPlease ensure you have a network connection or manually install a metallib.",
+                "Could not contact MetallibSupportPkg API, and no metallib matching {0} ({1}) or {2} was installed.":"Could not contact MetallibSupportPkg API, and no metallib matching {0} ({1}) or {2} was installed.",
+                "Please ensure you have a network connection or manually install a metallib.":"Please ensure you have a network connection or manually install a metallib.",
                 "No metallibs found for {0} ({1})":"No metallibs found for {0} ({1})",
                 "No direct match found for {0}, falling back to closest match":"No direct match found for {0}, falling back to closest match",
                 "Closest Match: {0} ({1})":"Closest Match: {0} ({1})",
@@ -489,18 +512,19 @@ If you plan to create the USB for another machine, please select the "Change Mod
         elif self.language_point==0:
             trans={
                 "MetallibSupportPkg is not required for macOS Sonoma or older":"macOS Sonoma 或更早版本不需要 MetallibSupportPkg",
-                "metallib already installed ({0}), skipping":"metallib 已安装 ({0})，跳过",
+                "metallib already installed ({0}), skipping":"metallib 已安装 ({0}), 跳过",
                 "Pulling metallib list from MetallibSupportPkg API":"正在从 MetallibSupportPkg API 获取 metallib 列表",
                 "Could not contact MetallibSupportPkg API":"无法联系 MetallibSupportPkg API",
                 "Could not fetch Metallib list":"无法获取 Metallib 列表",
                 "Cannot get file size {0}: {1}":"无法获取文件大小 {0}: {1}",
-                "Failed to fetch metallib list, falling back to local metallib matching":"获取 metallib 列表失败，回退到本地 metallib 匹配",
+                "Failed to fetch metallib list, falling back to local metallib matching":"获取 metallib 列表失败, 回退到本地 metallib 匹配",
                 "Checking for metallibs loosely matching {0}":"检查与 {0} 松散匹配的 metallib",
                 "Found matching metallib: {0}":"找到匹配的 metallib: {0}",
-                "Couldn't find metallib matching {0} or {1}, please install one manually":"找不到与 {0} 或 {1} 匹配的 metallib，请手动安装一个",
-                "Could not contact MetallibSupportPkg API, and no metallib matching {0} ({1}) or {2} was installed.\nPlease ensure you have a network connection or manually install a metallib.":"无法联系 MetallibSupportPkg API，且没有安装与 {0} ({1}) 或 {2} 匹配的 metallib。\n请确保您有网络连接或手动安装 metallib。",
+                "Couldn't find metallib matching {0} or {1}, please install one manually":"找不到与 {0} 或 {1} 匹配的 metallib, 请手动安装一个",
+                "Could not contact MetallibSupportPkg API, and no metallib matching {0} ({1}) or {2} was installed.":"无法联系 MetallibSupportPkg API, 且没有安装与 {0} ({1}) 或 {2} 匹配的 metallib.",
+                "Please ensure you have a network connection or manually install a metallib.":"请确保您有网络连接或手动安装 metallib.",
                 "No metallibs found for {0} ({1})":"找不到适用于 {0} ({1}) 的 metallib",
-                "No direct match found for {0}, falling back to closest match":"未找到 {0} 的直接匹配，回退到最接近的匹配",
+                "No direct match found for {0}, falling back to closest match":"未找到 {0} 的直接匹配, 回退到最接近的匹配",
                 "Closest Match: {0} ({1})":"最接近的匹配: {0} ({1})",
                 "Direct match found for {0} ({1})":"找到 {0} ({1}) 的直接匹配",
                 "Following metallib is recommended:":"建议使用以下 metallib:",
@@ -508,11 +532,11 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "- metallib Version: {0}":"- metallib 版本: {0}",
                 "- metallib URL: {0}":"- metallib URL: {0}",
                 "- metallib size: {0}":"- metallib 大小: {0}",
-                "No download required, metallib already installed":"不需要下载，metallib 已安装",
-                "Could not retrieve metallib catalog, no metallib to download":"无法检索 metallib 目录，没有可下载的 metallib",
+                "No download required, metallib already installed":"不需要下载, metallib 已安装",
+                "Could not retrieve metallib catalog, no metallib to download":"无法检索 metallib 目录, 没有可下载的 metallib",
                 "Returning DownloadObject for metallib: {0}":"返回 metallib 的 DownloadObject: {0}",
-                "Cannot install metallib, no metallib was successfully retrieved":"无法安装 metallib，没有成功检索到 metallib",
-                "No installation required, metallib already installed":"不需要安装，metallib 已安装"
+                "Cannot install metallib, no metallib was successfully retrieved":"无法安装 metallib, 没有成功检索到 metallib",
+                "No installation required, metallib already installed":"不需要安装, metallib 已安装"
             }
         return trans
     def network_handler(self):
@@ -568,7 +592,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Resuming download from {0}: {1}":"从 {0} 恢复下载: {1}",
                 "Deleting existing file: {0}":"正在删除现有文件: {0}",
                 "Creating directory: {0}":"正在创建目录: {0}",
-                "Not enough free space to download {0}, need {1}, have {2}":"没有足够的可用空间下载 {0}，需要 {1}，已有 {2}",
+                "Not enough free space to download {0}, need {1}, have {2}":"没有足够的可用空间下载 {0}, 需要 {1}, 已有 {2}",
                 "Error preparing working directory {0}: {1}":"准备工作目录错误 {0}: {1}",
                 "- Directory ready: {0}":"- 目录已准备好: {0}",
                 "Failed to save download progress: {0}":"保存下载进度失败: {0}",
@@ -587,8 +611,8 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Deleted partially downloaded file: {0}":"已删除部分下载的文件: {0}",
                 "Deleted progress file: {0}":"已删除进度文件: {0}",
                 "Failed to delete temporary files: {0}":"删除临时文件失败: {0}",
-                "Downloaded {0} of {1}":"已下载 {0} ，共 {1}",
-                "Downloaded {0:.2f}% of {1} ({2}/s) ({3:.2f} seconds remaining)":"已下载 {0:.2f}% ，共 {1} ，速度 {2} ，剩余时间 {3:.2f} 秒",
+                "Downloaded {0} of {1}":"已下载 {0} ,共 {1}",
+                "Downloaded {0:.2f}% of {1} ({2}/s) ({3:.2f} seconds remaining)":"已下载 {0:.2f}% ,共 {1} ,速度 {2} ,剩余时间 {3:.2f} 秒",
             }
         return trans
     def private(self):
@@ -637,41 +661,56 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "    Standard Output:":"    Standard Output:",
                 "        None":"        None",
                 "    Standard Error:":"    Standard Error:",
-                "File not found: {0}":"File not found: {0}"
+                "File not found: {0}":"File not found: {0}",
+                "process_failed_with_exit_code: {0}":"process_failed_with_exit_code: {0}",
             }
         elif self.language_point==0:
             trans={
-                "Subprocess failed.":"子进程失败。",
+                "Subprocess failed.":"子进程失败.",
                 "    Command: {0}":"    命令: {0}",
                 "    Return Code: {0}":"    返回代码: {0}",
                 "        Likely Enum: {0}":"        可能的枚举: {0}",
                 "    Standard Output:":"    标准输出:",
                 "        None":"        无",
                 "    Standard Error:":"    标准错误:",
-                "File not found: {0}":"文件未找到: {0}"
+                "File not found: {0}":"文件未找到: {0}",
+                "process_failed_with_exit_code: {0}":"进程以退出代码 {0} 失败",
             }
         return trans
     def updates(self):
         if self.language_point==1:
             trans={
-                "Found asset: {0}":"Found asset: {0}"
+                "Found asset: {0}":"Found asset: {0}",
+                "Invalid version number for binary":"Invalid version number for binary",
             }
         elif self.language_point==0:
             trans={
-                "Found asset: {0}":"找到资产: {0}"
+                "Found asset: {0}":"找到assets: {0}",
+                "Invalid version number for binary":"无效的二进制版本号",
             }
         return trans
+    
     def utilities(self):
         if self.language_point==1:
             trans={
+                "FileVault is Off":"FileVault is Off",
+                "Over a month":"Over a month",
+                "Over a year":"Over a year",
+                "Indeterminate time ":"Indeterminate time ",
+                "Less than a minute ":"Less than a minute ", 
                 "Disabling Idle Sleep":"Disabling Idle Sleep",
                 "Re-enabling Idle Sleep":"Re-enabling Idle Sleep",
                 "Killing Process: {0} - {1}":"Killing Process: {0} - {1}"
             }
         elif self.language_point==0:
             trans={
-                "Disabling Idle Sleep":"正在禁用空闲睡眠",
-                "Re-enabling Idle Sleep":"正在重新启用空闲睡眠",
+                "FileVault is Off":"文件保险箱已关闭",
+                "Over a month":"超过一个月",
+                "Over a year":"超过一年",
+                "Indeterminate time ":"时间不确定 ",
+                "Less than a minute ":"不到一分钟 ", 
+                "Disabling Idle Sleep":"正在禁用休眠",
+                "Re-enabling Idle Sleep":"正在重新启用休眠",
                 "Killing Process: {0} - {1}":"正在终止进程: {0} - {1}"
             }
         return trans
@@ -700,11 +739,11 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         elif self.language_point==0:
             trans={
-                "Validating predefined model: {model}":"正在验证预定义模型: {model}",
+                "Validating predefined model: {model}":"正在验证预定义机型: {model}",
                 "Error on build!":"构建时出错!",
-                "Validation failed for predefined model: {model}":"预定义模型验证失败: {model}",
-                "Validation succeeded for predefined model: {model}":"预定义模型验证成功: {model}",
-                "Validating dumped model: {model}":"正在验证转储模型: {model}",
+                "Validation failed for predefined model: {model}":"预定义机型验证失败: {model}",
+                "Validation succeeded for predefined model: {model}":"预定义机型验证成功: {model}",
+                "Validating dumped model: {model}":"正在验证已转储的机型： {model}",
                 "Unknown PatchType: {install_type}":"未知的 PatchType: {install_type}",
                 "{install_file} used with {install_type}, are you certain this is correct?":"{install_file} 与 {install_type} 一起使用，您确定这是正确的吗?",
                 "File not found: {source_file}":"找不到文件: {source_file}",
@@ -737,7 +776,9 @@ If you plan to create the USB for another machine, please select the "Change Mod
                     "- Removing":"- Removing",
                     "Set OpenCore Build":"Set OpenCore Build",
                     "- Using custom model:":"- Using custom model:",
-                    "Your model is not supported by this patcher for running unsupported OSes!\n\nIf you plan to create the USB for another machine, please select the \"Change Model\" option in the menu.":"Your model is not supported by this patcher for running unsupported OSes!\n\nIf you plan to create the USB for another machine, please select the \"Change Model\" option in the menu.",
+                    "Your model is not supported by this patcher for running unsupported OSes!":"Your model is not supported by this patcher for running unsupported OSes!",
+                    "":"",
+                    "If you plan to create the USB for another machine, please select the \"Change Model\" option in the menu.":"If you plan to create the USB for another machine, please select the \"Change Model\" option in the menu.",
                     "- Using detected model:":"- Using detected model:",
                     "- Set verbose configuration":"- Set verbose configuration",
                     "- Set OpenCore DEBUG configuration":"- Set OpenCore DEBUG configuration",
@@ -769,9 +810,9 @@ If you plan to create the USB for another machine, please select the "Change Mod
                     "- Failed to load plist for":"- 无法加载 plist 文件:",
                     "- Removing":"- 正在移除",
                     "Set OpenCore Build":"设置 OpenCore 构建",
-                    "- Using custom model:":"- 使用自定义模型:",
-                    "Your model is not supported by this patcher for running unsupported OSes!\n\nIf you plan to create the USB for another machine, please select the \"Change Model\" option in the menu.":"您的模型不支持此补丁程序运行不受支持的操作系统!\n\n如果您计划为另一台机器创建 USB，请在菜单中选择\"更改模型\"选项。",
-                    "- Using detected model:":"- 使用检测到的模型:",
+                    "- Using custom model:":"- 使用自定义机型:",
+                    "Your model is not supported by this patcher for running unsupported OSes!\n\nIf you plan to create the USB for another machine, please select the \"Change Model\" option in the menu.":"您的机型不支持此补丁程序运行不受支持的操作系统!\n\n如果您计划为另一台机器创建 USB，请在菜单中选择\"更改机型\"选项。",
+                    "- Using detected model:":"- 使用检测到的机型:",
                     "- Set verbose configuration":"- 设置详细配置",
                     "- Set OpenCore DEBUG configuration":"- 设置 OpenCore DEBUG 配置",
                     "- Set kext DEBUG configuration":"- 设置 kext DEBUG 配置",
@@ -786,7 +827,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                     "- Forcing SurPlus override configuration":"- 强制 SurPlus 覆盖配置",
                     "- Set Moderate SMBIOS Patching configuration":"- 设置适度 SMBIOS 补丁配置",
                     "- Unknown SMBIOS arg passed:":"- 传递了未知的 SMBIOS 参数:",
-                    "- Building for natively supported model":"- 为原生支持的模型构建"
+                    "- Building for natively supported model":"- 为原生支持的机型构建"
                     }
         return trans
     
@@ -833,10 +874,12 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Failed to write to global settings":"Failed to write to global settings",
                 "Failed to write to global settings file":"Failed to write to global settings file",
                 "Permission error: Unable to write to global settings file":"Permission error: Unable to write to global settings file",
-                "Error: Unable to delete defaults plist":"Error: Unable to delete defaults plist"
+                "Error: Unable to delete defaults plist":"Error: Unable to delete defaults plist",
+                "Developed by Dortania and Hackdoc":"Developed by Dortania and Hackdoc",
             }
         elif self.language_point==0:
             trans={
+                "Developed by Dortania and Hackdoc":"开发人员: Dortania 和 Hackdoc",
                 "Error: Unable to read global settings file":"错误: 无法读取全局设置文件",
                 "Failed to write to global settings":"无法写入全局设置",
                 "Failed to write to global settings file":"无法写入全局设置文件",
@@ -908,11 +951,14 @@ If you plan to create the USB for another machine, please select the "Change Mod
     def gui_KDK_download(self):
         if self.language_point==1:
             trans={
+                "Error":"Error",
+                "Fetching KDK ERROR: ":"Fetching KDK ERROR: ",
+                "Initializing KDK Download Frame":"Initializing KDK Download Frame",
                 "Fetching KDKs":"Fetching KDKs",
                 "Choose KDK Version":"Choose KDK Version",
                 "Choose KDKs":"Choose KDKs",
                 "Cannot find any KDKs on Github":"Cannot find any KDKs on Github",
-                "Failed to download KDKs Catalog from Hackdoc":"Failed to download KDKs Catalog from Hackdoc",
+                "Failed to download KDKs Catalog from Dortania":"Failed to download KDKs Catalog from Dortania",
                 "Download":"Download",
                 "Choose KDKs":"Choose KDKs",
                 "Copy Link":"Copy Link",
@@ -923,15 +969,21 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Tahoe Beta":"Tahoe Beta",
                 "Sequoia":"Sequoia",
                 "Sonoma":"Sonoma",
-                "Ventura":"Ventura"
+                "Ventura":"Ventura",
+                "Failed to detect OS build: ":"Failed to detect OS build: ",
+                "Available installers on Dortania":"Available installers on Dortania",
             }
         elif self.language_point==0:
             trans={
+                "Failed to detect OS build: ":"无法检测操作系统版本: ",
+                "Error":"错误",
+                "Fetching KDK ERROR: ":"获取 KDK 错误: ",
+                "Initializing KDK Download Frame":"初始化 KDK 下载窗口",
                 "Fetching KDKs":"正在获取 KDK",
                 "Choose KDK Version":"选择 KDK 版本",
                 "Choose KDKs":"选择 KDK",
                 "Cannot find any KDKs on Github":"在 Github 上找不到任何 KDK",
-                "Failed to download KDKs Catalog from Hackdoc":"无法从 Hackdoc 下载 KDK 目录",
+                "Failed to download KDKs Catalog from Dortania":"无法从 Dortania 下载 KDK 目录",
                 "Download":"下载",
                 "Choose KDKs":"选择 KDK",
                 "Copy Link":"复制链接",
@@ -942,13 +994,15 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Tahoe Beta":"Tahoe 测试版",
                 "Sequoia":"Sequoia",
                 "Sonoma":"Sonoma",
-                "Ventura":"Ventura"
+                "Ventura":"Ventura",
+                "Available installers on Dortania":"Dortania 上可用的安装器",
             }
         return trans
     
     def gui_about(self):
         if self.language_point==1:
             trans={
+                "Generating About frame":"Generating About frame",
                 "About":"About",
                 "OCLP-R":"OCLP-R",
                 "Version":"Version",
@@ -957,17 +1011,19 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         elif self.language_point==0:
             trans={
+                "Generating About frame":"生成关于窗口",
                 "About":"关于",
                 "OCLP-R":"OCLP-R",
                 "Version":"版本",
                 "I just wanted to relax, but I got addicted to it.":"我只是想放松一下，但我上瘾了。",
-                "I just wanted to protect the last hackintosh.":"我只是想保护最后一个黑苹果。"
+                "I just wanted to protect the last hackintosh.":"我只是想守着黑苹果最后的Tahoe."
             }
         return trans
     
     def gui_build(self):
         if self.language_point==1:
             trans={
+                "Initializing Build Frame":"Initializing Build Frame",
                 "Build and Install OpenCore":"Build and Install OpenCore",
                 "Model:":"Model:",
                 "🔩 Install OpenCore":"🔩 Install OpenCore",
@@ -984,6 +1040,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         elif self.language_point==0:
             trans={
+                "Initializing Build Frame":"初始化构建窗口",
                 "Build and Install OpenCore":"构建并安装 OpenCore",
                 "Model:":"机型:",
                 "🔩 Install OpenCore":"🔩 安装 OpenCore",
@@ -1003,6 +1060,21 @@ If you plan to create the USB for another machine, please select the "Change Mod
     def gui_cache_os_update(self):
         if self.language_point==1:
             trans={
+                "KDK installed successfully":"KDK installed successfully",
+                "Failed to install KDK":"Failed to install KDK",
+                "KDK download path does not exist":"KDK download path does not exist",
+                "Mounting KDK":"Mounting KDK",
+                "KDK checksum validation passed":"KDK checksum validation passed",
+                "KDK checksum validation failed":"KDK checksum validation failed",
+                "KDK download complete, validating with hdiutil":"KDK download complete, validating with hdiutil",
+                "No additional resources required":"No additional resources required",
+                "MetallibSupportPkg required":"MetallibSupportPkg required",
+                "KDK Required":"KDK Required",
+                "KDK Build {0}":"KDK Build {0}",
+                "Metallib Build {0}":"Metallib Build {0}",
+                "No staged update found":"No staged update found",
+                "Staged update found:{0} ({1})":"Staged update found:{0} ({1})",
+                "Initializing Prepare Update Frame":"Initializing Prepare Update Frame",
                 "Preparing for macOS Software Update":"Preparing for macOS Software Update",
                 "This may take a few minutes.":"This may take a few minutes.",
                 "OCLP-R has detected that a macOS update is being downloaded:":"OCLP-R has detected that a macOS update is being downloaded:",
@@ -1011,25 +1083,49 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "OCLP-R":"OCLP-R",
                 "&Ok":"&Ok",
                 "&Cancel":"&Cancel",
-                "User cancelled OS caching":"User cancelled OS caching"
+                "User cancelled OS caching":"User cancelled OS caching",
+                "Failed to install Metallib":"Failed to install Metallib",
+                "Metallib installed successfully":"Metallib installed successfully",
             }
         elif self.language_point==0:
             trans={
+                "Failed to install Metallib":"安装 Metallib 失败",
+                "Metallib installed successfully":"Metallib 安装成功",
+                "KDK installed successfully":"KDK 安装成功",
+                "Failed to install KDK":"安装 KDK 失败",
+                "KDK download path does not exist":"KDK 下载路径不存在",
+                "Mounting KDK":"挂载 KDK",
+                "KDK checksum validation passed":"KDK checksum 验证通过",
+                "KDK checksum validation failed":"KDK checksum 验证失败",
+                "KDK download complete, validating with hdiutil":"KDK 下载完成，正在使用 hdiutil 验证",
+                "KDK Build {0}":"KDK 构建 {0}",
+                "Metallib Build {0}":"Metallib 构建 {0}",
+                "No additional resources required":"不需要其他资源",
+                "MetallibSupportPkg required":"需要 MetalLibSupportPkg",
+                "KDK Required":"需要 KDK",
+                "Staged update found:{0} ({1})":"暂存更新已找到:{0} ({1})",
+                "No staged update found":"未找到暂存更新",
+                "Initializing Prepare Update Frame":"初始化准备更新窗口",
                 "Preparing for macOS Software Update":"正在准备 macOS 软件更新",
                 "This may take a few minutes.":"这可能需要几分钟时间。",
                 "OCLP-R has detected that a macOS update is being downloaded:":"OCLP-R 检测到正在下载 macOS 更新:",
                 "The patcher needs to prepare the system for the update, and will download any additional resources it may need post-update.":"补丁程序需要为更新准备系统，并将下载更新后可能需要的任何其他资源。",
                 "This may take a few minutes, the patcher will exit when it is done.":"这可能需要几分钟时间，补丁程序完成后将退出。",
                 "OCLP-R":"OCLP-R",
-                "&Ok":"&确定",
-                "&Cancel":"&取消",
-                "User cancelled OS caching":"用户取消了系统缓存"
+                "&Ok":"&Ok",
+                "&Cancel":"&Cancel",
+                "User cancelled OS caching":"User cancelled OS caching",
+                "_downloaded_":"downloaded",
             }
         return trans
     
     def gui_download(self):
         if self.language_point==1:
             trans={
+                "downloaded":"downloaded",
+                "{0} left - {1} of {2} ({3}/s)":"{0} left - {1} of {2} ({3}/s)",
+                "Error":"Error",
+                "Initializing Download Frame":"Initializing Download Frame",
                 "Downloading: ":"Downloading: ",
                 "Preparing download":"Preparing download",
                 "Cancel":"Cancel",
@@ -1042,6 +1138,10 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         elif self.language_point==0:
             trans={
+                "downloaded":"已下载",
+                "Error":"错误",
+                "{0} left - {1} of {2} ({3}/s)":"剩余 {0} - {1} 中的 {2} ({3}/s)",
+                "Initializing Download Frame":"初始化下载窗口",
                 "Downloading: ":"正在下载: ",
                 "Preparing download":"正在准备下载",
                 "Cancel":"取消",
@@ -1070,6 +1170,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
     def gui_help(self):
         if self.language_point==1:
             trans={
+                "Initializing Help Frame":"Initializing Help Frame",
                 "Patcher Resources":"Patcher Resources",
                 "Following resources are available:":"Following resources are available:",
                 "Official Guide":"Official Guide",
@@ -1079,6 +1180,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         elif self.language_point==0:
             trans={
+                "Initializing Help Frame":"初始化帮助窗口",
                 "Patcher Resources":"补丁程序资源",
                 "Following resources are available:":"以下资源可用:",
                 "Official Guide":"官方指南",
@@ -1091,7 +1193,9 @@ If you plan to create the USB for another machine, please select the "Change Mod
     def gui_install_oc(self):
         if self.language_point==1:
             trans={
+                "Initializing Install OpenCore Frame":"Initializing Install OpenCore Frame",
                 "Install OpenCore":"Install OpenCore",
+                "Checking if booted disk is present:":"Checking if booted disk is present:",
                 "Fetching information on local disks...":"Fetching information on local disks...",
                 "Select disk to install OpenCore onto:":"Select disk to install OpenCore onto:",
                 "Missing disks? Ensure they're FAT32 or formatted as GUID/GPT":"Missing disks? Ensure they're FAT32 or formatted as GUID/GPT",
@@ -1106,10 +1210,16 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "OpenCore has finished installing to disk.\n\nYou will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.\n\nWould you like to reboot?":"OpenCore has finished installing to disk.\n\nYou will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.\n\nWould you like to reboot?",
                 "OpenCore has finished installing to disk.\n\nYou can eject the drive, insert it into the ":"OpenCore has finished installing to disk.\n\nYou can eject the drive, insert it into the ",
                 ", reboot, hold the Option key and select OpenCore/Boot EFI's option.":", reboot, hold the Option key and select OpenCore/Boot EFI's option.",
-                "An internal error occurred while installing:\n":"An internal error occurred while installing:\n"
+                "An internal error occurred while installing:\n":"An internal error occurred while installing:\n",
+                "Available disks:":"Available disks:",
+                "Available partitions for ":"Available partitions for ",
             }
         elif self.language_point==0:
             trans={
+                "Available partitions for ":"Available partitions for ",
+                "Available disks:":"可用磁盘:",
+                "Initializing Install OpenCore Frame":"初始化安装 OpenCore 窗口",
+                "Checking if booted disk is present:":"检查当前引导磁盘是否存在:",
                 "Install OpenCore":"安装 OpenCore",
                 "Fetching information on local disks...":"正在获取本地磁盘信息...",
                 "Select disk to install OpenCore onto:":"选择要安装 OpenCore 的磁盘:",
@@ -1118,7 +1228,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Return to Main Menu":"返回主菜单",
                 "Note: Blue represent the disk OpenCore is currently booted from":"注: 蓝色代表当前引导 OpenCore 的磁盘",
                 "Failed to find any applicable disks":"找不到任何适用的磁盘",
-                "Volumes on ":"上的卷 ",
+                "Volumes on ":"该卷在 ",
                 "Installing OpenCore to ":"正在安装 OpenCore 到 ",
                 "OpenCore has finished installing to disk.\n\nWould you like to update your root patches next?":"OpenCore 已完成安装到磁盘。\n\n接下来要更新您的根补丁吗？",
                 "Success":"成功",
@@ -1266,61 +1376,98 @@ If you plan to create the USB for another machine, please select the "Change Mod
     def gui_main_menu(self):
         if self.language_point==1:
             trans={
+                "Initializing Main Menu Frame":'Initializing Main Menu Frame',
                 "Build and Install OpenCore":"Build and Install OpenCore",
-                "Prepares provided drive to be able\nto boot unsupported OSes.\nUse on installers or internal drives.":"Prepares provided drive to be able\nto boot unsupported OSes.\nUse on installers or internal drives.",
+                "Prepares provided drive to be able":"Prepares provided drive to be able",
+                "to boot unsupported OSes.":"to boot unsupported OSes.",
+                "Use on installers or internal drives.":"Use on installers or internal drives.",
                 "Create macOS Installer":"Create macOS Installer",
-                "Download and flash a macOS\nInstaller for your system.":"Download and flash a macOS\nInstaller for your system.",
+                "Download and flash a macOS":"Download and flash a macOS",
+                "Installer for your system.":"Installer for your system.",
                 "KDK Download":"KDK Download",
-                "Provide KDK download\nfor your system.(macOS 13 with OCLP)":"Provide KDK download\nfor your system.(macOS 13 with OCLP)",
+                "Provide KDK download":"Provide KDK download",
+                "for your system.":"for your system.",
                 "⚙️ Settings":"⚙️ Settings",
                 "Post-Install Root Patch":"Post-Install Root Patch",
-                "Installs hardware drivers and\npatches for your system after\ninstalling a new version of macOS.":"Installs hardware drivers and\npatches for your system after\ninstalling a new version of macOS.",
+                "Installs hardware drivers and":"Installs hardware drivers and",
+                "patches for your system after":"Patches for your system after",
+                "installing a new version of macOS.":"installing a new version of macOS.",
                 "MetalLib Download":"MetalLib Download",
-                "Provide MetalLib for your system.\nThis is required for Metal3802 devices.\n(macOS 15+ Needs!)":"Provide MetalLib for your system.\nThis is required for Metal3802 devices.\n(macOS 15+ Needs!)",
+                "Provide MetalLib for your system.":"Provide MetalLib for your system.",
+                "This is required for Metal3802 devices.":"This is required for Metal3802 devices",
                 "Support":"Support",
-                "Resources for OpenCore Legacy\nPatcher.":"Resources for OpenCore Legacy\nPatcher.",
+                "Resources for OpenCore Legacy":"Resources for OpenCore Legacy",
+                "Patcher.":"Patcher.",
                 "Unsupported Configuration Detected!":"Unsupported Configuration Detected!",
                 "We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.":"We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.",
                 "Update successful!":"Update successful!",
                 "OCLP-R has been updated to the latest version: {self.constants.patcher_version}\n\nWould you like to update OpenCore and your root volume patches?":"OCLP-R has been updated to the latest version: {self.constants.patcher_version}\n\nWould you like to update OpenCore and your root volume patches?",
                 "A new version of OCLP-R is available!":"A new version of OCLP-R is available!",
-                "OCLP-R {oclp_version} is now available - You have {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}. Would you like to update?":"OCLP-R {oclp_version} is now available - You have {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}. Would you like to update?",
+                "OCLP-R {oclp_version} is now available - You have {self.constants.patcher_version}. Would you like to update?":"OCLP-R {oclp_version} is now available - You have {self.constants.patcher_version}. Would you like to update?",
                 "Unable to fetch changelog\n\nPlease check the Github page for more information about this release.":"Unable to fetch changelog\n\nPlease check the Github page for more information about this release.",
                 "Dismiss":"Dismiss",
                 "View on GitHub":"View on GitHub",
-                "Download and Install":"Download and Install"
+                "Download and Install":"Download and Install",
+                "Model: " :"Model: ",
+                "Skipping OpenCore and root volume patch update...":"Skipping OpenCore and root volume patch update...",
+                """## Unable to fetch changelog
+
+Please check the Github page for more information about this release.""":"""## Unable to fetch changelog
+
+Please check the Github page for more information about this release.""",
             }
         elif self.language_point==0:
             trans={
-                "Build and Install OpenCore":"构建并安装 OpenCore",
-                "Prepares provided drive to be able\nto boot unsupported OSes.\nUse on installers or internal drives.":"准备提供的驱动器以启动不支持的操作系统。\n用于安装程序或内部驱动器。",
+                """## Unable to fetch changelog
+
+Please check the Github page for more information about this release.""":"""
+无法获取更新日志
+
+请检查 Github 页面以获取更多关于此版本的信息。
+""",
+                "Model: ":"机型: ",
+                "Initializing Main Menu Frame":'初始化主菜单框架',
+                "Build and Install OpenCore":"构建并安装 OpenCore 引导",
+                "Prepares provided drive to be able":"准备提供的驱动器以",
+                "to boot unsupported OSes.":"用于启动不支持的操作系统。",
+                "Use on installers or internal drives.":"用于安装程序或内部驱动器。",
                 "Create macOS Installer":"创建 macOS 安装程序",
-                "Download and flash a macOS\nInstaller for your system.":"下载并刷写 macOS\n安装程序到您的系统。",
+                "Download and flash a macOS":"下载并刷写 macOS",
+                "Installer for your system.":"安装程序为您的系统。",
                 "KDK Download":"下载 KDK",
-                "Provide KDK download\nfor your system.(macOS 13 with OCLP)":"为您的系统提供 KDK 下载。\n(macOS 13 配合 OCLP 使用)",
+                "Provide KDK download":"为您的系统",
+                "for your system.":"提供 KDK 下载",#为了调整语序进行的更改
                 "⚙️ Settings":"⚙️ 设置",
-                "Post-Install Root Patch":"安装后根补丁",
-                "Installs hardware drivers and\npatches for your system after\ninstalling a new version of macOS.":"在安装新版本的 macOS 后\n为您的系统安装硬件驱动程序和补丁。",
+                "Post-Install Root Patch":"安装驱动补丁",
+                "Installs hardware drivers and":"在安装新版本的 macOS 后",
+                "patches for your system after":"为您的系统安装硬件",
+                "installing a new version of macOS.":"驱动程序和补丁。",#调整语序
                 "MetalLib Download":"下载 MetalLib",
-                "Provide MetalLib for your system.\nThis is required for Metal3802 devices.\n(macOS 15+ Needs!)":"为您的系统提供 MetalLib。\n这是 Metal3802 设备所必需的。\n(macOS 15+ 需要！)",
-                "Support":"支持",
-                "Resources for OpenCore Legacy\nPatcher.":"OpenCore Legacy Patcher\n资源。",
+                "Provide MetalLib for your system.":"为您的系统提供 MetalLib.",
+                "This is required for Metal3802 devices.":"这是 Metal3802 设备所必需的.",
+                "Support":"获取支持",
+                "Resources for OpenCore Legacy":"OpenCore Legacy Patcher",
+                "Patcher.":"的资源。",
                 "Unsupported Configuration Detected!":"检测到不支持的配置！",
                 "We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.":"我们发现您当前正在引导为不同设备构建的 OpenCore：{self.constants.computer.build_model}\n\n我们构建的配置是为匹配单个设备的，不能与不同的 Mac 混合使用或重复使用。\n\n请构建并安装一个新的 OpenCore 配置，然后重启您的 Mac。",
                 "Update successful!":"更新成功！",
                 "OCLP-R has been updated to the latest version: {self.constants.patcher_version}\n\nWould you like to update OpenCore and your root volume patches?":"OCLP-R 已更新到最新版本：{self.constants.patcher_version}\n\n您是否要更新 OpenCore 和根卷补丁？",
                 "A new version of OCLP-R is available!":"OCLP-R 有新版本可用！",
-                "OCLP-R {oclp_version} is now available - You have {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}. Would you like to update?":"OCLP-R {oclp_version} 现已可用 - 您当前版本是 {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}。您是否要更新？",
+                "OCLP-R {oclp_version} is now available - You have {self.constants.patcher_version}. Would you like to update?":"OCLP-R {oclp_version} 现已可用 - 您当前版本是 {self.constants.patcher_version}。您是否要更新？",
                 "Unable to fetch changelog\n\nPlease check the Github page for more information about this release.":"无法获取更新日志\n\n请查看 Github 页面了解有关此版本的更多信息。",
                 "Dismiss":"关闭",
                 "View on GitHub":"在 GitHub 上查看",
-                "Download and Install":"下载并安装"
+                "Download and Install":"下载并安装",
+                "Skipping OpenCore and root volume patch update...":"跳过 OpenCore 和根卷补丁更新...",
+                "Updating OpenCore and root volume patches...":"Updating OpenCore and root volume patches...",
+                
             }
         return trans
     
     def gui_metallib_download(self):
         if self.language_point==1:
             trans={
+                "Updating OpenCore and root volume patches...":"更新 OpenCore 和根卷补丁...",
                 "Fetching Metallibs":"Fetching Metallibs",
                 "Choose Metallib Version":"Choose Metallib Version",
                 "Choose Metallib":"Choose Metallib",
@@ -1362,66 +1509,110 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Build":"Build",
                 "General":"General",
                 "FireWire Booting":"FireWire Booting",
-                "Enable booting macOS from\nFireWire drives.":"Enable booting macOS from\nFireWire drives.",
+                "Enable booting macOS from":"Enable booting macOS from",
+                "FireWire drives.":"FireWire drives.",
                 "XHCI Booting":"XHCI Booting",
-                "Enable booting macOS from add-in\nUSB 3.0 expansion cards on systems\nwithout native support.":"Enable booting macOS from add-in\nUSB 3.0 expansion cards on systems\nwithout native support.",
+                "Enable booting macOS from add-in":"Enable booting macOS from add-in",
+                "USB 3.0 expansion cards on systems":"USB 3.0 expansion cards on systems",
+                "without native support.":"without native support.",
                 "NVMe Booting":"NVMe Booting",
-                "Enable booting macOS from NVMe\ndrives on systems without native\nsupport.\nNote: Requires Firmware support\nfor OpenCore to load from NVMe.":"Enable booting macOS from NVMe\ndrives on systems without native\nsupport.\nNote: Requires Firmware support\nfor OpenCore to load from NVMe.",
+                "Enable booting macOS from NVMe":"Enable booting macOS from NVMe",
+                "drives on systems without native":"drives on systems without native",
+                "support.":"support.",
+                "Note: Requires Firmware support":"Note: Requires Firmware support",
+                "for OpenCore to load from NVMe.":"for OpenCore to load from NVMe.",
                 "OpenCore Vaulting":"OpenCore Vaulting",
-                "Digitally sign OpenCore to prevent\ntampering or corruption.":"Digitally sign OpenCore to prevent\ntampering or corruption.",
+                "Digitally sign OpenCore to prevent":"Digitally sign OpenCore to prevent",
+                "tampering or corruption.":"tampering or corruption.",
                 "Show OpenCore Boot Picker":"Show OpenCore Boot Picker",
-                "When disabled, users can hold ESC to\nshow picker in the firmware.":"When disabled, users can hold ESC to\nshow picker in the firmware.",
+                "When disabled, users can hold ESC to":"When disabled, users can hold ESC to",
+                "show picker in the firmware.":"show picker in the firmware.",
                 "Boot Picker Timeout":"Boot Picker Timeout",
-                "Timeout before boot picker selects default\nentry in seconds.\nSet to 0 for no timeout.":"Timeout before boot picker selects default\nentry in seconds.\nSet to 0 for no timeout.",
+                "Timeout before boot picker selects default":"Timeout before boot picker selects default",
+                "entry in seconds.":"entry in seconds.",
+                "Set to 0 for no timeout.":"Set to 0 for no timeout.",
                 "MacPro3,1/Xserve2,1 Workaround":"MacPro3,1/Xserve2,1 Workaround",
-                "Limits to 4 threads max on these units.\nRequired for macOS Sequoia and later.":"Limits to 4 threads max on these units.\nRequired for macOS Sequoia and later.",
+                "Limits to 4 threads max on these units.":"Limits to 4 threads max on these units.",
+                "Required for macOS Sequoia and later.":"Required for macOS Sequoia and later.",
                 "Debug":"Debug",
                 "Verbose":"Verbose",
                 "Verbose output during boot.":"Verbose output during boot.",
                 "Kext Debugging":"Kext Debugging",
-                "Use DEBUG variants of kexts and\nenables additional kernel logging.":"Use DEBUG variants of kexts and\nenables additional kernel logging.",
+                "Use DEBUG variants of kexts and":"Use DEBUG variants of kexts and",
+                "enables additional kernel logging.":"enables additional kernel logging.",
                 "OpenCore Debugging":"OpenCore Debugging",
-                "Use DEBUG variant of OpenCore\nand enables additional logging.":"Use DEBUG variant of OpenCore\nand enables additional logging.",
+                "Use DEBUG variant of OpenCore":"Use DEBUG variant of OpenCore",
+                "and enables additional logging.":"and enables additional logging.",
                 "Extras":"Extras",
                 "General (Continued)":"General (Continued)",
                 "Wake on WLAN":"Wake on WLAN",
-                "Disabled by default due to\nperformance degradation\non some systems from wake.\nOnly applies to BCM943224, 331,\n360 and 3602 chipsets.":"Disabled by default due to\nperformance degradation\non some systems from wake.\nOnly applies to BCM943224, 331,\n360 and 3602 chipsets.",
+                "Disabled by default due to":"Disabled by default due to",
+                "performance degradation":"performance degradation",
+                "on some systems from wake.":"on some systems from wake.",
+                "Only applies to BCM943224, 331,":"Only applies to BCM943224, 331,",
+                "360 and 3602 chipsets.":"360 and 3602 chipsets.",
                 "Disable Thunderbolt":"Disable Thunderbolt",
-                "For MacBookPro11,x with faulty\nPCHs that may crash sporadically.":"For MacBookPro11,x with faulty\nPCHs that may crash sporadically.",
+                "For MacBookPro11,x with faulty":"For MacBookPro11,x with faulty",
+                "PCHs that may crash sporadically.":"PCHs that may crash sporadically.",
                 "Windows GMUX":"Windows GMUX",
-                "Allow iGPU to be exposed in Windows\nfor dGPU-based MacBooks.":"Allow iGPU to be exposed in Windows\nfor dGPU-based MacBooks.",
+                "Allow iGPU to be exposed in Windows":"Allow iGPU to be exposed in Windows",
+                "for dGPU-based MacBooks.":"for dGPU-based MacBooks.",
                 "Disable CPUFriend":"Disable CPUFriend",
-                "Disables power management helper\nfor unsupported models.":"Disables power management helper\nfor unsupported models.",
+                "Disables power management helper":"Disables power management helper",
+                "for unsupported models.":"for unsupported models.",
                 "Disable mediaanalysisd service":"Disable mediaanalysisd service",
-                "For systems that are the primary iCloud\nPhoto Library host with a 3802-based GPU,\nthis may aid in prolonged idle stability.":"For systems that are the primary iCloud\nPhoto Library host with a 3802-based GPU,\nthis may aid in prolonged idle stability.",
+                "For systems that are the primary iCloud":"For systems that are the primary iCloud",
+                "Photo Library host with a 3802-based GPU,":"Photo Library host with a 3802-based GPU,",
+                "this may aid in prolonged idle stability.":"this may aid in prolonged idle stability.",
                 "Allow AppleALC Audio":"Allow AppleALC Audio",
-                "Allow AppleALC to manage audio\nif applicable.\nOnly disable if your host lacks\na GOP ROM.":"Allow AppleALC to manage audio\nif applicable.\nOnly disable if your host lacks\na GOP ROM.",
+                "Allow AppleALC to manage audio":"Allow AppleALC to manage audio",
+                "if applicable.":"if applicable.",
+                "Only disable if your host lacks":"Only disable if your host lacks",
+                "a GOP ROM.":"a GOP ROM.",
                 "NVRAM WriteFlash":"NVRAM WriteFlash",
-                "Allow OpenCore to write to NVRAM.\nDisable on systems with faulty or\ndegraded NVRAM.":"Allow OpenCore to write to NVRAM.\nDisable on systems with faulty or\ndegraded NVRAM.",
+                "Allow OpenCore to write to NVRAM.":"Allow OpenCore to write to NVRAM.",
+                "Disable on systems with faulty or":"Disable on systems with faulty or",
+                "degraded NVRAM.":"degraded NVRAM.",
                 "3rd Party NVMe PM":"3rd Party NVMe PM",
-                "Enable non-stock NVMe power\nmanagement in macOS.":"Enable non-stock NVMe power\nmanagement in macOS.",
+                "Enable non-stock NVMe power":"Enable non-stock NVMe power",
+                "management in macOS.":"management in macOS.",
                 "3rd Party SATA PM":"3rd Party SATA PM",
-                "Enable non-stock SATA power\nmanagement in macOS.":"Enable non-stock SATA power\nmanagement in macOS.",
+                "Enable non-stock SATA power":"Enable non-stock SATA power",
+                "management in macOS.":"management in macOS.",
                 "APFS Trim":"APFS Trim",
-                "Recommended for all users, however faulty\nSSDs may benefit from disabling this.":"Recommended for all users, however faulty\nSSDs may benefit from disabling this.",
+                "Recommended for all users, however faulty":"Recommended for all users, however faulty",
+                "SSDs may benefit from disabling this.":"SSDs may benefit from disabling this.",
                 "Advanced":"Advanced",
                 "Miscellaneous":"Miscellaneous",
                 "Disable Firmware Throttling":"Disable Firmware Throttling",
-                "Disables firmware-based throttling\ncaused by missing hardware.\nEx. Missing Display, Battery, etc.":"Disables firmware-based throttling\ncaused by missing hardware.\nEx. Missing Display, Battery, etc.",
+                "Disables firmware-based throttling":"Disables firmware-based throttling",
+                "caused by missing hardware.":"caused by missing hardware.",
+                "Ex. Missing Display, Battery, etc.":"Ex. Missing Display, Battery, etc.",
                 "Software DeMUX":"Software DeMUX",
-                "Enable software based DeMUX\nfor MacBookPro8,2 and MacBookPro8,3.\nPrevents faulty dGPU from turning on.\nNote: Requires associated NVRAM arg:\n'gpu-power-prefs'.":"Enable software based DeMUX\nfor MacBookPro8,2 and MacBookPro8,3.\nPrevents faulty dGPU from turning on.\nNote: Requires associated NVRAM arg:\n'gpu-power-prefs'.",
+                "Enable software based DeMUX":"Enable software based DeMUX",
+                "for MacBookPro8,2 and MacBookPro8,3.":"for MacBookPro8,2 and MacBookPro8,3.",
+                "Prevents faulty dGPU from turning on.":"Prevents faulty dGPU from turning on.",
+                "Note: Requires associated NVRAM arg:":"Note: Requires associated NVRAM arg:",
+                "'gpu-power-prefs'.":"'gpu-power-prefs'.",
                 "FeatureUnlock":"FeatureUnlock",
                 "Enabled":"Enabled",
                 "Partial":"Partial",
                 "Disabled":"Disabled",
-                "Configure FeatureUnlock level.\nRecommend lowering if your system\nexperiences memory instability.":"Configure FeatureUnlock level.\nRecommend lowering if your system\nexperiences memory instability.",
+                "Configure FeatureUnlock level.":"Configure FeatureUnlock level.",
+                "Recommend lowering if your system":"Recommend lowering if your system",
+                "experiences memory instability.":"experiences memory instability.",
                 "Hibernation Work-around":"Hibernation Work-around",
-                "Only load minimum EFI drivers\nto prevent hibernation issues.\nNote: This may break booting from\nexternal drives.":"Only load minimum EFI drivers\nto prevent hibernation issues.\nNote: This may break booting from\nexternal drives.",
+                "Only load minimum EFI drivers":"Only load minimum EFI drivers",
+                "to prevent hibernation issues.":"to prevent hibernation issues.",
+                "Note: This may break booting from":"Note: This may break booting from",
+                "external drives.":"external drives.",
                 "Graphics":"Graphics",
                 "AMD GOP Injection":"AMD GOP Injection",
-                "Inject AMD GOP for boot screen\nsupport on PC GPUs.":"Inject AMD GOP for boot screen\nsupport on PC GPUs.",
+                "Inject AMD GOP for boot screen":"Inject AMD GOP for boot screen",
+                "support on PC GPUs.":"support on PC GPUs.",
                 "Nvidia GOP Injection":"Nvidia GOP Injection",
-                "Inject Nvidia Kepler GOP for boot\nscreen support on PC GPUs.":"Inject Nvidia Kepler GOP for boot\nscreen support on PC GPUs.",
+                "Inject Nvidia Kepler GOP for boot":"Inject Nvidia Kepler GOP for boot",
+                "screen support on PC GPUs.":"screen support on PC GPUs.",
                 "Graphics Override":"Graphics Override",
                 "None":"None",
                 "Nvidia Kepler":"Nvidia Kepler",
@@ -1429,15 +1620,22 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "AMD Polaris":"AMD Polaris",
                 "AMD Lexa":"AMD Lexa",
                 "AMD Navi":"AMD Navi",
-                "Override detected/assumed GPU on\nsocketed MXM-based iMacs.":"Override detected/assumed GPU on\nsocketed MXM-based iMacs.",
+                "Override detected/assumed GPU on":"Override detected/assumed GPU on",
+                "socketed MXM-based iMacs.":"socketed MXM-based iMacs.",
                 "Security":"Security",
                 "Kernel Security":"Kernel Security",
                 "Disable Library Validation":"Disable Library Validation",
-                "Required for loading modified\nsystem files from root patching.":"Required for loading modified\nsystem files from root patching.",
+                "Required for loading modified":"Required for loading modified",
+                "system files from root patching.":"system files from root patching.",
                 "Disable AMFI":"Disable AMFI",
-                "Extended version of 'Disable\nLibrary Validation', required\nfor systems with deeper\nroot patches.":"Extended version of 'Disable\nLibrary Validation', required\nfor systems with deeper\nroot patches.",
+                "Extended version of 'Disable":"Extended version of 'Disable",
+                "Library Validation', required":"Library Validation', required",
+                "for systems with deeper":"for systems with deeper",
+                "root patches.":"root patches.",
                 "Secure Boot Model":"Secure Boot Model",
-                "Set Apple Secure Boot Model Identifier\nto matching T2 model if spoofing.\nNote: Incompatible with Root Patching.":"Set Apple Secure Boot Model Identifier\nto matching T2 model if spoofing.\nNote: Incompatible with Root Patching.",
+                "Set Apple Secure Boot Model Identifier":"Set Apple Secure Boot Model Identifier",
+                "to matching T2 model if spoofing.":"to matching T2 model if spoofing.",
+                "Note: Incompatible with Root Patching.":"Note: Incompatible with Root Patching.",
                 "System Integrity Protection":"System Integrity Protection",
                 "SMBIOS":"SMBIOS",
                 "Model Spoofing":"Model Spoofing",
@@ -1446,31 +1644,48 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Minimal":"Minimal",
                 "Moderate":"Moderate",
                 "Advanced":"Advanced",
-                "Supported Levels:\n   - None: No spoofing.\n   - Minimal: Overrides Board ID.\n   - Moderate: Overrides Model.\n   - Advanced: Overrides Model and serial.":"Supported Levels:\n   - None: No spoofing.\n   - Minimal: Overrides Board ID.\n   - Moderate: Overrides Model.\n   - Advanced: Overrides Model and serial.",
+                "Supported Levels:":"Supported Levels:",
+                "   - None: No spoofing.":"   - None: No spoofing.",
+                "   - Minimal: Overrides Board ID.":"   - Minimal: Overrides Board ID.",
+                "   - Moderate: Overrides Model.":"   - Moderate: Overrides Model.",
+                "   - Advanced: Overrides Model and serial.":"   - Advanced: Overrides Model and serial.",
                 "SMBIOS Spoof Model":"SMBIOS Spoof Model",
                 "Default":"Default",
                 "Set Mac Model to spoof to.":"Set Mac Model to spoof to.",
                 "Allow spoofing native Macs":"Allow spoofing native Macs",
-                "Allow OpenCore to spoof natively\nsupported Macs.\nPrimarily used for enabling\nUniversal Control on unsupported Macs":"Allow OpenCore to spoof natively\nsupported Macs.\nPrimarily used for enabling\nUniversal Control on unsupported Macs",
+                "Allow OpenCore to spoof natively":"Allow OpenCore to spoof natively",
+                "supported Macs.":"supported Macs.",
+                "Primarily used for enabling":"Primarily used for enabling",
+                "Universal Control on unsupported Macs":"Universal Control on unsupported Macs",
                 "Serial Spoofing":"Serial Spoofing",
                 "Patch":"Patch",
                 "Patch-General":"Patch-General",
                 "TeraScale 2 Acceleration":"TeraScale 2 Acceleration",
-                "Enable AMD TeraScale 2 GPU\nAcceleration on MacBookPro8,2 and\nMacBookPro8,3.\nBy default this is disabled due to\ncommon GPU failures on these models.":"Enable AMD TeraScale 2 GPU\nAcceleration on MacBookPro8,2 and\nMacBookPro8,3.\nBy default this is disabled due to\ncommon GPU failures on these models.",
+                "Enable AMD TeraScale 2 GPU":"Enable AMD TeraScale 2 GPU",
+                "Acceleration on MacBookPro8,2 and":"Acceleration on MacBookPro8,2 and",
+                "MacBookPro8,3.":"MacBookPro8,3.",
+                "By default this is disabled due to":"By default this is disabled due to",
+                "common GPU failures on these models.":"common GPU failures on these models.",
                 "Audio Patch choice":"Audio Patch choice",
                 "AppleHDA":"AppleHDA",
                 "VoodooHDA":"VoodooHDA",
-                "   - AppleALC: AppleALC patch on Tahoe.\n   - VoodooHDA: VoodooHDA patch ,\n  on Monterey and newer.\n  Not recommended.":"   - AppleALC: AppleALC patch on Tahoe.\n   - VoodooHDA: VoodooHDA patch ,\n  on Monterey and newer.\n  Not recommended.",
+                "   - AppleALC: AppleALC patch on Tahoe.":"   - AppleALC: AppleALC patch on Tahoe.",
+                "   - VoodooHDA: VoodooHDA patch ,":"   - VoodooHDA: VoodooHDA patch ,",
+                "  on Monterey and newer.":"  on Monterey and newer.",
+                "  Not recommended.":"  Not recommended.",
                 "Allow Tahoe Modern USB Patch":"Allow Tahoe Modern USB Patch",
-                "When enabled, this will patch the Old USB\nextensions on Tahoe.":"When enabled, this will patch the Old USB\nextensions on Tahoe.",
+                "When enabled, this will patch the Old USB":"When enabled, this will patch the Old USB",
+                "extensions on Tahoe.":"extensions on Tahoe.",
                 "Allow APFS Patch For Non-T2":"Allow APFS Patch For Non-T2",
-                "When enabled, this will patch the apfs.efi\non Tahoe.":"When enabled, this will patch the apfs.efi\non Tahoe.",
+                "When enabled, this will patch the apfs.efi":"When enabled, this will patch the apfs.efi",
+                "on Tahoe.":"on Tahoe.",
                 "AppleHDA.kext Version":"AppleHDA.kext Version",
                 "Non-Metal":"Non-Metal",
                 "Non-Metal Settings":"Non-Metal Settings",
                 "Log out required to apply changes to SkyLight":"Log out required to apply changes to SkyLight",
                 "Dark Menu Bar":"Dark Menu Bar",
-                "If Beta Menu Bar is enabled,\nmenu bar colour will dynamically":"If Beta Menu Bar is enabled,\nmenu bar colour will dynamically",
+                "If Beta Menu Bar is enabled,":"If Beta Menu Bar is enabled,",
+                "menu bar colour will dynamically":"menu bar colour will dynamically",
                 "Beta Blur":"Beta Blur",
                 "Control window blur behaviour.":"Control window blur behaviour.",
                 "Beach Ball Cursor Workaround":"Beach Ball Cursor Workaround",
@@ -1484,106 +1699,343 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "App":"App",
                 "General":"General",
                 "Allow native models":"Allow native models",
-                "Allow OpenCore to be installed\non natively supported Macs.\nNote this will not allow unsupported\nmacOS versions to be installed on\nyour system.":"Allow OpenCore to be installed\non natively supported Macs.\nNote this will not allow unsupported\nmacOS versions to be installed on\nyour system.",
+                "Allow OpenCore to be installed":"Allow OpenCore to be installed",
+                "on natively supported Macs.":"on natively supported Macs.",
+                "Note this will not allow unsupported":"Note this will not allow unsupported",
+                "macOS versions to be installed on":"macOS versions to be installed on",
+                "your system.":"your system.",
                 "Ignore App Updates":"Ignore App Updates",
                 "Github Proxy":"Github Proxy",
                 "Default":"Default",
                 "SimpleHac":"SimpleHac",
                 "gh-proxy":"gh-proxy",
                 "ghfast":"ghfast",
-                "Default : https://dortania.github.io/\nSimpleHac : https://next.oclpapi.simplehac.cn/\ngh-proxy : https://gh-proxy.com/\nghfast : https://ghfast.top/":"Default : https://dortania.github.io/\nSimpleHac : https://next.oclpapi.simplehac.cn/\ngh-proxy : https://gh-proxy.com/\nghfast : https://ghfast.top/",
+                "Default : https://dortania.github.io/":"Default : https://dortania.github.io/",
+                "SimpleHac : https://next.oclpapi.simplehac.cn/":"SimpleHac : https://next.oclpapi.simplehac.cn/",
+                "gh-proxy : https://gh-proxy.com/":"gh-proxy : https://gh-proxy.com/",
+                "ghfast : https://ghfast.top/":"ghfast : https://ghfast.top/",
                 "Disable Reporting":"Disable Reporting",
-                "When enabled, patcher will not\nreport any info to Hackdoc.":"When enabled, patcher will not\nreport any info to Hackdoc.",
+                "When enabled, patcher will not":"When enabled, patcher will not",
+                "report any info to Hackdoc.":"report any info to Hackdoc.",
                 "Remove Unused KDKs":"Remove Unused KDKs",
-                "When enabled, the app will remove\nunused Kernel Debug Kits from the system\nduring root patching.":"When enabled, the app will remove\nunused Kernel Debug Kits from the system\nduring root patching.",
+                "When enabled, the app will remove":"When enabled, the app will remove",
+                "unused Kernel Debug Kits from the system":"unused Kernel Debug Kits from the system",
+                "during root patching.":"during root patching.",
                 "Manually Download KDKs and\nMetallibs":"Manually Download KDKs and\nMetallibs",
-                "When enabled, patcher will allow\nyou download KDKs and metallibs manually.":"When enabled, patcher will allow\nyou download KDKs and metallibs manually.",
+                "When enabled, patcher will allow":"When enabled, patcher will allow",
+                "you download KDKs and metallibs manually.":"you download KDKs and metallibs manually.",
                 "Misc":"Misc",
                 "Choose Download Path":"Choose Download Path",
+                "Choose":"Choose",
+                "Choose Save Path":"Choose Save Path",
                 "Developer":"Developer",
                 "Validation":"Validation",
                 "Install latest nightly build 🧪":"Install latest nightly build 🧪",
-                "If you're already here, I assume you're ok\nbricking your system 🧱.\nCheck CHANGELOG before blindly updating.":"If you're already here, I assume you're ok\nbricking your system 🧱.\nCheck CHANGELOG before blindly updating.",
+                "If you're already here, I assume you're ok":"If you're already here, I assume you're ok",
+                "bricking your system 🧱.":"bricking your system 🧱.",
+                "Check CHANGELOG before blindly updating.":"Check CHANGELOG before blindly updating.",
                 "Trigger Exception":"Trigger Exception",
                 "Export constants":"Export constants",
                 "Export constants.py values to a txt file.":"Export constants.py values to a txt file.",
                 "Developer Root Volume Patching":"Developer Root Volume Patching",
                 "Mount Root Volume":"Mount Root Volume",
-                "Life's too short to type 'sudo mount -o\nnobrowse -t apfs /dev/diskXsY\n/System/Volumes/Update/mnt1' every time.":"Life's too short to type 'sudo mount -o\nnobrowse -t apfs /dev/diskXsY\n/System/Volumes/Update/mnt1' every time.",
+                "Life's too short to type 'sudo mount -o":"Life's too short to type 'sudo mount -o",
+                "nobrowse -t apfs /dev/diskXsY":"nobrowse -t apfs /dev/diskXsY",
+                "/System/Volumes/Update/mnt1' every time.":"/System/Volumes/Update/mnt1' every time.",
                 "Save Root Volume":"Save Root Volume",
                 "Rebuild kernel cache and bless snapshot 🙏":"Rebuild kernel cache and bless snapshot 🙏",
                 "Statistics":"Statistics",
                 "Populate Stats":"Populate Stats",
-                "Return":"Return"
+                "Return":"Return",
+                "Populate FeatureUnlock Override":"Populate FeatureUnlock Override",
+                "Inject Nvidia Kepler GOP for boot screen":"Inject Nvidia Kepler GOP for boot screen",
+                "Populate Graphics Override":"Populate Graphics Override",
+                "Flip individual bits corresponding to":"Flip individual bits corresponding to",
+                "Currently configured SIP:":"Currently configured SIP:",
+                "Currently booted SIP:":"Currently booted SIP:",
+                "Description:":"Description:",
+                "Cannot write to the selected directory.":"Cannot write to the selected directory." ,
+                "Read-only directory":"Read-only directory",
+                "Choose Path:":"Choose Path:",
+                "Custom Serial Number":"Custom Serial Number",
+                "Custom Board Serial Number":"Custom Board Serial Number",
+                "Generate S/N:":"Generate S/N:",
+                """
+Application Information:
+    Application Version: {0}
+    PatcherSupportPkg Version: {1}
+    Application Path: {2}
+    Application Mount: {3}
+
+Commit Information:
+    Branch: {4}
+    Date: {5}
+    URL: {6}
+
+Booted Information:
+    Booted OS: XNU {7} ({8})
+    Booted Patcher Version: {9}
+    Booted OpenCore Version: {10}
+    Booted OpenCore Disk: {11}
+
+Hardware Information:
+    {12}
+""":"""
+Application Information: 
+    Application Version: {0} 
+    PatcherSupportPkg Version: {1} 
+    Application Path: {2} 
+    Application Mount: {3} 
+ 
+Commit Information: 
+    Branch: {4} 
+    Date: {5} 
+    URL: {6} 
+ 
+Booted Information: 
+    Booted OS: XNU {7} ({8}) 
+    Booted Patcher Version: {9} 
+    Booted OpenCore Version: {10} 
+    Booted OpenCore Disk: {11} 
+ 
+ Hardware Information: 
+    {12} 
+ """,
+                "Enter a custom board serial number here. This will be used for the SMBIOS and iMessage.\n\nNote: This will not be used if the \"Use Custom Board Serial Number\" checkbox is not checked.":"Enter a custom board serial number here. This will be used for the SMBIOS and iMessage.\n\nNote: This will not be used if the \"Use Custom Board Serial Number\" checkbox is not checked.",
+                "Please take caution when using serial spoofing. This should only be used on machines that were legally obtained and require reserialization.\n\nNote: new serials are only overlayed through OpenCore and are not permanently installed into ROM.\n\nMisuse of this setting can break power management and other aspects of the OS if the system does not need spoofing\n\nHackdoc does not condone the use of our software on stolen devices.\n\nAre you certain you want to continue?":"Please take caution when using serial spoofing. This should only be used on machines that were legally obtained and require reserialization.\n\nNote: new serials are only overlayed through OpenCore and are not permanently installed into ROM.\n\nMisuse of this setting can break power management and other aspects of the OS if the system does not need spoofing\n\nHackdoc does not condone the use of our software on stolen devices.\n\nAre you certain you want to continue?",
+                "Enter a custom serial number here. This will be used for the SMBIOS and iMessage.\n\nNote: This will not be used if the \"Use Custom Serial Number\" checkbox is not checked.":"Enter a custom serial number here. This will be used for the SMBIOS and iMessage.\n\nNote: This will not be used if the \"Use Custom Serial Number\" checkbox is not checked.",
+                "This settings requires 'gpu-power-prefs' NVRAM argument to be set to '1'.\n\nIf missing and this option is toggled, the system will not boot\n\nFull command:\nnvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00":"This settings requires 'gpu-power-prefs' NVRAM argument to be set to '1'.\n\nIf missing and this option is toggled, the system will not boot\n\nFull command:\nnvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00",
+                "Failed to generate serial number:":"Failed to generate serial number:",
+                "GUI:custom_serial_number":"GUI:custom_serial_number",
+                "GUI:custom_board_serial_number":"GUI:custom_board_serial_number",
+                "GUI:fu_status":"GUI:fu_status",
+                "Unknown GPU Model":"Unknown GPU Model",
+                "Which branch would you like to download?":"Which branch would you like to download?",
+                "Branch Selection":"Branch Selection",
+                "Save Constants File":"Save Constants File",
+                "Updating FU Status: Disabled":"Updating FU Status: Disabled",
+                "Updating FU Status: Enabled":"Updating FU Status: Enabled",
+                "Updating FU Status: Partial":"Updating FU Status: Partial",
+                "Saving constants to {0}":"Saving constants to {0}",
+                "Test Exception":"Test Exception",
+                "Success":"Success",
+                "Error":"Error",
+                "Root Volume Mount Failed, check terminal output":"Root Volume Mount Failed, check terminal output",
+                "Root Volume saved, please reboot to apply changes":"Root Volume saved, please reboot to apply changes",
+                "Root Volume Mounted, remember to fix permissions before saving the Root Volume":"Root Volume Mounted, remember to fix permissions before saving the Root Volume",
+                "This option should only be used if your Mac natively supports the OSes you wish to run.\n\nIf you are currently running an unsupported OS, this option will break booting. Only toggle for enabling OS features on a native Mac.\n\nAre you certain you want to continue?":"This option should only be used if your Mac natively supports the OSes you wish to run.\n\nIf you are currently running an unsupported OS, this option will break booting. Only toggle for enabling OS features on a native Mac.\n\nAre you certain you want to continue?",
+                "Using Real Model: {model}":"Using Real Model: {model}",
+                "Using Custom Model: {selection}":"Using Custom Model: {selection}",
+                "Model: {selection}":"Model: {selection}",
+                "warning":"warning",
+                "Warning":"Warning",
+                "Updating Local Setting: {variable} = {value}":"Updating Local Setting: {variable} = {value}",
+                "Updating Global Setting: {variable} = {value}":"Updating Global Setting: {variable} = {value}",
+                "Initializing Settings Frame":"Initializing Settings Frame",
+                "Updating System Defaults: {variable} = {value} ({value_type})":"Updating System Defaults: {variable} = {value} ({value_type})",
+                "Updating System Defaults (root): {variable} = {value} ({value_type})":"Updating System Defaults (root): {variable} = {value} ({value_type})",
             }
         elif self.language_point==0:
             trans={
+                "Initializing Settings Frame":"初始化设置框架",
+                "Updating System Defaults (root): {variable} = {value} ({value_type})":"更新系统默认值（root）：{variable} = {value} ({value_type})",
+                "Updating System Defaults: {variable} = {value} ({value_type})":"更新系统默认值：{variable} = {value} ({value_type})",
+                "Updating Global Setting: {variable} = {value}":"更新全局设置：{variable} = {value}",
+                "Updating Local Setting: {variable} = {value}":"更新本地设置：{variable} = {value}",
+                "Warning":"警告",
+                "warning":"警告",
+                "Model: {selection}":"机型：{selection}",
+                "Using Real Model: {model}":"使用真实机型：{model}",
+                "Using Custom Model: {selection}":"使用自定义机型：{selection}",
+                "This option should only be used if your Mac natively supports the OSes you wish to run.\n\nIf you are currently running an unsupported OS, this option will break booting. Only toggle for enabling OS features on a native Mac.\n\nAre you certain you want to continue?":"此选项仅在您的 Mac 原生支持您要运行的操作系统时才应使用。\n\n如果您当前正在运行不受支持的操作系统，此选项使Mac无法启动。仅在您的 Mac 原生支持操作系统时才切换以启用操作系统功能。\n\n您确定要继续吗？",
+                "Root Volume Mount Failed, check terminal output":"根卷挂载失败，请检查终端输出",
+                "Error":"错误",
+                "Root Volume saved, please reboot to apply changes":"已保存快照，请重新启动以应用更改",
+                "Success":"成功",
+                "Root Volume Mounted, remember to fix permissions before saving the Root Volume":"根卷已挂载，请修复权限后再保存根卷",
+                "Test Exception":"测试异常",
+                "Saving constants to {0}":"保存 Constants 文件到 {0}",
+                "Updating FU Status: Partial":"更新功能解锁状态：部分",
+                "Updating FU Status: Enabled":"更新功能解锁状态：已启用",
+                "Updating FU Status: Disabled":"更新功能解锁状态：已禁用",
+                "Save Constants File":"保存Constants文件",
+                "Branch Selection":"分支选择",
+                "Which branch would you like to download?":"您想下载哪个分支？",
+                "Unknown GPU Model":"未知 GPU 型号",
+                "GUI:fu_arguments":"GUI:功能解锁参数",
+                "GUI:fu_status":"GUI:功能解锁状态",
+                "GUI:custom_board_serial_number":"GUI:自定义主板序列号",
+                "GUI:custom_serial_number":"GUI:自定义序列号",
+                "Failed to generate serial number:":"生成序列号失败:",
+                "Please take caution when using serial spoofing. This should only be used on machines that were legally obtained and require reserialization.\n\nNote: new serials are only overlayed through OpenCore and are not permanently installed into ROM.\n\nMisuse of this setting can break power management and other aspects of the OS if the system does not need spoofing\n\nHackdoc does not condone the use of our software on stolen devices.\n\nAre you certain you want to continue?":"请谨慎使用序列号欺骗功能。此功能仅适用于合法获取且需要重新序列化的设备。\n\n注意：新序列号仅通过 OpenCore 覆盖，不会永久写入 ROM。\n\n如果系统不需要序列号欺骗，滥用此设置可能会破坏电源管理以及操作系统的其他功能。\n\nHackdoc 不赞成在被盗设备上使用我们的软件。\n\n您确定要继续吗？",
+                """
+Application Information:
+    Application Version: {0}
+    PatcherSupportPkg Version: {1}
+    Application Path: {2}
+    Application Mount: {3}
+
+Commit Information:
+    Branch: {4}
+    Date: {5}
+    URL: {6}
+
+Booted Information:
+    Booted OS: XNU {7} ({8})
+    Booted Patcher Version: {9}
+    Booted OpenCore Version: {10}
+    Booted OpenCore Disk: {11}
+
+Hardware Information:
+    {12}
+""":"""
+应用程序信息：
+    应用程序版本：{0}
+    补丁支持包版本：{1}
+    应用程序路径：{2}
+    应用程序挂载点：{3}
+
+提交信息：
+    分支：{4}
+    日期：{5}
+    URL：{6}
+
+启动信息：
+    启动的操作系统：XNU {7} ({8})
+    启动的补丁程序版本：{9}
+    启动的 OpenCore 版本：{10}
+    启动的 OpenCore 磁盘：{11}
+
+硬件信息：
+    {12}
+""",
+                "Generate S/N:":"生成 S/N:",
+                "Enter a custom board serial number here. This will be used for the SMBIOS and iMessage.\n\nNote: This will not be used if the \"Use Custom Board Serial Number\" checkbox is not checked.":"输入自定义主板序列号，将用于 SMBIOS 和 iMessage。\n\n注意：如果未选中 \"使用自定义主板序列号\" 复选框，则此设置将不被使用。",
+                "Custom Board Serial Number":"自定义主板序列号",
+                "Enter a custom serial number here. This will be used for the SMBIOS and iMessage.\n\nNote: This will not be used if the \"Use Custom Serial Number\" checkbox is not checked.":"输入自定义序列号，将用于 SMBIOS 和 iMessage。\n\n注意：如果未选中 \"使用自定义序列号\" 复选框，则此设置将不被使用。",
+                "Custom Serial Number":"自定义序列号",
+                "Read-only directory":"只读目录",
+                "Choose Path:":"选择路径:",
+                "Cannot write to the selected directory.":"无法写入选择的目录。",
+                "Description:":"描述:",
+                "Currently booted SIP:":"当前启动的 SIP:",
+                "Currently configured SIP:":"当前配置的 SIP:",
+                "Flip individual bits corresponding to":"翻转对应 XNU csr.h 位",
+                "Populate SIP":"填充 SIP",
+                "Populate Graphics Override":"填充图形覆盖",
+                "Inject Nvidia Kepler GOP for boot screen":"注入 Nvidia Kepler GOP 以启动屏幕",
+                "Populate FeatureUnlock Override":"Populate FeatureUnlock Override",
                 "Target Model":"目标机型",
                 "Host Model":"主机机型",
                 "Overrides Mac Model the Patcher will build for.":"覆盖补丁程序将构建的 Mac 机型。",
                 "Build":"构建",
                 "General":"常规",
                 "FireWire Booting":"FireWire 启动",
-                "Enable booting macOS from\nFireWire drives.":"启用从 FireWire 驱动器启动 macOS。",
+                "Enable booting macOS from":"启用从",
+                "FireWire drives.":"FireWire 驱动器启动 macOS。",
                 "XHCI Booting":"XHCI 启动",
-                "Enable booting macOS from add-in\nUSB 3.0 expansion cards on systems\nwithout native support.":"在没有原生支持的系统上启用从添加的\nUSB 3.0 扩展卡启动 macOS。",
+                "Enable booting macOS from add-in":"启用从添加的",
+                "USB 3.0 expansion cards on systems":"USB 3.0 扩展卡",
+                "without native support.":"在没有原生支持的系统上启动 macOS。",
                 "NVMe Booting":"NVMe 启动",
-                "Enable booting macOS from NVMe\ndrives on systems without native\nsupport.\nNote: Requires Firmware support\nfor OpenCore to load from NVMe.":"在没有原生支持的系统上启用从 NVMe\n驱动器启动 macOS。\n注：需要固件支持才能从 NVMe 加载 OpenCore。",
+                "Enable booting macOS from NVMe":"启用从 NVMe",
+                "drives on systems without native":"驱动器",
+                "support.":"在没有原生支持的系统上启动 macOS。",
+                "Note: Requires Firmware support":"注：需要固件支持",
+                "for OpenCore to load from NVMe.":"才能从 NVMe 加载 OpenCore。",
                 "OpenCore Vaulting":"OpenCore 加密",
-                "Digitally sign OpenCore to prevent\ntampering or corruption.":"对 OpenCore 进行数字签名以防止\n篡改或损坏。",
+                "Digitally sign OpenCore to prevent":"对 OpenCore 进行数字签名以防止",
+                "tampering or corruption.":"篡改或损坏。",
                 "Show OpenCore Boot Picker":"显示 OpenCore 启动选择器",
-                "When disabled, users can hold ESC to\nshow picker in the firmware.":"禁用时，用户可以按住 ESC 键在固件中\n显示选择器。",
+                "When disabled, users can hold ESC to":"禁用时，用户可以按住 ESC 键",
+                "show picker in the firmware.":"在固件中显示选择器。",
                 "Boot Picker Timeout":"启动选择器超时",
-                "Timeout before boot picker selects default\nentry in seconds.\nSet to 0 for no timeout.":"启动选择器选择默认项前的超时时间（秒）。\n设置为 0 表示无超时。",
+                "Timeout before boot picker selects default":"启动选择器选择默认项前的超时时间",
+                "entry in seconds.":"（秒）。",
+                "Set to 0 for no timeout.":"设置为 0 表示无超时。",
                 "MacPro3,1/Xserve2,1 Workaround":"MacPro3,1/Xserve2,1 解决方法",
-                "Limits to 4 threads max on these units.\nRequired for macOS Sequoia and later.":"在这些设备上限制最多 4 个线程。\nmacOS Sequoia 及更高版本需要。",
+                "Limits to 4 threads max on these units.":"在这些设备上限制最多 4 个线程。",
+                "Required for macOS Sequoia and later.":"macOS Sequoia 及更高版本需要。",
                 "Debug":"调试",
                 "Verbose":"详细输出",
                 "Verbose output during boot.":"启动期间显示详细输出。",
                 "Kext Debugging":"Kext 调试",
-                "Use DEBUG variants of kexts and\nenables additional kernel logging.":"使用 kext 的 DEBUG 变体并启用\n额外的内核日志记录。",
+                "Use DEBUG variants of kexts and":"使用 kext 的 DEBUG 版本并",
+                "enables additional kernel logging.":"启用额外的内核日志记录。",
                 "OpenCore Debugging":"OpenCore 调试",
-                "Use DEBUG variant of OpenCore\nand enables additional logging.":"使用 OpenCore 的 DEBUG 变体并启用\n额外的日志记录。",
+                "Use DEBUG variant of OpenCore":"使用 OpenCore 的 DEBUG 版本",
+                "and enables additional logging.":"并启用额外的日志记录。",
                 "Extras":"额外",
                 "General (Continued)":"常规（续）",
                 "Wake on WLAN":"无线局域网唤醒",
-                "Disabled by default due to\nperformance degradation\non some systems from wake.\nOnly applies to BCM943224, 331,\n360 and 3602 chipsets.":"默认禁用，因为某些系统从唤醒状态\n恢复时性能会下降。\n仅适用于 BCM943224、331、360 和 3602 芯片组。",
+                "Disabled by default due to":"默认禁用，因为",
+                "performance degradation":"某些系统从唤醒状态",
+                "on some systems from wake.":"恢复时性能会下降。",
+                "Only applies to BCM943224, 331,":"仅适用于 BCM943224、331、",
+                "360 and 3602 chipsets.":"360 和 3602 芯片组。",
                 "Disable Thunderbolt":"禁用 Thunderbolt",
-                "For MacBookPro11,x with faulty\nPCHs that may crash sporadically.":"适用于带有可能偶尔崩溃的\n故障 PCH 的 MacBookPro11,x。",
+                "For MacBookPro11,x with faulty":"适用于带有",
+                "PCHs that may crash sporadically.":"可能偶尔崩溃的故障 PCH 的 MacBookPro11,x。",
                 "Windows GMUX":"Windows GMUX",
-                "Allow iGPU to be exposed in Windows\nfor dGPU-based MacBooks.":"允许 iGPU 在 Windows 中暴露，\n适用于基于 dGPU 的 MacBook。",
+                "Allow iGPU to be exposed in Windows":"允许 iGPU 在 Windows 中暴露，",
+                "for dGPU-based MacBooks.":"适用于基于 dGPU 的 MacBook。",
                 "Disable CPUFriend":"禁用 CPUFriend",
-                "Disables power management helper\nfor unsupported models.":"禁用不支持机型的电源管理助手。",
+                "Choose Save Path":"选择保存目录",
+                "Disables power management helper":"禁用电源管理助手",
+                "for unsupported models.":"对于不支持的机型。",
                 "Disable mediaanalysisd service":"禁用 mediaanalysisd 服务",
-                "For systems that are the primary iCloud\nPhoto Library host with a 3802-based GPU,\nthis may aid in prolonged idle stability.":"对于作为主要 iCloud 照片库主机且\n带有 3802 系列 GPU 的系统，\n这可能有助于延长空闲稳定性。",
+                "For systems that are the primary iCloud":"对于作为主要 iCloud",
+                "Photo Library host with a 3802-based GPU,":"照片库主机且带有 3802 系列 GPU 的系统，",
+                "this may aid in prolonged idle stability.":"这可能有助于延长空闲稳定性。",
                 "Allow AppleALC Audio":"允许 AppleALC 音频",
-                "Allow AppleALC to manage audio\nif applicable.\nOnly disable if your host lacks\na GOP ROM.":"允许 AppleALC 在适用时管理音频。\n仅在主机缺少 GOP ROM 时禁用。",
+                "Allow AppleALC to manage audio":"允许 AppleALC 管理音频",
+                "if applicable.":"在适用时。",
+                "Only disable if your host lacks":"仅在主机缺少",
+                "a GOP ROM.":"GOP ROM 时禁用。",
                 "NVRAM WriteFlash":"NVRAM 写入",
-                "Allow OpenCore to write to NVRAM.\nDisable on systems with faulty or\ndegraded NVRAM.":"允许 OpenCore 写入 NVRAM。\n在 NVRAM 故障或降级的系统上禁用。",
+                "Allow OpenCore to write to NVRAM.":"允许 OpenCore 写入 NVRAM。",
+                "Disable on systems with faulty or":"在 NVRAM",
+                "degraded NVRAM.":"故障或降级的系统上禁用。",
                 "3rd Party NVMe PM":"第三方 NVMe 电源管理",
-                "Enable non-stock NVMe power\nmanagement in macOS.":"在 macOS 中启用非原厂 NVMe 电源管理。",
+                "Enable non-stock NVMe power":"在 macOS 中启用非原厂 NVMe",
+                "management in macOS.":"电源管理。",
                 "3rd Party SATA PM":"第三方 SATA 电源管理",
-                "Enable non-stock SATA power\nmanagement in macOS.":"在 macOS 中启用非原厂 SATA 电源管理。",
+                "Enable non-stock SATA power":"在 macOS 中启用非原厂 SATA",
+                "management in macOS.":"电源管理。",
                 "APFS Trim":"APFS Trim",
-                "Recommended for all users, however faulty\nSSDs may benefit from disabling this.":"建议所有用户使用，但有故障的 SSD\n可能受益于禁用此功能。",
+                "Recommended for all users, however faulty":"建议所有用户使用，但有故障的",
+                "SSDs may benefit from disabling this.":"SSD 可能受益于禁用此功能。",
                 "Advanced":"高级",
                 "Miscellaneous":"杂项",
                 "Disable Firmware Throttling":"禁用固件限制",
-                "Disables firmware-based throttling\ncaused by missing hardware.\nEx. Missing Display, Battery, etc.":"禁用由缺少硬件引起的基于固件的限制。\n例如：缺少显示器、电池等。",
+                "Disables firmware-based throttling":"禁用基于固件的限制",
+                "caused by missing hardware.":"由缺少硬件引起。",
+                "Ex. Missing Display, Battery, etc.":"例如：缺少显示器、电池等。",
                 "Software DeMUX":"软件 DeMUX",
-                "Enable software based DeMUX\nfor MacBookPro8,2 and MacBookPro8,3.\nPrevents faulty dGPU from turning on.\nNote: Requires associated NVRAM arg:\n'gpu-power-prefs'.":"为 MacBookPro8,2 和 MacBookPro8,3 启用基于软件的 DeMUX。\n防止故障 dGPU 开启。\n注：需要关联的 NVRAM 参数：\n'gpu-power-prefs'。",
+                "Enable software based DeMUX":"启用基于软件的 DeMUX",
+                "for MacBookPro8,2 and MacBookPro8,3.":"为 MacBookPro8,2 和 MacBookPro8,3。",
+                "Prevents faulty dGPU from turning on.":"防止故障 dGPU 开启。",
+                "Note: Requires associated NVRAM arg:":"注：需要关联的 NVRAM 参数：",
+                "'gpu-power-prefs'.":"'gpu-power-prefs'。",
                 "FeatureUnlock":"FeatureUnlock",
                 "Enabled":"已启用",
                 "Partial":"部分",
                 "Disabled":"已禁用",
-                "Configure FeatureUnlock level.\nRecommend lowering if your system\nexperiences memory instability.":"配置 FeatureUnlock 级别。\n如果系统出现内存不稳定，建议降低级别。",
+                "Configure FeatureUnlock level.":"配置 FeatureUnlock 级别。",
+                "Recommend lowering if your system":"如果系统出现",
+                "experiences memory instability.":"内存不稳定，建议降低级别。",
                 "Hibernation Work-around":"休眠解决方法",
-                "Only load minimum EFI drivers\nto prevent hibernation issues.\nNote: This may break booting from\nexternal drives.":"仅加载最少的 EFI 驱动程序以防止休眠问题。\n注：这可能会破坏从外部驱动器启动。",
+                "Only load minimum EFI drivers":"仅加载最少的 EFI 驱动程序",
+                "to prevent hibernation issues.":"以防止休眠问题。",
+                "Note: This may break booting from":"注：这可能会破坏从",
+                "external drives.":"外部驱动器启动。",
                 "Graphics":"图形",
                 "AMD GOP Injection":"AMD GOP 注入",
-                "Inject AMD GOP for boot screen\nsupport on PC GPUs.":"为 PC GPU 注入 AMD GOP 以支持启动屏幕。",
+                "Inject AMD GOP for boot screen":"为 PC GPU 注入 AMD GOP",
+                "support on PC GPUs.":"以支持启动屏幕。",
                 "Nvidia GOP Injection":"Nvidia GOP 注入",
-                "Inject Nvidia Kepler GOP for boot\nscreen support on PC GPUs.":"为 PC GPU 注入 Nvidia Kepler GOP 以支持启动屏幕。",
+                "Inject Nvidia Kepler GOP for boot":"为 PC GPU 注入 Nvidia Kepler GOP",
+                "screen support on PC GPUs.":"以支持启动屏幕。",
                 "Graphics Override":"图形覆盖",
                 "None":"无",
                 "Nvidia Kepler":"Nvidia Kepler",
@@ -1591,15 +2043,22 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "AMD Polaris":"AMD Polaris",
                 "AMD Lexa":"AMD Lexa",
                 "AMD Navi":"AMD Navi",
-                "Override detected/assumed GPU on\nsocketed MXM-based iMacs.":"覆盖基于 MXM 插槽的 iMac 上检测到/假设的 GPU。",
+                "Override detected/assumed GPU on":"覆盖基于 MXM 插槽的 iMac 上",
+                "socketed MXM-based iMacs.":"检测到/假设的 GPU。",
                 "Security":"安全",
                 "Kernel Security":"内核安全",
                 "Disable Library Validation":"禁用库验证",
-                "Required for loading modified\nsystem files from root patching.":"从根补丁加载修改后的系统文件所需。",
+                "Required for loading modified":"从根补丁加载修改后的",
+                "system files from root patching.":"系统文件所需。",
                 "Disable AMFI":"禁用 AMFI",
-                "Extended version of 'Disable\nLibrary Validation', required\nfor systems with deeper\nroot patches.":"'禁用库验证'的扩展版本，\n具有较深根补丁的系统需要。",
-                "Secure Boot Model":"安全启动模型",
-                "Set Apple Secure Boot Model Identifier\nto matching T2 model if spoofing.\nNote: Incompatible with Root Patching.":"如果进行欺骗，将 Apple 安全启动模型标识符\n设置为匹配的 T2 模型。\n注：与根补丁不兼容。",
+                  "Extended version of 'Disable":"'禁用库验证'的扩展版本，",
+                  "Library Validation', required":"具有较深根补丁的系统",
+                  "for systems with deeper":"需要。",
+                  "root patches.":"",
+                "Secure Boot Model":"安全启动机型",
+                  "Set Apple Secure Boot Model Identifier":"如果进行欺骗，将 Apple 安全启动机型标识符",
+                  "to matching T2 model if spoofing.":"设置为匹配的 T2 机型。",
+                  "Note: Incompatible with Root Patching.":"注：与根补丁不兼容。",
                 "System Integrity Protection":"系统完整性保护",
                 "SMBIOS":"SMBIOS",
                 "Model Spoofing":"机型欺骗",
@@ -1608,31 +2067,48 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Minimal":"最小",
                 "Moderate":"适度",
                 "Advanced":"高级",
-                "Supported Levels:\n   - None: No spoofing.\n   - Minimal: Overrides Board ID.\n   - Moderate: Overrides Model.\n   - Advanced: Overrides Model and serial.":"支持的级别：\n   - 无：不进行欺骗。\n   - 最小：覆盖 Board ID。\n   - 适度：覆盖机型。\n   - 高级：覆盖机型和序列号。",
+                "Supported Levels:":"支持的级别：",
+                  "   - None: No spoofing.":"   - 无：不进行欺骗。",
+                  "   - Minimal: Overrides Board ID.":"   - 最小：覆盖 Board ID。",
+                  "   - Moderate: Overrides Model.":"   - 适度：覆盖机型。",
+                  "   - Advanced: Overrides Model and serial.":"   - 高级：覆盖机型和序列号。",
                 "SMBIOS Spoof Model":"SMBIOS 欺骗机型",
                 "Default":"默认",
                 "Set Mac Model to spoof to.":"设置要欺骗的 Mac 机型。",
                 "Allow spoofing native Macs":"允许欺骗原生 Mac",
-                "Allow OpenCore to spoof natively\nsupported Macs.\nPrimarily used for enabling\nUniversal Control on unsupported Macs":"允许 OpenCore 欺骗原生支持的 Mac。\n主要用于在不支持的 Mac 上启用通用控制。",
+                "Allow OpenCore to spoof natively":"允许 OpenCore 欺骗原生",
+                  "supported Macs.":"支持的 Mac。",
+                  "Primarily used for enabling":"主要用于启用",
+                  "Universal Control on unsupported Macs":"在不支持的 Mac 上的通用控制。",
                 "Serial Spoofing":"序列号欺骗",
                 "Patch":"补丁",
                 "Patch-General":"补丁-通用",
                 "TeraScale 2 Acceleration":"TeraScale 2 加速",
-                "Enable AMD TeraScale 2 GPU\nAcceleration on MacBookPro8,2 and\nMacBookPro8,3.\nBy default this is disabled due to\ncommon GPU failures on these models.":"在 MacBookPro8,2 和 MacBookPro8,3 上启用 AMD TeraScale 2 GPU 加速。\n默认禁用，因为这些机型常见 GPU 故障。",
+                "Enable AMD TeraScale 2 GPU":"启用 AMD TeraScale 2 GPU",
+                  "Acceleration on MacBookPro8,2 and":"在 MacBookPro8,2 和",
+                  "MacBookPro8,3.":"MacBookPro8,3 上的加速。",
+                  "By default this is disabled due to":"默认禁用，因为",
+                  "common GPU failures on these models.":"这些机型常见 GPU 故障。",
                 "Audio Patch choice":"音频补丁选择",
                 "AppleHDA":"AppleHDA",
                 "VoodooHDA":"VoodooHDA",
-                "   - AppleALC: AppleALC patch on Tahoe.\n   - VoodooHDA: VoodooHDA patch ,\n  on Monterey and newer.\n  Not recommended.":"   - AppleALC: Tahoe 上的 AppleALC 补丁。\n   - VoodooHDA: VoodooHDA 补丁，\n  在 Monterey 及更高版本上。\n  不推荐。",
+                "   - AppleALC: AppleALC patch on Tahoe.":"   - AppleALC: Tahoe 上的 AppleALC 补丁。",
+                "   - VoodooHDA: VoodooHDA patch ,":"   - VoodooHDA: VoodooHDA 补丁，",
+                "  on Monterey and newer.":"  在 Monterey 及更高版本上。",
+                "  Not recommended.":"  不推荐。",
                 "Allow Tahoe Modern USB Patch":"允许 Tahoe 现代 USB 补丁",
-                "When enabled, this will patch the Old USB\nextensions on Tahoe.":"启用时，这将修补 Tahoe 上的旧 USB 扩展。",
+                "When enabled, this will patch the Old USB":"启用时，这将修补旧 USB",
+                "extensions on Tahoe.":"在 Tahoe 上的扩展。",
                 "Allow APFS Patch For Non-T2":"允许非 T2 设备的 APFS 补丁",
-                "When enabled, this will patch the apfs.efi\non Tahoe.":"启用时，这将修补 Tahoe 上的 apfs.efi。",
+                "When enabled, this will patch the apfs.efi":"启用时，这将修补 apfs.efi",
+                "on Tahoe.":"在 Tahoe 上。",
                 "AppleHDA.kext Version":"AppleHDA.kext 版本",
                 "Non-Metal":"非 Metal",
                 "Non-Metal Settings":"非 Metal 设置",
                 "Log out required to apply changes to SkyLight":"应用更改到 SkyLight 需要注销",
                 "Dark Menu Bar":"深色菜单栏",
-                "If Beta Menu Bar is enabled,\nmenu bar colour will dynamically":"如果启用了测试版菜单栏，\n菜单栏颜色将动态变化",
+                "If Beta Menu Bar is enabled,":"如果启用了测试版菜单栏，",
+                "menu bar colour will dynamically":"菜单栏颜色将动态变化",
                 "Beta Blur":"测试版模糊",
                 "Control window blur behaviour.":"控制窗口模糊行为。",
                 "Beach Ball Cursor Workaround":"沙滩球光标解决方法",
@@ -1646,37 +2122,63 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "App":"应用",
                 "General":"常规",
                 "Allow native models":"允许原生机型",
-                "Allow OpenCore to be installed\non natively supported Macs.\nNote this will not allow unsupported\nmacOS versions to be installed on\nyour system.":"允许在原生支持的 Mac 上安装 OpenCore。\n请注意，这不会允许在您的系统上\n安装不支持的 macOS 版本。",
+                "Allow OpenCore to be installed":"允许在原生支持的 Mac 上",
+                  "on natively supported Macs.":"安装 OpenCore。",
+                  "Note this will not allow unsupported":"请注意，这不会允许",
+                  "macOS versions to be installed on":"在您的系统上安装",
+                  "your system.":"不支持的 macOS 版本。",
                 "Ignore App Updates":"忽略应用更新",
                 "Github Proxy":"Github 代理",
                 "Default":"默认",
                 "SimpleHac":"SimpleHac",
                 "gh-proxy":"gh-proxy",
                 "ghfast":"ghfast",
-                "Default : https://dortania.github.io/\nSimpleHac : https://next.oclpapi.simplehac.cn/\ngh-proxy : https://gh-proxy.com/\nghfast : https://ghfast.top/":"默认 : https://dortania.github.io/\nSimpleHac : https://next.oclpapi.simplehac.cn/\ngh-proxy : https://gh-proxy.com/\nghfast : https://ghfast.top/",
+                "Default : https://dortania.github.io/":"默认 : https://dortania.github.io/",
+                  "SimpleHac : https://next.oclpapi.simplehac.cn/":"SimpleHac : https://next.oclpapi.simplehac.cn/",
+                  "gh-proxy : https://gh-proxy.com/":"gh-proxy : https://gh-proxy.com/",
+                  "ghfast : https://ghfast.top/":"ghfast : https://ghfast.top/",
+                  "Default : https://dortania.github.io/":"默认 : https://dortania.github.io/",
+                "SimpleHac : https://next.oclpapi.simplehac.cn/":"SimpleHac : https://next.oclpapi.simplehac.cn/",
+                "gh-proxy : https://gh-proxy.com/":"gh-proxy : https://gh-proxy.com/",
+                "ghfast : https://ghfast.top/":"ghfast : https://ghfast.top/",
                 "Disable Reporting":"禁用报告",
-                "When enabled, patcher will not\nreport any info to Hackdoc.":"启用时，补丁程序不会向 Hackdoc 报告任何信息。",
+                  "When enabled, patcher will not":"启用时，补丁程序不会",
+                  "report any info to Hackdoc.":"向 Hackdoc 报告任何信息。",
+                  "When enabled, patcher will not":"启用时，补丁程序不会",
+                  "report any info to Hackdoc.":"向 Hackdoc 报告任何信息。",
                 "Remove Unused KDKs":"移除未使用的 KDK",
-                "When enabled, the app will remove\nunused Kernel Debug Kits from the system\nduring root patching.":"启用时，应用程序将在根补丁期间\n从系统中移除未使用的内核调试工具包。",
+                  "When enabled, the app will remove":"启用时，应用程序将在根补丁期间",
+                  "unused Kernel Debug Kits from the system":"从系统中移除未使用的",
+                  "during root patching.":"内核调试工具包。",
+                  "When enabled, the app will remove":"启用时，应用程序将移除",
+                  "unused Kernel Debug Kits from the system":"未使用的内核调试工具包",
+                  "during root patching.":"在根补丁期间。",
                 "Manually Download KDKs and\nMetallibs":"手动下载 KDK 和 Metallib",
-                "When enabled, patcher will allow\nyou download KDKs and metallibs manually.":"启用时，补丁程序将允许您手动下载 KDK 和 metallib。",
+                "When enabled, patcher will allow":"启用时，补丁程序将允许",
+                "you download KDKs and metallibs manually.":"您手动下载 KDK 和 metallib。",
                 "Misc":"杂项",
                 "Choose Download Path":"选择下载路径",
+                "Choose":"选择",
                 "Developer":"开发者",
                 "Validation":"验证",
                 "Install latest nightly build 🧪":"安装最新的夜间构建 🧪",
-                "If you're already here, I assume you're ok\nbricking your system 🧱.\nCheck CHANGELOG before blindly updating.":"如果你已经在这里，我假设你愿意\n让你的系统变砖 🧱。\n在盲目更新前查看 CHANGELOG。",
+                "If you're already here, I assume you're ok":"如果你已经在这里，我假设你愿意",
+                "bricking your system 🧱.":"让你的系统变砖 🧱.",
+                "Check CHANGELOG before blindly updating.":"在盲目更新前查看 CHANGELOG。",
                 "Trigger Exception":"触发异常",
                 "Export constants":"导出常量",
                 "Export constants.py values to a txt file.":"将 constants.py 值导出到 txt 文件。",
                 "Developer Root Volume Patching":"开发者根卷补丁",
                 "Mount Root Volume":"挂载根卷",
-                "Life's too short to type 'sudo mount -o\nnobrowse -t apfs /dev/diskXsY\n/System/Volumes/Update/mnt1' every time.":"人生苦短，何必每次都输入 'sudo mount -o\nnobrowse -t apfs /dev/diskXsY\n/System/Volumes/Update/mnt1'。",
+                "Life's too short to type 'sudo mount -o":"人生苦短，何必每次都输入 'sudo mount -o",
+                "nobrowse -t apfs /dev/diskXsY":"nobrowse -t apfs /dev/diskXsY",
+                "/System/Volumes/Update/mnt1' every time.":"/System/Volumes/Update/mnt1'.",
                 "Save Root Volume":"保存根卷",
-                "Rebuild kernel cache and bless snapshot 🙏":"重建内核缓存并祝福快照 🙏",
+                "Rebuild kernel cache and bless snapshot 🙏":"重建内核缓存并祝福快照别寄(bushi~) 🙏",
                 "Statistics":"统计信息",
                 "Populate Stats":"填充统计信息",
-                "Return":"返回"
+                "Return":"返回",
+                "This settings requires 'gpu-power-prefs' NVRAM argument to be set to '1'.\n\nIf missing and this option is toggled, the system will not boot\n\nFull command:\nnvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00":"此设置需要 'gpu-power-prefs' NVRAM 参数设置为 '1'。\n\n如果缺失且此选项被切换，系统将无法启动\n\n完整命令：\nnvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00"
             }
         return trans
     
@@ -1706,6 +2208,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
     def gui_sys_patch_display(self):
         if self.language_point==1:
             trans={
+                "Checking if new patches are needed":"Checking if new patches are needed",
                 "No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?":"No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?",
                 "Post-Install Menu":"Post-Install Menu",
                 "Initializing Root Patch Display Frame":"Initializing Root Patch Display Frame",
@@ -1731,6 +2234,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         elif self.language_point==0:
             trans={
+                "Checking if new patches are needed":"检查是否需要新的补丁",
                 "Initializing Root Patch Display Frame":"初始化根卷补丁显示框架",
                 "No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?":"没有需要根卷补丁的更新!\n\n是否重启以应用新的 OpenCore 构建？",
                 "Post-Install Menu":"安装驱动补丁",
@@ -1759,6 +2263,12 @@ If you plan to create the USB for another machine, please select the "Change Mod
     def gui_sys_patch_start(self):
         if self.language_point==1:
             trans={
+                "An internal error occurred while running the Root Patcher:\n":"An internal error occurred while running the Root Patcher:\n",
+                "Starting root patching":"Starting root patching",
+                "Metallib installation complete":"Metallib installation complete",
+                "Metallib download complete, installing Metallib PKG":"Metallib download complete, installing Metallib PKG",
+                "MetallibSupportPkg missing, generating Metallib download frame":"MetallibSupportPkg missing, generating Metallib download frame",
+                "KDK missing, generating KDK download frame":"KDK missing, generating KDK download frame",
                 "Downloading Kernel Debug Kit":"Downloading Kernel Debug Kit",
                 "Fetching KDK database...":"Fetching KDK database...",
                 "KDK download failed: ":"KDK download failed: ",
@@ -1782,31 +2292,57 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "We just finished installing the patches to your Root Volume!\n\nHowever, Apple requires users to manually approve the kernel extensions installed before they can be used next reboot.\n\nWould you like to open System Preferences?":"We just finished installing the patches to your Root Volume!\n\nHowever, Apple requires users to manually approve the kernel extensions installed before they can be used next reboot.\n\nWould you like to open System Preferences?",
                 "Open System Preferences?":"Open System Preferences?",
                 "Open System Preferences":"Open System Preferences",
-                "Ignore":"Ignore"
+                "Ignore":"Ignore",
+                "Error":"Error",
+                "KDK download complete, validating with hdiutil":"KDK download complete, validating with hdiutil",
+                "KDK download complete":"KDK download complete",
+                "Metallib Build ":"Metallib Build ",
+                "Unsupported variant:":"Unsupported variant:",
+                "Root Patching":"Root Patching",
+                "Available patches:":"Available patches:",
+                "Checking if new patches are needed":"Checking if new patches are needed",
+                "No new patches detected for system":"No new patches detected for system",
+                "- Patch {patch} not installed":"- Patch {patch} not installed",
             }
         elif self.language_point==0:
             trans={
+                "- Patch {patch} not installed":"- 补丁 {patch} 未安装",
+                "No new patches detected for system":"没有新的系统补丁",
+                "Checking if new patches are needed":"检查是否有新的补丁需要应用",
+                "An internal error occurred while running the Root Patcher:\n":"运行根卷补丁器时发生内部错误：\n",
+                "Starting root patching":"开始根卷补丁",
+                "Available patches:":"可用补丁：",
+                "Root Patching":"根卷补丁",
+                "Unsupported variant:":"不支持的版本:",
+                "Metallib installation complete":"Metallib 安装完成",
+                "Metallib download complete, installing Metallib PKG":"Metallib 下载完成，正在安装 Metallib PKG",
+                "Metallib Build ":"Metallib 构建 ",
+                "MetallibSupportPkg missing, generating Metallib download frame":"MetallibSupportPkg 缺失，正在生成 Metallib 下载框架",
+                "KDK download complete":"KDK 下载完成",
+                "KDK download complete, validating with hdiutil":"KDK 下载完成，正在使用 hdiutil 验证",
+                "Error":"错误",
+                "KDK missing, generating KDK download frame":"KDK 缺失，正在生成 KDK 下载框架",
                 "Downloading Kernel Debug Kit":"正在下载内核调试工具包",
                 "Fetching KDK database...":"正在获取 KDK 数据库...",
                 "KDK download failed: ":"KDK 下载失败：",
-                "Validating KDK: ":"正在验证 KDK：",
+                "Validating KDK: ":"正在验证 KDK: ",
                 "Checking if checksum is valid...":"正在检查校验和是否有效...",
                 "KDK checksum validation failed: ":"KDK 校验和验证失败：",
                 "Downloading Metal Libraries":"正在下载 Metal 库",
                 "Fetching MetallibSupportPkg database...":"正在获取 MetallibSupportPkg 数据库...",
                 "Metallib download failed: ":"Metallib 下载失败：",
-                "Installing Metallib: ":"正在安装 Metallib：",
+                "Installing Metallib: ":"正在安装 Metallib: ",
                 "Installing MetallibSupportPkg PKG...":"正在安装 MetallibSupportPkg 包...",
-                "Metallib installation failed: ":"Metallib 安装失败：",
+                "Metallib installation failed: ":"Metallib 安装失败: ",
                 "Root Patching":"根卷补丁",
                 "Revert Root Patches":"还原根卷补丁",
-                "Root Patching will patch the following:":"根卷补丁将修补以下内容：",
+                "Root Patching will patch the following:":"根卷补丁将修补以下内容: ",
                 "No patches to apply":"没有补丁可应用",
                 "Reverting to last sealed snapshot":"正在还原到最后一个密封快照",
                 "Return to Main Menu":"返回主菜单",
                 "Root Patcher finished successfully!\n\nWould you like to reboot now?":"根卷补丁成功完成！\n\n您现在想要重启吗？",
-                "Root Patcher finished successfully!\nIf you were prompted to open System Settings to authorize new kexts, this can be ignored. Your system is ready once restarted.\n\nWould you like to reboot now?":"根卷补丁成功完成！\n如果您被提示打开系统设置以授权新的 kext，这可以忽略。您的系统重启后即可使用。\n\n您现在想要重启吗？",
-                "We just finished installing the patches to your Root Volume!\n\nHowever, Apple requires users to manually approve the kernel extensions installed before they can be used next reboot.\n\nWould you like to open System Preferences?":"我们刚刚完成了对您根卷的补丁安装！\n\n但是，Apple 要求用户手动批准安装的内核扩展，然后才能在下次重启时使用它们。\n\n您想要打开系统偏好设置吗？",
+                "Root Patcher finished successfully!\nIf you were prompted to open System Settings to authorize new kexts, this can be ignored. Your system is ready once restarted.\n\nWould you like to reboot now?":"根卷补丁成功完成！\n如果您被提示打开系统设置以授权新的 kext, 这可以忽略。您的系统重启后即可使用。\n\n您现在想要重启吗?",
+                "We just finished installing the patches to your Root Volume!\n\nHowever, Apple requires users to manually approve the kernel extensions installed before they can be used next reboot.\n\nWould you like to open System Preferences?":"我们刚刚完成了对您根卷的补丁安装！\n\n但, Apple 要求用户手动批准安装的内核扩展，然后才能在下次重启时使用它们。\n\n您想要打开系统偏好设置吗?",
                 "Open System Preferences?":"打开系统偏好设置？",
                 "Open System Preferences":"打开系统偏好设置",
                 "Ignore":"忽略"
@@ -1816,6 +2352,8 @@ If you plan to create the USB for another machine, please select the "Change Mod
     def gui_update(self):
         if self.language_point==1:
             trans={
+                "Failed to install update.":"Failed to install update.",
+                "Extracting nightly update":"Extracting nightly update",
                 "Failed to get update info":"Failed to get update info",
                 "Critical Error":"Critical Error",
                 "Preparing download...":"Preparing download...",
@@ -1826,10 +2364,42 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 " has been installed to:":" has been installed to:",
                 "Launching update shortly...":"Launching update shortly...",
                 "Closing old process in ":"Closing old process in ",
-                " seconds":" seconds"
+                " seconds":" seconds",
+                "Initializing Update Frame":"Initializing Update Frame",
+                "Update URL: {url}":"Update URL: {url}",
+                "Update Version: {version_label}":"Update Version: {version_label}",
+                "Failed to extract update.":"Failed to extract update.",
+                "Failed to extract update. Error: {0}":"Failed to extract update. Error: {0}",
+                "Installing update: {0}":"Installing update: {0}",
+                "User cancelled update":"User cancelled update",
+                "User cancelled":"User cancelled",
+                "Update Cancelled":"Update Cancelled",
+                "Failed to install update, attempting to open PKG":"Failed to install update, attempting to open PKG",
+                "has been installed:":"has been installed:",
+                "close_chinese":"",
+                "Closing old process in":"Closing old process in",
+                "seconds":"seconds",
+                "Failed to install update. Please try installing the OCLP-R.pkg manually or download from GitHub":"Failed to install update. Please try installing the OCLP-R.pkg manually or download from GitHub",
             }
         elif self.language_point==0:
             trans={
+                "seconds":"秒",
+                "Closing old process in":"此进程将在",
+                "close_chinese":"内关闭",
+                "has been installed:":"已安装到:",
+                "Failed to install update. Please try installing the OCLP-R.pkg manually or download from GitHub":"安装更新失败。请手动安装 OCLP-R.pkg 或从 GitHub 下载。",
+                "Failed to install update, attempting to open PKG":"安装更新失败，正在尝试打开 PKG 文件。",
+                "Failed to install update.":"安装更新失败。",
+                "Update Cancelled":"更新已取消",
+                "User cancelled update":"用户取消更新",
+                "User cancelled":"用户取消",
+                "Installing update: {0}":"正在安装更新: {0}",
+                "Failed to extract update. Error: {0}":"提取更新失败。错误：{0}",
+                "Failed to extract update.":"提取更新失败。",
+                "Extracting nightly update":"提取夜间更新",
+                "Update Version: {version_label}":"更新版本: {version_label}",
+                "Update URL: {url}":"更新 URL: {url}",
+                "Initializing Update Frame":"初始化更新框架",
                 "Failed to get update info":"获取更新信息失败",
                 "Critical Error":"严重错误",
                 "Preparing download...":"正在准备下载...",
@@ -1843,4 +2413,220 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 " seconds":" 秒"
             }
         return trans
-    
+class TranslateLanguage_sys_patch:
+    def __init__(self, global_constants: Constants) -> None:
+        self.constants: Constants = global_constants
+        self.language_point = self.constants.language_choose
+    def detect(self):
+        if self.language_point==1:
+            trans={
+                "Failed to parse diskutil output.":"Failed to parse diskutil output.",
+                "FileVault is Off":"FileVault is Off",
+                "Settings: Kernel Debug Kit required":"Settings: Kernel Debug Kit required",
+                "Settings: Kernel Debug Kit missing":"Settings: Kernel Debug Kit missing",
+                "Settings: MetallibSupportPkg.pkg required":"Settings: MetallibSupportPkg.pkg required",
+                "Settings: MetallibSupportPkg.pkg missing":"Settings: MetallibSupportPkg.pkg missing",
+                "Validation: Unsupported Host OS":"Validation: Unsupported Host OS",
+                "Validation: Missing Network Connection":"Validation: Missing Network Connection",
+                "Validation: FileVault is enabled":"Validation: FileVault is enabled",
+                "Validation: System Integrity Protection is enabled":"Validation: System Integrity Protection is enabled",
+                "Validation: SecureBootModel is enabled":"Validation: SecureBootModel is enabled",
+                "Validation: AMFI is enabled":"Validation: AMFI is enabled",
+                "Validation: WhateverGreen.kext missing":"Validation: WhateverGreen.kext missing",
+                "Validation: Force OpenGL property missing":"Validation: Force OpenGL property missing",
+                "Validation: Force compat property missing":"Validation: Force compat property missing",
+                "Validation: nvda_drv(_vrl) variable missing":"Validation: nvda_drv(_vrl) variable missing",
+                "Validation: Patching not possible":"Validation: Patching not possible",
+                "Validation: Unpatching not possible":"Validation: Unpatching not possible",
+                "Validation: Root volume dirty":"Validation: Root volume dirty",
+                "System volume is tainted, unpatching is required":"System volume is tainted, unpatching is required",
+                "Installed patches are from different commit, unpatching is required":"Installed patches are from different commit, unpatching is required",
+                "Patch(es) already installed: {0}, unpatching is required":"Patch(es) already installed: {0}, unpatching is required",
+            }
+        elif self.language_point==0:
+            trans={
+                "Patch(es) already installed: {0}, unpatching is required":"已安装的补丁：{0}，需要取消修补",
+                "Installed patches are from different commit, unpatching is required":"已安装的补丁来自不同的提交，需要取消修补",
+                "System volume is tainted, unpatching is required":"系统卷已被修改，需要取消修补",
+                "Failed to parse diskutil output.":"解析diskutil输出失败",
+                "FileVault is Off":"文件保险箱已关闭",
+                "Settings: Kernel Debug Kit required":"Settings: 需要内核调试工具包",
+                "Settings: Kernel Debug Kit missing":"Settings: 缺少内核调试工具包",
+                "Settings: MetallibSupportPkg.pkg required":"Settings: 需要MetallibSupportPkg.pkg",
+                "Settings: MetallibSupportPkg.pkg missing":"Settings: 缺少MetallibSupportPkg.pkg",
+                "Validation: Unsupported Host OS":"Validation: 不支持的主机操作系统",
+                "Validation: Missing Network Connection":"Validation: 缺少网络连接",
+                "Validation: FileVault is enabled":"Validation: 文件保险箱已启用",
+                "Validation: System Integrity Protection is enabled":"Validation: 系统完整性保护已启用",
+                "Validation: SecureBootModel is enabled":"Validation: SecureBootModel已启用",
+                "Validation: AMFI is enabled":"Validation: AMFI已启用",
+                "Validation: WhateverGreen.kext missing":"Validation: 缺少WhateverGreen.kext",
+                "Validation: Force OpenGL property missing":"Validation: 缺少强制OpenGL属性",
+                "Validation: Force compat property missing":"Validation: 缺少强制兼容属性",
+                "Validation: nvda_drv(_vrl) variable missing":"Validation: 缺少nvda_drv(_vrl)变量",
+                "Validation: Patching not possible":"Validation: 无法修补",
+                "Validation: Unpatching not possible":"Validation: 无法取消修补",
+                "Validation: Root volume dirty":"Validation: 根卷目录已被修补"
+            }
+        return trans
+
+class TranslateLanguage_efi_builder:
+    def __init__(self, global_constants: Constants) -> None:
+        self.constants: Constants = global_constants
+        self.language_point = self.constants.language_choose
+    def bluetooth(self):
+        if self.language_point==1:
+            trans={
+                "- Fixing Legacy Bluetooth for macOS Monterey":"- Fixing Legacy Bluetooth for macOS Monterey",
+                "- Detected 3rd Party Bluetooth Chipset":"- Detected 3rd Party Bluetooth Chipset",
+                "- Enabling Bluetooth FeatureFlags":"- Enabling Bluetooth FeatureFlags"
+            }
+        elif self.language_point==0:
+            trans={
+                "- Fixing Legacy Bluetooth for macOS Monterey":"- 修复 macOS Monterey 中的传统蓝牙",
+                "- Detected 3rd Party Bluetooth Chipset":"- 检测到第三方蓝牙芯片组",
+                "- Enabling Bluetooth FeatureFlags":"- 启用蓝牙功能标志"
+            }
+        return trans
+    def build(self):
+        if self.language_point==1:
+            trans={
+                "Building Configuration {0} model: {1}":"Building Configuration {0} model: {1}",
+                "- Adding bootmgfw.efi BlessOverride":"- Adding bootmgfw.efi BlessOverride",
+                "Creating build folder":"Creating build folder",
+                "Build folder already present, skipping":"Build folder already present, skipping",
+                "Deleting old copy of OpenCore zip":"Deleting old copy of OpenCore zip",
+                "Deleting old copy of OpenCore folder":"Deleting old copy of OpenCore folder",
+                "- Adding OpenCore v{0} {1}":"- Adding OpenCore v{0} {1}",
+                "- Adding config.plist for OpenCore":"- Adding config.plist for OpenCore",
+                "Your OpenCore EFI for {0} has been built at:":"Your OpenCore EFI for {0} has been built at:",
+                "    {0}":"    {0}"
+            }
+        elif self.language_point==0:
+            trans={
+                "Building Configuration {0} model: {1}":"正在为{1}构建配置{0}",
+                "- Adding bootmgfw.efi BlessOverride":"- 添加 bootmgfw.efi BlessOverride",
+                "Creating build folder":"创建构建文件夹",
+                "Build folder already present, skipping":"构建文件夹已存在，跳过",
+                "Deleting old copy of OpenCore zip":"删除旧的 OpenCore zip 副本",
+                "Deleting old copy of OpenCore folder":"删除旧的 OpenCore 文件夹副本",
+                "- Adding OpenCore v{0} {1}":"- 添加 OpenCore v{0} {1}",
+                "- Adding config.plist for OpenCore":"- 为 OpenCore 添加 config.plist",
+                "Your OpenCore EFI for {0} has been built at:":"您的{0} OpenCore EFI 已构建完成，路径为：",
+                "    {0}":"    {0}"
+            }
+        return trans
+    def firmware(self):
+        if self.language_point==1:
+            trans={
+                "- Enabling Boot Logo patch":"- Enabling Boot Logo patch",
+                "- Enabling legacy power management support":"- Enabling legacy power management support",
+                "- Overriding ACPI SMC matching":"- Overriding ACPI SMC matching",
+                "- Disabling Firmware Throttling":"- Disabling Firmware Throttling",
+                "- Adding SSDT-CPBG.aml":"- Adding SSDT-CPBG.aml",
+                "- Enabling Windows 10 UEFI Audio support":"- Enabling Windows 10 UEFI Audio support",
+                "- Enabling Rosetta Cryptex support in Ventura":"- Enabling Rosetta Cryptex support in Ventura",
+                "- Adding SurPlus Patch for Race Condition":"- Adding SurPlus Patch for Race Condition",
+                "- Allowing SurPlus on all newer OSes":"- Allowing SurPlus on all newer OSes",
+                "- Adding IOHIDFamily patch":"- Adding IOHIDFamily patch",
+                "- Adding CPU Thread Limit Patch":"- Adding CPU Thread Limit Patch",
+                "- Enabling macOS 26 FileVault 2 support":"- Enabling macOS 26 FileVault 2 support",
+                "- Adding ExFatDxeLegacy.efi":"- Adding ExFatDxeLegacy.efi",
+                "- Enabling NVMe boot support":"- Enabling NVMe boot support",
+                "- Adding USB 3.0 Controller Patch":"- Adding USB 3.0 Controller Patch",
+                "- Adding XhciDxe.efi and UsbBusDxe.efi":"- Adding XhciDxe.efi and UsbBusDxe.efi",
+                "- Adding PCIe Link Rate Patch":"- Adding PCIe Link Rate Patch",
+                "- Adding PCI Bus Enumeration Patch":"- Adding PCI Bus Enumeration Patch",
+                "- Enabling VMM patch":"- Enabling VMM patch",
+                "- Enabling VMX Bit for non-macOS OSes":"- Enabling VMX Bit for non-macOS OSes",
+                "- Disabling ConnectDrivers":"- Disabling ConnectDrivers",
+                "- Disabling Hardware NVRAM Write":"- Disabling Hardware NVRAM Write",
+                "- Adding 4K/5K Display Patch":"- Adding 4K/5K Display Patch"
+            }
+        elif self.language_point==0:
+            trans={
+                "- Enabling Boot Logo patch":"- 启用启动徽标补丁",
+                "- Enabling legacy power management support":"- 启用传统电源管理支持",
+                "- Overriding ACPI SMC matching":"- 覆盖 ACPI SMC 匹配",
+                "- Disabling Firmware Throttling":"- 禁用固件节流",
+                "- Adding SSDT-CPBG.aml":"- 添加 SSDT-CPBG.aml",
+                "- Enabling Windows 10 UEFI Audio support":"- 启用 Windows 10 UEFI 音频支持",
+                "- Enabling Rosetta Cryptex support in Ventura":"- 在 Ventura 中启用 Rosetta Cryptex 支持",
+                "- Adding SurPlus Patch for Race Condition":"- 添加 SurPlus 竞争条件补丁",
+                "- Allowing SurPlus on all newer OSes":"- 允许在所有较新操作系统上使用 SurPlus",
+                "- Adding IOHIDFamily patch":"- 添加 IOHIDFamily 补丁",
+                "- Adding CPU Thread Limit Patch":"- 添加 CPU 线程限制补丁",
+                "- Enabling macOS 26 FileVault 2 support":"- 启用 macOS 26 FileVault 2 支持",
+                "- Adding ExFatDxeLegacy.efi":"- 添加 ExFatDxeLegacy.efi",
+                "- Enabling NVMe boot support":"- 启用 NVMe 启动支持",
+                "- Adding USB 3.0 Controller Patch":"- 添加 USB 3.0 控制器补丁",
+                "- Adding XhciDxe.efi and UsbBusDxe.efi":"- 添加 XhciDxe.efi 和 UsbBusDxe.efi",
+                "- Adding PCIe Link Rate Patch":"- 添加 PCIe 链路速率补丁",
+                "- Adding PCI Bus Enumeration Patch":"- 添加 PCI 总线枚举补丁",
+                "- Enabling VMM patch":"- 启用 VMM 补丁",
+                "- Enabling VMX Bit for non-macOS OSes":"- 为非 macOS 操作系统启用 VMX 位",
+                "- Disabling ConnectDrivers":"- 禁用 ConnectDrivers",
+                "- Disabling Hardware NVRAM Write":"- 禁用硬件 NVRAM 写入",
+                "- Adding 4K/5K Display Patch":"- 添加 4K/5K 显示补丁"
+            }
+        return trans
+    def graphics_audio(self):
+        if self.language_point==1:
+            trans={
+                "- Adding Mac Pro, Xserve DRM patches":"- Adding Mac Pro, Xserve DRM patches",
+                "- Enabling Nvidia Output Patch":"- Enabling Nvidia Output Patch",
+                "- Falling back to boot-args":"- Falling back to boot-args",
+                "- No socketed dGPU found":"- No socketed dGPU found",
+                "- device path and GFX0 Device path are different":"- device path and GFX0 Device path are different",
+                "- Failed to find GFX0 Device path, falling back on known logic":"- Failed to find GFX0 Device path, falling back on known logic",
+                "- Adding Nvidia Brightness Control and DRM patches":"- Adding Nvidia Brightness Control and DRM patches",
+                "- Disabling unsupported iGPU":"- Disabling unsupported iGPU",
+                "- Adding AMD DRM patches":"- Adding AMD DRM patches",
+                "- Adding iMac9,1 Brightness Control and DRM patches":"- Adding iMac9,1 Brightness Control and DRM patches",
+                "- Adding Legacy GCN Power Gate Patches":"- Adding Legacy GCN Power Gate Patches",
+                "- Adding Lexa Spoofing Patches":"- Adding Lexa Spoofing Patches",
+                "- Adding Navi Spoofing Patches":"- Adding Navi Spoofing Patches",
+                "- Adding UGA to GOP Patch":"- Adding UGA to GOP Patch",
+                "- Enabling software demux":"- Enabling software demux",
+                "- Allowing GMUX switching in Windows":"- Allowing GMUX switching in Windows",
+                "- Forcing GOP Support":"- Forcing GOP Support",
+                "- Adding AMDGOP.efi":"- Adding AMDGOP.efi",
+                "- Adding NVGOP_GK.efi":"- Adding NVGOP_GK.efi",
+                "- Adding AppleMuxControl Override":"- Adding AppleMuxControl Override",
+                "- Adding AppleGraphicsPowerManagement Override":"- Adding AppleGraphicsPowerManagement Override",
+                "- Adding AppleGraphicsDevicePolicy Override":"- Adding AppleGraphicsDevicePolicy Override",
+                "- Adding dual GPU patch":"- Adding dual GPU patch",
+                "- Prioritizing DRM support over Intel QuickSync":"- Prioritizing DRM support over Intel QuickSync",
+                "- Adding Metal GPU patches on request":"- Adding Metal GPU patches on request",
+                "- Failed to find vendor":"- Failed to find vendor"
+            }
+        elif self.language_point==0:
+            trans={
+                "- Adding Mac Pro, Xserve DRM patches":"- 添加 Mac Pro, Xserve DRM 补丁",
+                "- Enabling Nvidia Output Patch":"- 启用 Nvidia 输出补丁",
+                "- Falling back to boot-args":"- 回退到 boot-args",
+                "- No socketed dGPU found":"- 未找到可插拔 dGPU",
+                "- device path and GFX0 Device path are different":"- 设备路径与 GFX0 设备路径不同",
+                "- Failed to find GFX0 Device path, falling back on known logic":"- 未能找到 GFX0 设备路径，回退到已知逻辑",
+                "- Adding Nvidia Brightness Control and DRM patches":"- 添加 Nvidia 亮度控制和 DRM 补丁",
+                "- Disabling unsupported iGPU":"- 禁用不支持的 iGPU",
+                "- Adding AMD DRM patches":"- 添加 AMD DRM 补丁",
+                "- Adding iMac9,1 Brightness Control and DRM patches":"- 添加 iMac9,1 亮度控制和 DRM 补丁",
+                "- Adding Legacy GCN Power Gate Patches":"- 添加传统 GCN 电源门控补丁",
+                "- Adding Lexa Spoofing Patches":"- 添加 Lexa 欺骗补丁",
+                "- Adding Navi Spoofing Patches":"- 添加 Navi 欺骗补丁",
+                "- Adding UGA to GOP Patch":"- 添加 UGA 到 GOP 补丁",
+                "- Enabling software demux":"- 启用软件解复用",
+                "- Allowing GMUX switching in Windows":"- 允许在 Windows 中切换 GMUX",
+                "- Forcing GOP Support":"- 强制 GOP 支持",
+                "- Adding AMDGOP.efi":"- 添加 AMDGOP.efi",
+                "- Adding NVGOP_GK.efi":"- 添加 NVGOP_GK.efi",
+                "- Adding AppleMuxControl Override":"- 添加 AppleMuxControl 覆盖",
+                "- Adding AppleGraphicsPowerManagement Override":"- 添加 AppleGraphicsPowerManagement 覆盖",
+                "- Adding AppleGraphicsDevicePolicy Override":"- 添加 AppleGraphicsDevicePolicy 覆盖",
+                "- Adding dual GPU patch":"- 添加双 GPU 补丁",
+                "- Prioritizing DRM support over Intel QuickSync":"- 优先支持 DRM 而非 Intel QuickSync",
+                "- Adding Metal GPU patches on request":"- 根据请求添加 Metal GPU 补丁",
+                "- Failed to find vendor":"- 未能找到供应商"
+            }
+        return trans

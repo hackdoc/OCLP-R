@@ -63,7 +63,7 @@ class APFSP(BaseHardware):
 
     def _apfs_patches(self) -> dict:
         """
-        Patches for Modern Audio
+        Patches for APFS-Patch For Non-T2
         """
         return {
             "APFS-Patch For Non-T2": {
@@ -79,7 +79,7 @@ class APFSP(BaseHardware):
 
     def patches(self) -> dict:
         """
-        Patches for modern audio
+        Patches for APFS-Patch For Non-T2
         """
         if self.native_os() is True:
             return {}

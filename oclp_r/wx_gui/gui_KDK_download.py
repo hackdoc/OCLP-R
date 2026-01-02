@@ -17,9 +17,11 @@ from ..support import (
     utilities,
     network_handler,
 )
+from ..support.translate_language import TranslateLanguage
 class KDKDownloadFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants,screen_location: tuple = None):
-        logging.info("Initializing KDK Download Frame")
+        self.trans = TranslateLanguage(global_constants).gui_KDK_download()
+        logging.info(self.trans["Initializing KDK Download Frame"])
         self.constants: constants.Constants = global_constants
         self.title: str = title
         self.parent: wx.Frame = parent
@@ -58,7 +60,7 @@ class KDKDownloadFrame(wx.Frame):
         super(KDKDownloadFrame, self).__init__(None, title=self.title, size=(300, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         gui_support.GenerateMenubar(self, self.constants).generate()
         self.Centre()
-        title_label = wx.StaticText(self, label="Fetching KDKs", pos=(-1,5))
+        title_label = wx.StaticText(self, label=self.trans["Fetching KDKs"], pos=(-1,5))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
         progress_bar = wx.Gauge(self, range=100, pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5), size=(250, 30))
@@ -123,7 +125,7 @@ class KDKDownloadFrame(wx.Frame):
                 self.kdk_data_full=self.kdk_data
                 self.kdk_data_latest=self.kdk_data_latest
             except requests.RequestException as e:
-                wx.MessageBox(f"Fetching KDK ERROR: {e}", "Error", wx.OK | wx.ICON_ERROR)
+                wx.MessageBox(f"{self.trans['Fetching KDK ERROR: ']} {e}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
                 self.callback=True
         thread = threading.Thread(target=_fetch_installers)
         thread.start()
@@ -150,7 +152,7 @@ class KDKDownloadFrame(wx.Frame):
         try:
             return plistlib.load(open(file_path, "rb"))["ProductBuildVersion"]
         except Exception as e:
-            raise RuntimeError(f"Failed to detect OS build: {e}")
+            raise RuntimeError(f"{self.trans['Failed to detect OS build: ']} {e}")
 
     def _display_available_installers(self, event: wx.Event = None, show_full: bool = False) -> None:
         if show_full:
@@ -160,8 +162,8 @@ class KDKDownloadFrame(wx.Frame):
         self.os_build_tahoe=self.detect_os_build(False)
         bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
         self.frame_modal.Destroy()
-        self.frame_modal = wx.Dialog(self, title="Choose KDK Version", size=(500, 580))
-        title_label = wx.StaticText(self.frame_modal, label="Choose KDKs", pos=(-1,-1))
+        self.frame_modal = wx.Dialog(self, title=self.trans["Choose KDK Version"], size=(500, 580))
+        title_label = wx.StaticText(self.frame_modal, label=self.trans["Choose KDKs"], pos=(-1,-1))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         id = wx.NewIdRef()
         self.list = wx.ListCtrl(self.frame_modal, id, style=wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER | wx.BORDER_SUNKEN)
@@ -176,7 +178,7 @@ class KDKDownloadFrame(wx.Frame):
         installers = self.kdk_data_latest[::-1] if show_full is False else self.kdk_data_full[::-1]
         if installers:
             locale.setlocale(locale.LC_TIME, '')
-            logging.info(f"Available installers on Hackdoc ({'All entries' if show_full else 'Latest only'}):")
+            logging.info(f"{self.trans['Available installers on Dortania']} ({'All entries' if show_full else 'Latest only'}):")
             xnu_name={
                 "26":"Tahoe Beta",
                 "15":"Sequoia",
@@ -194,34 +196,34 @@ class KDKDownloadFrame(wx.Frame):
                 self.list.SetItem(index, 3, f"{self.convert_size(item['fileSize'])}")
                 self.list.SetItem(index, 4, f"{item['seen']}")
         else:
-            logging.error("Cannot find any KDKs on Github")
-            wx.MessageDialog(self.frame_modal, "Failed to download KDKs Catalog from Hackdoc", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+            logging.error(f"{self.trans['Cannot find any KDKs on Dortania']}")
+            wx.MessageDialog(self.frame_modal, f"{self.trans['Failed to download KDKs Catalog from Dortania']}", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
             self.on_return_to_main_menu()
         if show_full is False:
             self.list.Select(-1)
         self.list.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.on_select_list)
         self.list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_select_list)
-        self.select_button = wx.Button(self.frame_modal, label="Download", pos=(-1, -1), size=(150, -1))
+        self.select_button = wx.Button(self.frame_modal, label=self.trans["Download"], pos=(-1, -1), size=(150, -1))
         self.select_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         self.select_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_download_installer(installers))
-        self.select_button.SetToolTip("Choose KDKs")
+        self.select_button.SetToolTip(self.trans["Choose KDKs"])
         self.select_button.SetDefault()
         if show_full is True:
             self.select_button.Disable()
-        self.copy_button = wx.Button(self.frame_modal, label="Copy Link", pos=(-1, -1), size=(80, -1))
+        self.copy_button = wx.Button(self.frame_modal, label=self.trans["Copy Link"], pos=(-1, -1), size=(80, -1))
         self.copy_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         if show_full is True:
             self.copy_button.Disable()
-        self.copy_button.SetToolTip("Copy KDK Download Link")
+        self.copy_button.SetToolTip(self.trans["Copy KDK Download Link"])
         self.copy_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_copy_link(installers))
-        return_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, -1), size=(150, -1))
+        return_button = wx.Button(self.frame_modal, label=self.trans["Return to Main Menu"], pos=(-1, -1), size=(150, -1))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
         return_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
-        self.showolderversions_checkbox = wx.CheckBox(self.frame_modal, label="Show Older/Beta Versions", pos=(-1, -1))
+        self.showolderversions_checkbox = wx.CheckBox(self.frame_modal, label=self.trans["Show Older/Beta Versions"], pos=(-1, -1))
         if show_full is True:
             self.showolderversions_checkbox.SetValue(True)
         self.showolderversions_checkbox.Bind(wx.EVT_CHECKBOX, lambda event: self._display_available_installers(event, self.showolderversions_checkbox.GetValue()))
-        if self.os_build_tahoe!='25A5316i':
+        if self.os_build_tahoe!='25A5316i': #26.0, Beta 4
             rectbox = wx.StaticBox(self.frame_modal, -1)
             rectsizer = wx.StaticBoxSizer(rectbox, wx.HORIZONTAL)
             rectsizer.Add(self.copy_button, 0, wx.EXPAND | wx.RIGHT, 5)
@@ -232,10 +234,10 @@ class KDKDownloadFrame(wx.Frame):
         sizer.AddSpacer(10)
         sizer.Add(title_label, 0, wx.ALIGN_CENTRE | wx.ALL, 0)
         sizer.Add(self.list, 1, wx.EXPAND | wx.ALL, 10)
-        if self.os_build_tahoe!='25A5316i':
+        if self.os_build_tahoe!='25A5316i': #26.0, Beta 4
              sizer.Add(rectsizer, 0, wx.ALIGN_CENTRE | wx.ALL, 0)
              sizer.AddSpacer(8)
-        elif self.os_build_tahoe=='25A5316i':
+        elif self.os_build_tahoe=='25A5316i': #26.0, Beta 4
             mosizer=wx.BoxSizer(wx.HORIZONTAL)
             mosizer.Add(self.copy_button, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
             mosizer.Add(self.select_button, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
@@ -253,7 +255,7 @@ class KDKDownloadFrame(wx.Frame):
                 clipboard.Open()
             clipboard.SetData(wx.TextDataObject(installers[selected_item]['url']))
             clipboard.Close()
-            wx.MessageDialog(self.frame_modal, "Download link copied to clipboard", "", wx.OK | wx.ICON_INFORMATION).ShowModal()
+            wx.MessageDialog(self.frame_modal, self.trans["Download link copied to clipboard"], "", wx.OK | wx.ICON_INFORMATION).ShowModal()
     def on_select_list(self, event):
         if self.list.GetSelectedItemCount() > 0:
             self.select_button.Enable()

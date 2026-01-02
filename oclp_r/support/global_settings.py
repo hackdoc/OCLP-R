@@ -11,14 +11,16 @@ import logging
 import plistlib
 
 from pathlib import Path
-
-
+from ..constants import Constants
+from .translate_language import TranslateLanguage
 class GlobalEnviromentSettings:
     """
     Library for querying and writing global enviroment settings
     """
 
     def __init__(self) -> None:
+        self.constants: Constants = Constants()
+        self.trans: dict = TranslateLanguage(self.constants).global_settings()
         self.file_name:              str = ".com.hackdoc.oclp-r.plist"
         self.global_settings_folder: str = "/Users/Shared"
         self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"
@@ -36,7 +38,7 @@ class GlobalEnviromentSettings:
             try:
                 plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
             except Exception as e:
-                logging.error("Error: Unable to read global settings file")
+                logging.error(self.trans["Error: Unable to read global settings file"])
                 logging.error(e)
                 return None
             if property_name in plist:
@@ -52,7 +54,7 @@ class GlobalEnviromentSettings:
             try:
                 plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
             except Exception as e:
-                logging.error("Error: Unable to read global settings file")
+                logging.error(self.trans["Error: Unable to read global settings file"])
                 logging.error(e)
                 return
             if property_name in plist:
@@ -60,7 +62,7 @@ class GlobalEnviromentSettings:
                 try:
                     plistlib.dump(plist, Path(self.global_settings_plist).open("wb"))
                 except PermissionError:
-                    logging.info("Failed to write to global settings")
+                    logging.info(self.trans["Failed to write to global settings file"])
 
 
     def write_property(self, property_name: str, property_value) -> None:
@@ -72,23 +74,23 @@ class GlobalEnviromentSettings:
             try:
                 plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
             except Exception as e:
-                logging.error("Error: Unable to read global settings file")
+                logging.error(self.trans["Error: Unable to read global settings file"])
                 logging.error(e)
                 return
             plist[property_name] = property_value
             try:
                 plistlib.dump(plist, Path(self.global_settings_plist).open("wb"))
             except PermissionError:
-                logging.info("Failed to write to global settings file")
+                logging.info(self.trans["Failed to write to global settings file"])
 
 
     def _generate_settings_file(self) -> None:
         if Path(self.global_settings_plist).exists():
             return
         try:
-            plistlib.dump({"Developed by Dortania and Hackdoc": True,}, Path(self.global_settings_plist).open("wb"))
+            plistlib.dump({self.trans["Developed by Dortania and Hackdoc"]: True,}, Path(self.global_settings_plist).open("wb"))
         except PermissionError:
-            logging.info("Permission error: Unable to write to global settings file")
+            logging.info(self.trans["Permission error: Unable to write to global settings file"])
 
 
     def _convert_defaults_to_global_settings(self) -> None:
@@ -105,19 +107,19 @@ class GlobalEnviromentSettings:
                 defaults_plist = plistlib.load(Path(defaults_path).open("rb"))
                 global_settings_plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
             except Exception as e:
-                logging.error("Error: Unable to read global settings file")
+                logging.error(self.trans["Error: Unable to read global settings file"])
                 logging.error(e)
                 return
             global_settings_plist.update(defaults_plist)
             try:
                 plistlib.dump(global_settings_plist, Path(self.global_settings_plist).open("wb"))
             except PermissionError:
-                logging.info("Permission error: Unable to write to global settings file")
+                logging.info(self.trans["Permission error: Unable to write to global settings file"])
                 return
 
             # delete defaults plist
             try:
                 Path(defaults_path).unlink()
             except Exception as e:
-                logging.error("Error: Unable to delete defaults plist")
+                logging.error(self.trans["Error: Unable to delete defaults plist"])
                 logging.error(e)

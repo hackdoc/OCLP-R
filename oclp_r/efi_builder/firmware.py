@@ -14,6 +14,7 @@ from .. import constants
 
 from ..support import generate_smbios
 from ..detections import device_probe
+from ..support.translate_language import TranslateLanguage_efi_builder
 
 from ..datasets import (
     smbios_data,
@@ -34,6 +35,7 @@ class BuildFirmware:
         self.config: dict = config
         self.constants: constants.Constants = global_constants
         self.computer: device_probe.Computer = self.constants.computer
+        self.trans = TranslateLanguage_efi_builder(global_constants=global_constants).firmware()
 
         self._build()
 
@@ -62,7 +64,7 @@ class BuildFirmware:
             return
 
         if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] >= os_data.os_data.monterey and self.model not in ["MacPro6,1", "Macmini7,1"]:
-            logging.info("- Enabling Boot Logo patch")
+            logging.info(self.trans["- Enabling Boot Logo patch"])
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Booter"]["Patch"], "Comment", "Patch SkipLogo")["Enabled"] = True
 
 
@@ -95,7 +97,7 @@ class BuildFirmware:
             # This breaks AppleIntelCPUPowerManagement.kext matching as it no longer matches against the correct criteria
             #
             # To resolve, we patched AICPUPM to attach regardless of the value of 'intel_cpupm_matching'
-            logging.info("- Enabling legacy power management support")
+            logging.info(self.trans["- Enabling legacy power management support"])
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleIntelCPUPowerManagement.kext", self.constants.aicpupm_version, self.constants.aicpupm_path)
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleIntelCPUPowerManagementClient.kext", self.constants.aicpupm_version, self.constants.aicpupm_client_path)
 
@@ -105,14 +107,14 @@ class BuildFirmware:
             # This causes power management to break on pre-Ivy Bridge CPUs as they don't have correct
             # power management tables provided.
             # This patch will simply increase ASPP's 'IOProbeScore' to outmatch X86PP
-            logging.info("- Overriding ACPI SMC matching")
+            logging.info(self.trans["- Overriding ACPI SMC matching"])
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("ASPP-Override.kext", self.constants.aspp_override_version, self.constants.aspp_override_path)
             if self.constants.disable_fw_throttle is True:
                 # Only inject on older OSes if user requests
                 support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Add"], "BundlePath", "ASPP-Override.kext")["MinKernel"] = ""
 
         if self.constants.disable_fw_throttle is True and smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.CPUGen.nehalem.value:
-            logging.info("- Disabling Firmware Throttling")
+            logging.info(self.trans["- Disabling Firmware Throttling"])
             # Nehalem and newer systems force firmware throttling via MSR_POWER_CTL
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("SimpleMSR.kext", self.constants.simplemsr_version, self.constants.simplemsr_path)
 
@@ -131,14 +133,14 @@ class BuildFirmware:
         # CPBG device in ACPI is a Co-Processor Bridge Device, which is not actually physically present
         # IOPCIFamily will error when enumerating this device, thus we'll power it off via _STA (has no effect in older OSes)
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.CPUGen.nehalem.value and not (self.model.startswith("MacPro") or self.model.startswith("Xserve")):
-            logging.info("- Adding SSDT-CPBG.aml")
+            logging.info(self.trans["- Adding SSDT-CPBG.aml"])
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-CPBG.aml")["Enabled"] = True
             shutil.copy(self.constants.pci_ssdt_path, self.constants.acpi_path)
 
         if cpu_data.CPUGen.sandy_bridge <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.ivy_bridge.value and self.model != "MacPro6,1":
             # Based on: https://egpu.io/forums/pc-setup/fix-dsdt-override-to-correct-error-12/
             # Applicable for Sandy and Ivy Bridge Macs
-            logging.info("- Enabling Windows 10 UEFI Audio support")
+            logging.info(self.trans["- Enabling Windows 10 UEFI Audio support"])
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-PCI.aml")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "BUF0 to BUF1")["Enabled"] = True
             shutil.copy(self.constants.windows_ssdt_path, self.constants.acpi_path)
@@ -163,7 +165,7 @@ class BuildFirmware:
         # Force Rosetta Cryptex installation in macOS Ventura
         # Restores support for CPUs lacking AVX2.0 support
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.ivy_bridge.value:
-            logging.info("- Enabling Rosetta Cryptex support in Ventura")
+            logging.info(self.trans["- Enabling Rosetta Cryptex support in Ventura"])
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("CryptexFixup.kext", self.constants.cryptexfixup_version, self.constants.cryptexfixup_path)
 
         # i3 Ivy Bridge iMacs don't support RDRAND
@@ -172,13 +174,13 @@ class BuildFirmware:
             (smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.sandy_bridge.value):
             # Ref: https://github.com/reenigneorcim/SurPlus
             # Enable for all systems missing RDRAND support
-            logging.info("- Adding SurPlus Patch for Race Condition")
+            logging.info(self.trans["- Adding SurPlus Patch for Race Condition"])
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 1 of 2 - Patch read_erandom (inlined in _early_random)")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 2 of 2 - Patch register_and_init_prng")["Enabled"] = True
             if self.constants.force_surplus is True:
                 # Syncretic forces SurPlus to only run on Beta 7 and older by default for saftey reasons
                 # If users desires, allow forcing in newer OSes
-                logging.info("- Allowing SurPlus on all newer OSes")
+                logging.info(self.trans["- Allowing SurPlus on all newer OSes"])
                 support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 1 of 2 - Patch read_erandom (inlined in _early_random)")["MaxKernel"] = ""
                 support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 2 of 2 - Patch register_and_init_prng")["MaxKernel"] = ""
 
@@ -196,13 +198,13 @@ class BuildFirmware:
 
         # HID patches
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.penryn.value:
-            logging.info("- Adding IOHIDFamily patch")
+            logging.info(self.trans["- Adding IOHIDFamily patch"])
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.iokit.IOHIDFamily")["Enabled"] = True
 
         # MacPro3,1/Xserve2,1 cannot boot with more than 4 threads in Sequoia
         # Note cpus=4 only overrides if more than 4 threads are present. So same on dual-core units
         if self.constants.force_quad_thread is True:
-            logging.info("- Adding CPU Thread Limit Patch")
+            logging.info(self.trans["- Adding CPU Thread Limit Patch"])
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " cpus=4"
 
 
@@ -219,7 +221,7 @@ class BuildFirmware:
         # APFS check
         # The macOS 26 APFS EFI driver's FileVault 2 implementation is broken, and
         # must be replaced with the macOS 15 APFS EFI driver.
-        logging.info("- Enabling macOS 26 FileVault 2 support")
+        logging.info(self.trans["- Enabling macOS 26 FileVault 2 support"])
         self.config["UEFI"]["APFS"]["EnableJumpstart"] = False
         shutil.copy(self.constants.sequoia_apfs_driver_path, self.constants.drivers_path)
         support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("apfs_aligned.efi", "UEFI", "Drivers")["Enabled"] = True
@@ -227,20 +229,20 @@ class BuildFirmware:
         # Exfat check
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.sandy_bridge.value:
             # Sandy Bridge and newer Macs natively support ExFat
-            logging.info("- Adding ExFatDxeLegacy.efi")
+            logging.info(self.trans["- Adding ExFatDxeLegacy.efi"])
             shutil.copy(self.constants.exfat_legacy_driver_path, self.constants.drivers_path)
             support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("ExFatDxeLegacy.efi", "UEFI", "Drivers")["Enabled"] = True
 
         # NVMe check
         if self.constants.nvme_boot is True:
-            logging.info("- Enabling NVMe boot support")
+            logging.info(self.trans["- Enabling NVMe boot support"])
             shutil.copy(self.constants.nvme_driver_path, self.constants.drivers_path)
             support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("NvmExpressDxe.efi", "UEFI", "Drivers")["Enabled"] = True
 
         # USB check
         if self.constants.xhci_boot is True:
-            logging.info("- Adding USB 3.0 Controller Patch")
-            logging.info("- Adding XhciDxe.efi and UsbBusDxe.efi")
+            logging.info(self.trans["- Adding USB 3.0 Controller Patch"])
+            logging.info(self.trans["- Adding XhciDxe.efi and UsbBusDxe.efi"])
             shutil.copy(self.constants.xhci_driver_path, self.constants.drivers_path)
             shutil.copy(self.constants.usb_bus_driver_path, self.constants.drivers_path)
             support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("XhciDxe.efi", "UEFI", "Drivers")["Enabled"] = True
@@ -248,7 +250,7 @@ class BuildFirmware:
 
         # PCIe Link Rate check
         if self.model == "MacPro3,1":
-            logging.info("- Adding PCIe Link Rate Patch")
+            logging.info(self.trans["- Adding PCIe Link Rate Patch"])
             shutil.copy(self.constants.link_rate_driver_path, self.constants.drivers_path)
             support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("FixPCIeLinkRate.efi", "UEFI", "Drivers")["Enabled"] = True
 
@@ -289,14 +291,14 @@ class BuildFirmware:
                 not self.model.startswith("MacBook")
             )
         ):
-            logging.info("- Adding PCI Bus Enumeration Patch")
+            logging.info(self.trans["- Adding PCI Bus Enumeration Patch"])
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "CaseySJ - Fix PCI bus enumeration (Ventura)")["Enabled"] = True
             # Sonoma slightly adjusted this line specifically
             # - https://github.com/apple-oss-distributions/IOPCIFamily/blob/IOPCIFamily-583.40.1/IOPCIConfigurator.cpp#L1009
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Fix PCI bus enumeration (Sonoma)")["Enabled"] = True
 
         if self.constants.set_vmm_cpuid is True:
-            logging.info("- Enabling VMM patch")
+            logging.info(self.trans["- Enabling VMM patch"])
             self.config["Kernel"]["Emulate"]["Cpuid1Data"] = binascii.unhexlify("00000000000000000000008000000000")
             self.config["Kernel"]["Emulate"]["Cpuid1Mask"] = binascii.unhexlify("00000000000000000000008000000000")
 
@@ -309,17 +311,17 @@ class BuildFirmware:
         ):
             # Fix Virtual Machine support for non-macOS OSes
             # Haswell and Broadwell MacBooks lock out the VMX bit if booting UEFI Windows
-            logging.info("- Enabling VMX Bit for non-macOS OSes")
+            logging.info(self.trans["- Enabling VMX Bit for non-macOS OSes"])
             self.config["UEFI"]["Quirks"]["EnableVmx"] = True
 
         # Works-around Hibernation bug where connecting all firmware drivers breaks the transition from S4
         # Mainly applicable for MacBookPro9,1
         if self.constants.disable_connectdrivers is True:
-            logging.info("- Disabling ConnectDrivers")
+            logging.info(self.trans["- Disabling ConnectDrivers"])
             self.config["UEFI"]["ConnectDrivers"] = False
 
         if self.constants.nvram_write is False:
-            logging.info("- Disabling Hardware NVRAM Write")
+            logging.info(self.trans["- Disabling Hardware NVRAM Write"])
             self.config["NVRAM"]["WriteFlash"] = False
 
         if self.constants.serial_settings != "None":
@@ -352,7 +354,7 @@ class BuildFirmware:
         if "Dual DisplayPort Display" not in smbios_data.smbios_dictionary[self.model]:
             return
 
-        logging.info("- Adding 4K/5K Display Patch")
+        logging.info(self.trans["- Adding 4K/5K Display Patch"])
         # Set LauncherPath to '/boot.efi'
         # This is to ensure that only the Mac's firmware presents the boot option, but not OpenCore
         # https://github.com/acidanthera/OpenCorePkg/blob/0.7.6/Library/OcAppleBootPolicyLib/OcAppleBootPolicyLib.c#L50-L73

@@ -22,6 +22,7 @@ from ..wx_gui import (
     gui_sys_patch_start,
     gui_update,
 )
+from ..support.translate_language import TranslateLanguage
 
 
 class SupportedEntryPoints:
@@ -42,7 +43,7 @@ class EntryPoint:
         self.app: wx.App = None
         self.main_menu_frame: gui_main_menu.MainFrame = None
         self.constants: constants.Constants = global_constants
-
+        self.trans= TranslateLanguage(self.constants).gui_entry()
         self.constants.gui_mode = True
 
 
@@ -66,14 +67,14 @@ class EntryPoint:
             entry = gui_sys_patch_start.SysPatchStartFrame
             patches = HardwarePatchsetDetection(constants=self.constants).device_properties
 
-        logging.info(f"Entry point set: {entry.__name__}")
+        logging.info(f"{self.trans['Entry point set:']} {entry.__name__}")
 
         # Normally set by main.py, but transitions from CLI mode may not have this set
         self.constants.gui_mode = True
 
         self.frame: wx.Frame = entry(
             None,
-            title=f"{self.constants.patcher_name} {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}",
+            title=f"{self.constants.patcher_name} {self.constants.patcher_version}",
             global_constants=self.constants,
             screen_location=None,
             **({"patches": patches} if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv or start_patching is True else {})
@@ -97,7 +98,7 @@ class EntryPoint:
         if not self.frame:
             return
 
-        logging.info("Cleaning up wxPython GUI")
+        logging.info(f"{self.trans['Cleaning up wxPython GUI']}")
 
         self.frame.SetTransparent(0)
         wx.Yield()

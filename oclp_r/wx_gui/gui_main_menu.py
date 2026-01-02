@@ -34,10 +34,11 @@ from ..wx_gui import (
     gui_update,
 )
 
-
+from ..support.translate_language import TranslateLanguage
 class MainFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-        logging.info("Initializing Main Menu Frame")
+        self.trans= TranslateLanguage(global_constants=global_constants).gui_main_menu()
+        logging.info(f"{self.trans['Initializing Main Menu Frame']}")
         super(MainFrame, self).__init__(parent, title=title, size=(600, 400), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         gui_support.GenerateMenubar(self, global_constants).generate()
 
@@ -74,12 +75,12 @@ class MainFrame(wx.Frame):
         """
 
         # Title label: OCLP-R v{X.Y.Z}
-        title_label = wx.StaticText(self, label=f"OCLP-R {'' if self.constants.special_build else ''}{self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}", pos=(-1, 10))
+        title_label = wx.StaticText(self, label=f"OCLP-R {'' if self.constants.special_build else ''}{self.constants.patcher_version}", pos=(-1, 10))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
         # Text: Model: {Build or Host Model}
-        model_label = wx.StaticText(self, label=f"Model: {self.constants.custom_model or self.constants.computer.real_model}", pos=(-1, title_label.GetPosition()[1] + 25
+        model_label = wx.StaticText(self, label=f"{self.trans['Model: ']} {self.constants.custom_model or self.constants.computer.real_model}", pos=(-1, title_label.GetPosition()[1] + 25
                                                                                                                                     ))
         model_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         model_label.Centre(wx.HORIZONTAL)
@@ -87,101 +88,101 @@ class MainFrame(wx.Frame):
         if self.constants.manually_download_kdk is True:
             # Buttons:
             menu_buttons = {
-                "Build and Install OpenCore": {
+                f"{self.trans['Build and Install OpenCore']}": {
                     "function": self.on_build_and_install,
                     "description": [
-                        "Prepares provided drive to be able",
-                        "to boot unsupported OSes.",
-                        "Use on installers or internal drives."
+                        self.trans["Prepares provided drive to be able"],
+                        self.trans["to boot unsupported OSes."],
+                        self.trans["Use on installers or internal drives."],
                     ],
                     "icon": str(self.constants.icns_resource_path / "OC-Build.icns"),
                 },
-                "Create macOS Installer": {
+                f"{self.trans['Create macOS Installer']}": {
                     "function": self.on_create_macos_installer,
                     "description": [
-                        "Download and flash a macOS",
-                        "Installer for your system.",
+                        self.trans["Download and flash a macOS"],
+                        self.trans["Installer for your system."],
                     ],
                     "icon": str(self.constants.icns_resource_path / "OC-Installer.icns"),
                 },
-                "KDK Download": {
+                f"{self.trans['KDK Download']}": {
                     "function": self.on_download_kdk,
                     "description": [
-                        "Provide KDK download",
-                        "for your system.(macOS 13 with OCLP)",
+                        self.trans["Provide KDK download"],
+                        self.trans["for your system."],
                     ],
                     "icon": str(self.constants.icns_resource_path / "Package.icns"),
                 },
-                "⚙️ Settings": {
+                f"{self.trans['⚙️ Settings']}": {
                     "function": self.on_settings,
                     "description": [
                     ],
                 },
-                "Post-Install Root Patch": {
+                f"{self.trans['Post-Install Root Patch']}": {
                     "function": self.on_post_install_root_patch,
                     "description": [
-                        "Installs hardware drivers and",
-                        "patches for your system after",
-                        "installing a new version of macOS.",
+                        self.trans["Installs hardware drivers and"],
+                        self.trans["patches for your system after"],
+                        self.trans["installing a new version of macOS."],
                     ],
                     "icon": str(self.constants.icns_resource_path / "OC-Patch.icns"),
                 },
-                "MetalLib Download": {
+                f"{self.trans['MetalLib Download']}": {
 
-                "function": self.on_download_ml,
+                    "function": self.on_download_ml,
                     "description": [
-                        "Provide MetalLib for your system.",
-                        "This is required for Metal3802 devices.\n(macOS 15+ Needs!)",
+                        self.trans["Provide MetalLib for your system."],
+                        self.trans["This is required for Metal3802 devices."],
                     ],
                     "icon": str(self.constants.icns_resource_path / "Package.icns"),
                 },
-                "Support": {
+                f"{self.trans['Support']}": {
                     "function": self.on_help,
                     "description": [
-                        "Resources for OpenCore Legacy",
-                        "Patcher.",
+                        self.trans["Resources for OpenCore Legacy"],
+                        self.trans["Patcher."],
                     ],
                     "icon": str(self.constants.icns_resource_path / "OC-Support.icns"),
                 },
             }
         else:
             menu_buttons = {
-                "Build and Install OpenCore": {
+                f"{self.trans['Build and Install OpenCore']}": {
                     "function": self.on_build_and_install,
                     "description": [
-                        "Prepares provided drive to be able",
-                        "to boot unsupported OSes.",
-                        "Use on installers or internal drives."
+                        self.trans["Prepares provided drive to be able"],
+                        self.trans["to boot unsupported OSes."],
+                        self.trans["Use on installers or internal drives."],
                     ],
                     "icon": str(self.constants.icns_resource_path / "OC-Build.icns"),
                 },
-                "Create macOS Installer": {
+                f"{self.trans['Create macOS Installer']}": {
                     "function": self.on_create_macos_installer,
                     "description": [
-                        "Download and flash a macOS",
-                        "Installer for your system.",
+                        self.trans["Download and flash a macOS"],
+                        self.trans["Installer for your system."],
                     ],
                     "icon": str(self.constants.icns_resource_path / "OC-Installer.icns"),
                 },
-                "⚙️ Settings": {
+                f"{self.trans['⚙️ Settings']}": {
                     "function": self.on_settings,
                     "description": [
                     ],
                 },
-                "Post-Install Root Patch": {
+                f"{self.trans['Post-Install Root Patch']}": {
                     "function": self.on_post_install_root_patch,
                     "description": [
-                        "Installs hardware drivers and",
-                        "patches for your system after",
-                        "installing a new version of macOS.",
+                        self.trans["Installs hardware drivers and"],
+                        self.trans["patches for your system after"],
+                        self.trans["installing a new version of macOS."],
                     ],
                     "icon": str(self.constants.icns_resource_path / "OC-Patch.icns"),
                 },
-                "Support": {
+                f"{self.trans['Support']}": {
                     "function": self.on_help,
                     "description": [
-                        "Resources for OpenCore Legacy",
-                        "Patcher.",
+                        self.trans["Resources for OpenCore Legacy"],
+                        self.trans["Patcher."],
                     ],
                     "icon": str(self.constants.icns_resource_path / "OC-Support.icns"),
                 },
@@ -197,16 +198,16 @@ class MainFrame(wx.Frame):
             # place icon
             if "icon" in button_function:
                 icon = wx.StaticBitmap(self, bitmap=wx.Bitmap(button_function["icon"], wx.BITMAP_TYPE_ICON), pos=(button_x - 10, button_y), size=(64, 64))
-                if button_name == "Post-Install Root Patch":
+                if button_name == self.trans["Post-Install Root Patch"]:
                     icon.SetPosition((button_x-10, button_y + 7))
-                if button_name == "Create macOS Installer":
+                if button_name == self.trans["Create macOS Installer"]:
                     icon.SetPosition((button_x - 10, button_y + 3))
                     icon.SetSize((70,70))
-                if button_name == "Support":
+                if button_name == self.trans["Support"]:
                     icon.SetPosition((button_x - 3, button_y + 3))
-                if button_name == "Build and Install OpenCore":
+                if button_name == self.trans["Build and Install OpenCore"]:
                     icon.SetSize((70, 70))
-            if button_name == "⚙️ Settings":
+            if button_name == self.trans["⚙️ Settings"]:
                 button_y += 5
 
             button = wx.Button(self, label=button_name, pos=(button_x + 70, button_y), size=(180, 30))
@@ -229,14 +230,14 @@ class MainFrame(wx.Frame):
 
             button_y += 25
 
-            if button_name == "Build and Install OpenCore":
+            if button_name == self.trans["Build and Install OpenCore"]:
                 self.build_button = button
                 if gui_support.CheckProperties(self.constants).host_can_build() is False:
                     button.Disable()
-            elif button_name == "Post-Install Root Patch":
+            elif button_name == self.trans["Post-Install Root Patch"]:
                 if self.constants.detected_os < os_data.os_data.big_sur:
                     button.Disable()
-            elif button_name == "⚙️ Settings":
+            elif button_name == self.trans["⚙️ Settings"]:
                 button.SetSize((100, -1))
                 button.Centre(wx.HORIZONTAL)
                 description_label.Centre(wx.HORIZONTAL)
@@ -266,8 +267,8 @@ class MainFrame(wx.Frame):
             # Notify user they're booting an unsupported configuration
             pop_up = wx.MessageDialog(
                 self,
-                f"We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.",
-                "Unsupported Configuration Detected!",
+                self.trans["We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac."].format(self.constants.computer.build_model),
+                self.trans["Unsupported Configuration Detected!"],
                 style=wx.OK | wx.ICON_EXCLAMATION
             )
             pop_up.ShowModal()
@@ -279,18 +280,18 @@ class MainFrame(wx.Frame):
             self.constants.has_checked_updates = True
             pop_up = wx.MessageDialog(
                 self,
-                f"OCLP-R has been updated to the latest version: {self.constants.patcher_version}\n\nWould you like to update OpenCore and your root volume patches?",
-                "Update successful!",
+                self.trans["OCLP-R has been updated to the latest version: {self.constants.patcher_version}\n\nWould you like to update OpenCore and your root volume patches?"].format(self.constants.patcher_version),
+                self.trans["Update successful!"],
                 style=wx.YES_NO | wx.YES_DEFAULT | wx.ICON_INFORMATION
             )
             pop_up.ShowModal()
 
             if pop_up.GetReturnCode() != wx.ID_YES:
-                logging.info("Skipping OpenCore and root volume patch update...")
+                logging.info(self.trans["Skipping OpenCore and root volume patch update..."])
                 return
 
 
-            logging.info("Updating OpenCore and root volume patches...")
+            logging.info(self.trans["Updating OpenCore and root volume patches..."])
             self.constants.update_stage = gui_support.AutoUpdateStages.CHECKING
             self.Hide()
             pos = self.GetPosition()
@@ -394,9 +395,9 @@ class MainFrame(wx.Frame):
         try:
             changelog = response["body"].split("## Asset Information")[0]
         except: #if user constantly checks for updates, github will rate limit them
-            changelog = """## Unable to fetch changelog
+            changelog = self.trans["""## Unable to fetch changelog
 
-Please check the Github page for more information about this release."""
+Please check the Github page for more information about this release."""]
 
         html_markdown = markdown2.markdown(changelog, extras=["tables"])
         html_css = css_data.updater_css
@@ -406,8 +407,8 @@ Please check the Github page for more information about this release."""
         panel = wx.Panel(frame)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.AddSpacer(10)
-        self.title_text = wx.StaticText(panel, label="A new version of OCLP-R is available!")
-        self.description = wx.StaticText(panel, label=f"OCLP-R {oclp_version} is now available - You have {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}. Would you like to update?")
+        self.title_text = wx.StaticText(panel, label=self.trans["A new version of OCLP-R is available!"])
+        self.description = wx.StaticText(panel, label=self.trans[f"OCLP-R {oclp_version} is now available - You have {self.constants.patcher_version}. Would you like to update?"])
         self.title_text.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         self.description.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         self.web_view = wx.html2.WebView.New(panel, style=wx.BORDER_SUNKEN)
@@ -426,11 +427,11 @@ Please check the Github page for more information about this release."""
         self.web_view.SetPage(html_code, "")
         self.web_view.Bind(wx.html2.EVT_WEBVIEW_NEWWINDOW, self._onWebviewNav)
         self.web_view.EnableContextMenu(False)
-        self.close_button = wx.Button(panel, label="Dismiss")
+        self.close_button = wx.Button(panel, label=self.trans["Dismiss"])
         self.close_button.Bind(wx.EVT_BUTTON, lambda event: frame.EndModal(wx.ID_CANCEL))
-        self.view_button = wx.Button(panel, ID_GITHUB, label="View on GitHub")
+        self.view_button = wx.Button(panel, ID_GITHUB, label=self.trans["View on GitHub"])
         self.view_button.Bind(wx.EVT_BUTTON, lambda event: frame.EndModal(ID_GITHUB))
-        self.install_button = wx.Button(panel, label="Download and Install")
+        self.install_button = wx.Button(panel, label=self.trans["Download and Install"])
         self.install_button.Bind(wx.EVT_BUTTON, lambda event: frame.EndModal(ID_UPDATE))
         self.install_button.SetDefault()
 

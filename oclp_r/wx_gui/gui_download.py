@@ -15,13 +15,15 @@ from ..support import (
     utilities
 )
 
+from ..support.translate_language import TranslateLanguage
 
 class DownloadFrame(wx.Frame):
     """
     Update provided frame with download stats
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, download_obj: network_handler.DownloadObject, item_name: str, download_icon = None) -> None:
-        logging.info("Initializing Download Frame")
+        self.trans = TranslateLanguage(global_constants=global_constants).gui_download()
+        logging.info(self.trans["Initializing Download Frame"])
         self.constants: constants.Constants = global_constants
         self.title: str = title
         self.parent: wx.Frame = parent
@@ -50,18 +52,18 @@ class DownloadFrame(wx.Frame):
         icon.SetSize((100, 100))
         icon.Centre(wx.HORIZONTAL)
 
-        title_label = wx.StaticText(frame, label=f"Downloading: {self.item_name}", pos=(-1,icon.GetPosition()[1] + icon.GetSize()[1] + 20))
+        title_label = wx.StaticText(frame, label=f"{self.trans['Downloading: ']} {self.item_name}", pos=(-1,icon.GetPosition()[1] + icon.GetSize()[1] + 20))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
         progress_bar = wx.Gauge(frame, range=100, pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5), size=(300, 20), style=wx.GA_SMOOTH|wx.GA_PROGRESS)
         progress_bar.Centre(wx.HORIZONTAL)
 
-        label_amount = wx.StaticText(frame, label="Preparing download", pos=(-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1]))
+        label_amount = wx.StaticText(frame, label=self.trans["Preparing download"], pos=(-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1]))
         label_amount.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         label_amount.Centre(wx.HORIZONTAL)
 
-        return_button = wx.Button(frame, label="Cancel", pos=(-1, label_amount.GetPosition()[1] + label_amount.GetSize()[1] + 10))
+        return_button = wx.Button(frame, label=self.trans["Cancel"], pos=(-1, label_amount.GetPosition()[1] + label_amount.GetSize()[1] + 10))
         return_button.Bind(wx.EVT_BUTTON, lambda event: self.terminate_download())
         return_button.Centre(wx.HORIZONTAL)
 
@@ -77,10 +79,10 @@ class DownloadFrame(wx.Frame):
                 percentage = 1
 
             if percentage == -1:
-                amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} downloaded ({utilities.human_fmt(self.download_obj.get_speed())}/s)"
+                amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} {self.trans['downloaded']} ({utilities.human_fmt(self.download_obj.get_speed())}/s)"
                 progress_bar.Pulse()
             else:
-                amount_str = f"{utilities.seconds_to_readable_time(self.download_obj.get_time_remaining())}left - {utilities.human_fmt(self.download_obj.downloaded_file_size)} of {utilities.human_fmt(self.download_obj.total_file_size)} ({utilities.human_fmt(self.download_obj.get_speed())}/s)"
+                amount_str = self.trans["{0} left - {1} of {2} ({3}/s)"].format(utilities.seconds_to_readable_time(self.download_obj.get_time_remaining()), utilities.human_fmt(self.download_obj.downloaded_file_size), utilities.human_fmt(self.download_obj.total_file_size), utilities.human_fmt(self.download_obj.get_speed()))
                 progress_bar.SetValue(int(percentage))
 
             label_amount.SetLabel(amount_str)
@@ -90,7 +92,7 @@ class DownloadFrame(wx.Frame):
             time.sleep(self.constants.thread_sleep_interval)
 
         if self.download_obj.download_complete is False and self.user_cancelled is False:
-            wx.MessageBox(f"Download failed: \n{self.download_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)
+            wx.MessageBox(f"{self.trans['Download failed']}: \n{self.download_obj.error_msg}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
 
         progress_bar.Destroy()
         frame.Destroy()
@@ -100,11 +102,11 @@ class DownloadFrame(wx.Frame):
         """
         Terminate download
         """
-        if wx.MessageBox("Are you sure you want to cancel the download?", "Cancel Download", wx.YES_NO | wx.ICON_QUESTION | wx.NO_DEFAULT) == wx.YES:
-            logging.info("User cancelled download")
+        if wx.MessageBox(f"{self.trans['Are you sure you want to cancel the download?']}", self.trans["Cancel Download"], wx.YES_NO | wx.ICON_QUESTION | wx.NO_DEFAULT) == wx.YES:
+            logging.info(self.trans["User cancelled download"])
             self.user_cancelled = True
             # Show a status message while stopping the download
-            status_dialog = wx.MessageDialog(self.frame_modal, "Cancelling download, please wait...", "Cancelling", wx.CANCEL | wx.STAY_ON_TOP)
+            status_dialog = wx.MessageDialog(self.frame_modal, f"{self.trans['Cancelling download, please wait...']}", self.trans["Cancelling"], wx.CANCEL | wx.STAY_ON_TOP)
             status_dialog.Show()
             wx.Yield()
             

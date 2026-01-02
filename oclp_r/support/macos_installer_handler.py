@@ -10,8 +10,8 @@ import re
 
 from pathlib import Path
 
-from oclp_r.constants import Constants
-from oclp_r.support.translate_language import TranslateLanguage
+from ..constants import Constants
+from .translate_language import TranslateLanguage
 
 from ..datasets import os_data
 

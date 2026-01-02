@@ -76,7 +76,7 @@ class GenerateDiskImages:
             '/usr/bin/hdiutil', 'create', './payloads.dmg',
             '-megabytes', '32000',  # Overlays can only be as large as the disk image allows
             '-format', 'UDZO', '-ov',
-            '-volname', 'OpenCore Patcher Resources (Base)',
+            '-volname', 'OCLP-R Resources (Base)',
             '-fs', 'HFS+',
             '-layout', 'NONE',
             '-srcfolder', './payloads',

@@ -30,7 +30,7 @@ from . import (
     security,
     misc
 )
-
+from ..support.translate_language import TranslateLanguage_efi_builder
 
 def rmtree_handler(func, path, exc_info) -> None:
     if exc_info[0] == FileNotFoundError:
@@ -45,6 +45,7 @@ class BuildOpenCore:
     """
 
     def __init__(self, model: str, global_constants: constants.Constants) -> None:
+        self.trans = TranslateLanguage_efi_builder(global_constants=global_constants).build()
         self.model: str = model
         self.config: dict = None
         self.constants: constants.Constants = global_constants
@@ -58,7 +59,7 @@ class BuildOpenCore:
         """
 
         utilities.cls()
-        logging.info(f"Building Configuration {'for external' if self.constants.custom_model else 'on model'}: {self.model}")
+        logging.info(self.trans["Building Configuration {0} model: {1}"].format('for external' if self.constants.custom_model else 'on model', self.model))
 
         self._generate_base()
         self._set_revision()
@@ -86,7 +87,7 @@ class BuildOpenCore:
 
         # Work-around ocvalidate
         if self.constants.validate is False:
-            logging.info("- Adding bootmgfw.efi BlessOverride")
+            logging.info(self.trans["- Adding bootmgfw.efi BlessOverride"])
             self.config["Misc"]["BlessOverride"] += ["\\EFI\\Microsoft\\Boot\\bootmgfw.efi"]
 
 
@@ -96,25 +97,25 @@ class BuildOpenCore:
         """
 
         if not Path(self.constants.build_path).exists():
-            logging.info("Creating build folder")
+            logging.info(self.trans["Creating build folder"])
             Path(self.constants.build_path).mkdir()
         else:
-            logging.info("Build folder already present, skipping")
+            logging.info(self.trans["Build folder already present, skipping"])
 
         if Path(self.constants.opencore_zip_copied).exists():
-            logging.info("Deleting old copy of OpenCore zip")
+            logging.info(self.trans["Deleting old copy of OpenCore zip"])
             Path(self.constants.opencore_zip_copied).unlink()
         if Path(self.constants.opencore_release_folder).exists():
-            logging.info("Deleting old copy of OpenCore folder")
+            logging.info(self.trans["Deleting old copy of OpenCore folder"])
             shutil.rmtree(self.constants.opencore_release_folder, onerror=rmtree_handler, ignore_errors=True)
 
         logging.info("")
-        logging.info(f"- Adding OpenCore v{self.constants.opencore_version} {'DEBUG' if self.constants.opencore_debug is True else 'RELEASE'}")
+        logging.info(self.trans["- Adding OpenCore v{0} {1}"].format(self.constants.opencore_version, 'DEBUG' if self.constants.opencore_debug is True else 'RELEASE'))
         shutil.copy(self.constants.opencore_zip_source, self.constants.build_path)
         zipfile.ZipFile(self.constants.opencore_zip_copied).extractall(self.constants.build_path)
 
         # Setup config.plist for editing
-        logging.info("- Adding config.plist for OpenCore")
+        logging.info(self.trans["- Adding config.plist for OpenCore"])
         shutil.copy(self.constants.plist_template, self.constants.oc_folder)
         self.config = plistlib.load(Path(self.constants.plist_path).open("rb"))
 
@@ -169,6 +170,6 @@ class BuildOpenCore:
         support.BuildSupport(self.model, self.constants, self.config).validate_pathing()
 
         logging.info("")
-        logging.info(f"Your OpenCore EFI for {self.model} has been built at:")
-        logging.info(f"    {self.constants.opencore_release_folder}")
+        logging.info(self.trans["Your OpenCore EFI for {0} has been built at:"].format(self.model))
+        logging.info(self.trans["    {0}"].format(self.constants.opencore_release_folder))
         logging.info("")
