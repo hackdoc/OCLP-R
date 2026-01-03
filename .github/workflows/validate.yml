@@ -16,10 +16,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
+          python-version: '3.12'
       - name: Validate
         run: |
-          /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 -m pip install --upgrade pip
-          /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 -m pip install -r requirements.txt
-          /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 -m pip install packaging
-          /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 OCLP-R-GUI.command --validate
+          /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -m pip install --upgrade pip
+          /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -m pip install -r requirements.txt
+          /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -m pip install packaging
+          /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 OCLP-R-GUI.command --validate

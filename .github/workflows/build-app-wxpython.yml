@@ -25,29 +25,29 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
+          python-version: '3.12'
       - name: Install Dependencies
         run: |
           rm -rf Univ*
           rm -rf *pay*.dmg
-          /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 -m pip install -r requirements.txt
+          /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -m pip install -r requirements.txt
 
       - name: Force x86_64 charset for Python
         run: |
-          /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 -m pip uninstall -y charset_normalizer
-          /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 -m pip download --platform macosx_10_13_x86_64 --only-binary=:all: charset-normalizer
-          /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 -m pip install charset_normalizer-3.4.4-cp314-cp314-macosx_10_13_universal2.whl
+          /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -m pip uninstall -y charset_normalizer
+          /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -m pip download --platform macosx_10_13_x86_64 --only-binary=:all: charset-normalizer
+          /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -m pip install charset_normalizer-3.4.4-cp312-cp312-macosx_10_13_universal2.whl
 
       - name: Prepare Assets (--prepare-assets)
 
         run: >
-          /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 Build-Project.command
+          /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 Build-Project.command
           --run-as-individual-steps
           --prepare-assets
 
       - name: Prepare Application (--prepare-application)
         run: >
-          /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 Build-Project.command
+          /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 Build-Project.command
           --git-branch "${{ env.branch }}" --git-commit-url "${{ env.commiturl }}" --git-commit-date "${{ env.commitdate }}"
           --reset-pyinstaller-cache
           --run-as-individual-steps
@@ -55,7 +55,7 @@ jobs:
 
       - name: Prepare Package (--prepare-package)
         run: >
-          /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 Build-Project.command
+          /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 Build-Project.command
           --run-as-individual-steps
           --prepare-package
       - name: Upload AutoPkg Package to Artifacts
