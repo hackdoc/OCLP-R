@@ -245,7 +245,7 @@ class OSUpdateFrame(wx.Frame):
         """
         Notify user of what OCLP is doing
         """
-        message=f"{self.trans['OCLP-R has detected that a macOS update is being downloaded:']}\n{self.os_data[0]} ({self.os_data[1]})\n\n{self.trans['The patcher needs to prepare the system for the update, and will download any additional resources it may need post-update.\n\nThis may take a few minutes, the patcher will exit when it is done.']}"
+        message=f"{self.trans['OCLP-R has detected that a macOS update is being downloaded:']}\n{self.os_data[0]} ({self.os_data[1]})\n\n{self.trans['The patcher needs to prepare the system for the update, and will download any additional resources it may need post-update.']}\n\n{self.trans['This may take a few minutes, the patcher will exit when it is done.']}"
         # Yes/No for caching
         dlg = wx.MessageDialog(self.frame, message=message, caption="OCLP-R", style=wx.YES_NO | wx.ICON_INFORMATION)
         dlg.SetYesNoLabels(self.trans["&Ok"], self.trans["&Cancel"])
