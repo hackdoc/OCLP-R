@@ -143,13 +143,13 @@ class BuildSupport:
             kext_plist_path = Path(kext_path / Path(kext["PlistPath"]))
             if not kext_path.exists():
                 logging.info(self.trans["- Missing kext: {kext_path}"].format(kext_path=kext_path))
-                raise Exception(f"{self.trans["Missing"]} {kext_path}")
+                raise Exception(f"{self.trans['Missing']} {kext_path}")
             if not kext_binary_path.exists():
                 logging.info(self.trans["- Missing {kext}'s binary: {kext_binary_path}"].format(kext=kext['BundlePath'], kext_binary_path=kext_binary_path))
-                raise Exception(f"{self.trans["Missing"]} {kext_binary_path}")
+                raise Exception(f"{self.trans['Missing']} {kext_binary_path}")
             if not kext_plist_path.exists():
                 logging.info(self.trans["- Missing {kext}'s plist: {kext_plist_path}"].format(kext=kext['BundlePath'], kext_plist_path=kext_plist_path))
-                raise Exception(f"{self.trans["Missing"]} {kext_plist_path}")
+                raise Exception(f"{self.trans['Missing']} {kext_plist_path}")
 
         for tool in config_plist["Misc"]["Tools"]:
             if not Path(self.constants.opencore_release_folder / Path("EFI/OC/Tools") / Path(tool["Path"])).exists():
