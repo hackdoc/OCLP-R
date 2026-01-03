@@ -2,7 +2,7 @@ requests
 pyobjc
 colorama
 termcolor
-wxpython @ https://wxpython.org/Phoenix/snapshot-builds/wxPython-4.2.2-cp313-cp313-macosx_10_13_universal2.whl
+wxpython @ https://wxpython.org/Phoenix/snapshot-builds/wxpython-4.2.45988+6573a469-cp314-cp314-macosx_10_15_x86_64.whl
 pyinstaller
 packaging
 py_sip_xnu
