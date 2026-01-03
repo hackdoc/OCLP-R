@@ -76,15 +76,29 @@ jobs:
           name: OCLP-R-Uninstaller.pkg
           path: ./dist/OCLP-R-Uninstaller.pkg
 
-      - name: Create Pre-Release on Push
-        if: github.event_name == 'push'
-        uses: softprops/action-gh-release@v2
+      - name: Upload AutoPkg Package to Release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
         with:
-          tag_name: 3.0.2
-          name: 3.0.2 Tahoe Test
-          body: ${{ github.event.head_commit.message }}
-          prerelease: true
-          files: |
-            ./dist/AutoPkg-Assets.pkg
-            ./dist/OCLP-R.pkg
-            ./dist/OCLP-R-Uninstaller.pkg
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./dist/AutoPkg-Assets.pkg
+          tag: ${{ github.ref }}
+          file_glob: true
+
+      - name: Upload Installation Package to Release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./dist/OCLP-R.pkg
+          tag: ${{ github.ref }}
+          file_glob: true
+
+      - name: Upload Uninstaller Package to Release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./dist/OCLP-R-Uninstaller.pkg
+          tag: ${{ github.ref }}
+          file_glob: true
