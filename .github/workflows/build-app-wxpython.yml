@@ -36,7 +36,7 @@ jobs:
         run: |
           /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip uninstall -y charset_normalizer
           /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip download --platform macosx_10_13_x86_64 --only-binary=:all: charset-normalizer
-          /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip install charset_normalizer-*-macosx_10_13_x86_64.whl
+          /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip install charset_normalizer-3.4.4-cp313-cp313-macosx_10_13_universal2.whl
 
       - name: Prepare Assets (--prepare-assets)
 
