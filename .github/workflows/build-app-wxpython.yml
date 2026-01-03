@@ -13,6 +13,7 @@ jobs:
     name: Build wxPython
     runs-on: macos-26
     if: github.repository_owner == 'hackdoc'
+
     env:
       # GitHub Information
       branch: ${{ github.ref }}
@@ -21,28 +22,32 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
       - name: Install Dependencies
         run: |
           rm -rf Univ*
           rm -rf *pay*.dmg
-          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install -r requirements.txt
+          /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip install -r requirements.txt
 
       - name: Force Universal2 charset for Python
         run: |
-          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip uninstall -y charset_normalizer
-          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip download --platform macosx_10_9_universal2 --only-binary=:all: charset-normalizer
-          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install charset_normalizer-*-macosx_10_9_universal2.whl
+          /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip uninstall -y charset_normalizer
+          /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip download --platform macosx_10_9_universal2 --only-binary=:all: charset-normalizer
+          /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip install charset_normalizer-*-macosx_10_9_universal2.whl
 
       - name: Prepare Assets (--prepare-assets)
 
         run: >
-          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Project.command
+          /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 Build-Project.command
           --run-as-individual-steps
           --prepare-assets
 
       - name: Prepare Application (--prepare-application)
         run: >
-          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Project.command
+          /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 Build-Project.command
           --git-branch "${{ env.branch }}" --git-commit-url "${{ env.commiturl }}" --git-commit-date "${{ env.commitdate }}"
           --reset-pyinstaller-cache
           --run-as-individual-steps
@@ -50,7 +55,7 @@ jobs:
 
       - name: Prepare Package (--prepare-package)
         run: >
-          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Project.command
+          /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 Build-Project.command
           --run-as-individual-steps
           --prepare-package
       - name: Upload AutoPkg Package to Artifacts

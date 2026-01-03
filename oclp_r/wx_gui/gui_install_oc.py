@@ -290,7 +290,7 @@ class InstallOCFrame(wx.Frame):
                 self.constants.update_stage = gui_support.AutoUpdateStages.ROOT_PATCHING
                 popup_message = wx.MessageDialog(
                     self,
-                    f"{self.trans['OpenCore has finished installing to disk.\n\nWould you like to update your root patches next?']}", self.trans["Success"],
+                    f"{self.trans['OpenCore has finished installing to disk.']}\n\n{self.trans['Would you like to update your root patches next?']}", self.trans["Success"],
                     wx.YES_NO | wx.YES_DEFAULT
                 )
                 popup_message.ShowModal()
