@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Validate
-    runs-on: macOS-26
+    runs-on: macOS-15-intel
     if: github.repository_owner == 'hackdoc'
     steps:
       - uses: actions/checkout@v4
