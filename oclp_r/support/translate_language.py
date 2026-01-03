@@ -2867,7 +2867,7 @@ class TranslateLanguage_efi_builder:
     def wireless(self):
         if self.language_point=="English":
             trans={
-                "- Found Wireless Device {utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}":"- Found Wireless Device {utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}",
+                "- Found Wireless Device {0}:{1}":"- Found Wireless Device {0}:{1}",
                 "- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}":"- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}",
                 "- Found ARPT device at {arpt_path}":"- Found ARPT device at {arpt_path}",
                 "- Enabling Wake on WLAN support":"- Enabling Wake on WLAN support",
@@ -2880,7 +2880,7 @@ class TranslateLanguage_efi_builder:
             }
         elif self.language_point=="简体中文":
             trans={
-                "- Found Wireless Device {utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}":"- 发现无线设备 {utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}",
+                "- Found Wireless Device {0}:{1}":"- 发现无线设备 {0}:{1}",
                 "- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}":"- 设置无线网卡的国家代码：{self.computer.wifi.country_code}",
                 "- Found ARPT device at {arpt_path}":"- 在 {arpt_path} 发现 ARPT 设备",
                 "- Enabling Wake on WLAN support":"- 启用无线局域网唤醒支持",

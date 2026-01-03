@@ -49,7 +49,7 @@ class BuildWirelessNetworking:
         On-Model Hardware Detection Handling
         """
 
-        logging.info(self.trans.wireless()[f"- Found Wireless Device {utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}"].format(utilities=utilities, computer=self.computer))
+        logging.info(self.trans["- Found Wireless Device {0}:{1}"].format(utilities.friendly_hex(self.computer.wifi.vendor_id), utilities.friendly_hex(self.computer.wifi.device_id)))
         self.config["#Revision"]["Hardware-Wifi"] = f"{utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}"
 
         if isinstance(self.computer.wifi, device_probe.Broadcom):
@@ -61,15 +61,15 @@ class BuildWirelessNetworking:
             # This works around OCLP spoofing the Wifi card and therefore unable to actually detect the correct device
             if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirportBrcmNIC and self.constants.validate is False and self.computer.wifi.country_code:
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
-                logging.info(self.trans.wireless()["- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}"].format(computer=self.computer))
+                logging.info(self.trans["- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}"].format(computer=self.computer))
                 if self.computer.wifi.pci_path:
                     arpt_path = self.computer.wifi.pci_path
-                    logging.info(self.trans.wireless()["- Found ARPT device at {arpt_path}"].format(arpt_path=arpt_path))
+                    logging.info(self.trans["- Found ARPT device at {arpt_path}"].format(arpt_path=arpt_path))
                     self.config["DeviceProperties"]["Add"][arpt_path] = {"brcmfx-country": self.computer.wifi.country_code}
                 else:
                     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" brcmfx-country={self.computer.wifi.country_code}"
                 if self.constants.enable_wake_on_wlan is True:
-                    logging.info(self.trans.wireless()["- Enabling Wake on WLAN support"])
+                    logging.info(self.trans["- Enabling Wake on WLAN support"])
                     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" -brcmfxwowl"
             elif self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm4360:
                 self._wifi_fake_id()
@@ -97,20 +97,20 @@ class BuildWirelessNetworking:
         if not "Wireless Model" in smbios_data.smbios_dictionary[self.model]:
             return
         if smbios_data.smbios_dictionary[self.model]["Wireless Model"] == device_probe.Broadcom.Chipsets.AirPortBrcm4360:
-            logging.info(self.trans.wireless()["- Enabling BCM943224 and BCM94331 Networking Support"])
+            logging.info(self.trans["- Enabling BCM943224 and BCM94331 Networking Support"])
             self._wifi_fake_id()
         elif smbios_data.smbios_dictionary[self.model]["Wireless Model"] == device_probe.Broadcom.Chipsets.AirPortBrcm4331:
-            logging.info(self.trans.wireless()["- Enabling BCM94328 Networking Support"])
+            logging.info(self.trans["- Enabling BCM94328 Networking Support"])
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AirPortBrcm4331.kext")["Enabled"] = True
         elif smbios_data.smbios_dictionary[self.model]["Wireless Model"] == device_probe.Broadcom.Chipsets.AirPortBrcm43224:
-            logging.info(self.trans.wireless()["- Enabling BCM94328 Networking Support"])
+            logging.info(self.trans["- Enabling BCM94328 Networking Support"])
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AppleAirPortBrcm43224.kext")["Enabled"] = True
         elif smbios_data.smbios_dictionary[self.model]["Wireless Model"] == device_probe.Atheros.Chipsets.AirPortAtheros40:
-            logging.info(self.trans.wireless()["- Enabling Atheros Networking Support"])
+            logging.info(self.trans["- Enabling Atheros Networking Support"])
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
@@ -137,7 +137,7 @@ class BuildWirelessNetworking:
         if support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AirportBrcmFixup.kext")["Enabled"] is False:
             return
 
-        logging.info(self.trans.wireless()["- Enabling Wake on WLAN support"])
+        logging.info(self.trans["- Enabling Wake on WLAN support"])
         self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" -brcmfxwowl"
 
 
@@ -153,10 +153,10 @@ class BuildWirelessNetworking:
         support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
         if not self.constants.custom_model and self.computer.wifi and self.computer.wifi.pci_path:
             arpt_path = self.computer.wifi.pci_path
-            logging.info(self.trans.wireless()["- Found ARPT device at {arpt_path}"].format(arpt_path=arpt_path))
+            logging.info(self.trans["- Found ARPT device at {arpt_path}"].format(arpt_path=arpt_path))
         else:
             if not self.model in smbios_data.smbios_dictionary:
-                logging.info(self.trans.wireless()["No known PCI pathing for this model"])
+                logging.info(self.trans["No known PCI pathing for this model"])
                 return
             if "nForce Chipset" in smbios_data.smbios_dictionary[self.model]:
                 # Nvidia chipsets all have the same path to ARPT
@@ -172,8 +172,8 @@ class BuildWirelessNetworking:
                     # Assumes we have a laptop with Intel chipset
                     # iMac11,x-12,x also apply
                     arpt_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
-            logging.info(self.trans.wireless()["- Using known ARPT Path: {arpt_path}"].format(arpt_path=arpt_path))
+            logging.info(self.trans["- Using known ARPT Path: {arpt_path}"].format(arpt_path=arpt_path))
 
         if not self.constants.custom_model and self.computer.wifi and self.constants.validate is False and self.computer.wifi.country_code:
-            logging.info(self.trans.wireless()["- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}"].format(computer=self.computer))
+            logging.info(self.trans["- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}"].format(computer=self.computer))
             self.config["DeviceProperties"]["Add"][arpt_path] = {"brcmfx-country": self.computer.wifi.country_code}

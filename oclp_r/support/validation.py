@@ -104,15 +104,15 @@ class PatcherValidation:
         for model in self.valid_dumps:
             self.constants.computer = model
             self.constants.custom_model = ""
-            logging.info(self.trans["Validating dumped model: {model}"].format(self.constants.computer.real_model))
+            logging.info(self.trans["Validating dumped model: {model}"].format(model=self.constants.computer.real_model))
             build.BuildOpenCore(self.constants.computer.real_model, self.constants)
             result = subprocess.run([self.constants.ocvalidate_path, f"{self.constants.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info(self.trans["Error on build!"])
                 subprocess_wrapper.log(result)
-                raise Exception(self.trans["Validation failed for predefined model: {model}"].format(self.constants.computer.real_model))
+                raise Exception(self.trans["Validation failed for predefined model: {model}"].format(model=self.constants.computer.real_model))
             else:
-                logging.info(self.trans["Validation succeeded for predefined model: {model}"].format(self.constants.computer.real_model))
+                logging.info(self.trans["Validation succeeded for predefined model: {model}"].format(model=self.constants.computer.real_model))
 
 
     def _validate_root_patch_files(self, major_kernel: int, minor_kernel: int) -> None:
