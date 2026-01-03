@@ -11,7 +11,7 @@ class TranslateLanguage:
         try:
             self.plist = load(Path(self.global_settings_plist).open("rb"))
             self.language_point = self.plist["GUI:language_option"]
-        except FileNotFoundError:
+        except Exception:
             self.language_point = "English"
         
     def application_entry(self):
@@ -2435,7 +2435,7 @@ class TranslateLanguage_sys_patch:
         try:
             self.plist = load(Path(self.global_settings_plist).open("rb"))
             self.language_point = self.plist["GUI:language_option"]
-        except FileNotFoundError:
+        except Exception:
             self.language_point = "English"
     def detect(self):
         if self.language_point=="English":
@@ -2498,7 +2498,7 @@ class TranslateLanguage_efi_builder:
         try:
             self.plist = load(Path(self.global_settings_plist).open("rb"))
             self.language_point = self.plist["GUI:language_option"]
-        except FileNotFoundError:
+        except Exception:
             self.language_point = "English"
     def bluetooth(self):
         if self.language_point=="English":

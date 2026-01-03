@@ -32,11 +32,11 @@ jobs:
           rm -rf *pay*.dmg
           /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip install -r requirements.txt
 
-      - name: Force Universal2 charset for Python
+      - name: Force x86_64 charset for Python
         run: |
           /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip uninstall -y charset_normalizer
-          /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip download --platform macosx_10_9_universal2 --only-binary=:all: charset-normalizer
-          /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip install charset_normalizer-*-macosx_10_9_universal2.whl
+          /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip download --platform macosx_10_13_x86_64 --only-binary=:all: charset-normalizer
+          /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip install charset_normalizer-*-macosx_10_13_x86_64.whl
 
       - name: Prepare Assets (--prepare-assets)
 
