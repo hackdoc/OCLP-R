@@ -17,7 +17,8 @@ from .. import constants
 
 from ..support import (
     utilities,
-    generate_smbios
+    generate_smbios,
+    translate_language
 )
 from ..datasets import (
     smbios_data,
@@ -37,6 +38,9 @@ class BuildSMBIOS:
         self.model: str = model
         self.config: dict = config
         self.constants: constants.Constants = global_constants
+        
+        self.translator = translate_language.TranslateLanguage_efi_builder(self.constants)
+        self.trans = self.translator.smbios()
 
         self._build()
 
@@ -49,22 +53,22 @@ class BuildSMBIOS:
         if self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True:
             if self.constants.serial_settings == "None":
                 # Credit to Parrotgeek1 for boot.efi and hv_vmm_present patch sets
-                logging.info("- Enabling Board ID exemption patch")
+                logging.info(self.trans["- Enabling Board ID exemption patch"])
                 support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Booter"]["Patch"], "Comment", "Skip Board ID check")["Enabled"] = True
 
             else:
-                logging.info("- Enabling SMC exemption patch")
+                logging.info(self.trans["- Enabling SMC exemption patch"])
                 support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path)
 
         if self.constants.serial_settings in ["Moderate", "Advanced"]:
-            logging.info("- Enabling USB Rename Patches")
+            logging.info(self.trans["- Enabling USB Rename Patches"])
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "XHC1 to SHC1")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "EHC1 to EH01")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "EHC2 to EH02")["Enabled"] = True
 
         if self.model == self.constants.override_smbios:
-            logging.info("- Adding -no_compat_check")
+            logging.info(self.trans["- Adding -no_compat_check"])
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -no_compat_check"
 
     def _strip_usb_map(self, map_path, model, spoofed_model, serial_settings):
@@ -95,20 +99,20 @@ class BuildSMBIOS:
 
         if self.constants.override_smbios == "Default":
             if self.constants.serial_settings != "None":
-                logging.info("- Setting macOS Monterey Supported SMBIOS")
+                logging.info(self.trans["- Setting macOS Monterey Supported SMBIOS"])
                 if self.constants.allow_native_spoofs is True:
                     spoofed_model = self.model
                 else:
                     spoofed_model = generate_smbios.set_smbios_model_spoof(self.model)
         else:
             spoofed_model = self.constants.override_smbios
-        logging.info(f"- Using Model ID: {spoofed_model}")
+        logging.info(self.trans["- Using Model ID: {spoofed_model}"].format(spoofed_model=spoofed_model))
 
         spoofed_board = ""
         if spoofed_model in smbios_data.smbios_dictionary:
             if "Board ID" in smbios_data.smbios_dictionary[spoofed_model]:
                 spoofed_board = smbios_data.smbios_dictionary[spoofed_model]["Board ID"]
-        logging.info(f"- Using Board ID: {spoofed_board}")
+        logging.info(self.trans["- Using Board ID: {spoofed_board}"].format(spoofed_board=spoofed_board))
 
         self.spoofed_model = spoofed_model
         self.spoofed_board = spoofed_board
@@ -117,13 +121,13 @@ class BuildSMBIOS:
             self.config["#Revision"]["Spoofed-Model"] = f"{self.spoofed_model} - {self.constants.serial_settings}"
 
         if self.constants.serial_settings == "Moderate":
-            logging.info("- Using Moderate SMBIOS patching")
+            logging.info(self.trans["- Using Moderate SMBIOS patching"])
             self._moderate_serial_patch()
         elif self.constants.serial_settings == "Advanced":
-            logging.info("- Using Advanced SMBIOS patching")
+            logging.info(self.trans["- Using Advanced SMBIOS patching"])
             self._advanced_serial_patch()
         elif self.constants.serial_settings == "Minimal":
-            logging.info("- Using Minimal SMBIOS patching")
+            logging.info(self.trans["- Using Minimal SMBIOS patching"])
             self.spoofed_model = self.model
             self._minimal_serial_patch()
         else:
@@ -135,12 +139,12 @@ class BuildSMBIOS:
             # Note 1: Only apply if system is UEFI 1.2, this is generally Ivy Bridge and older
             # Note 2: Flipping 'UEFI -> ProtocolOverrides -> DataHub' will break hibernation
             if (smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.ivy_bridge.value and self.model):
-                logging.info("- Detected UEFI 1.2 or older Mac, updating BoardProduct")
+                logging.info(self.trans["- Detected UEFI 1.2 or older Mac, updating BoardProduct"])
                 self.config["PlatformInfo"]["DataHub"]["BoardProduct"] = self.spoofed_board
                 self.config["PlatformInfo"]["UpdateDataHub"] = True
 
             if self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != "":
-                logging.info("- Adding custom serial numbers")
+                logging.info(self.trans["- Adding custom serial numbers"])
                 self.config["PlatformInfo"]["Automatic"] = True
                 self.config["PlatformInfo"]["UpdateDataHub"] = True
                 self.config["PlatformInfo"]["UpdateNVRAM"] = True
@@ -190,7 +194,7 @@ class BuildSMBIOS:
                 if self.model == "MacBookPro6,2":
                     # Force G State to not exceed moderate state
                     # Ref: https://github.com/fabioiop/MBP-2010-GPU-Panic-fix
-                    logging.info("- Patching G State for MacBookPro6,2")
+                    logging.info(self.trans["- Patching G State for MacBookPro6,2"])
                     for gpu in ["Vendor10deDevice0a34", "Vendor10deDevice0a29"]:
                         agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_board][gpu]["BoostPState"] = [2, 2, 2, 2]
                         agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_board][gpu]["BoostTime"] = [2, 2, 2, 2]
@@ -227,7 +231,7 @@ class BuildSMBIOS:
         fw_feature = generate_smbios.generate_fw_features(self.model, self.constants.custom_model)
         # fw_feature = self.patch_firmware_feature()
         fw_feature = hex(fw_feature).lstrip("0x").rstrip("L").strip()
-        logging.info(f"- Setting Firmware Feature: {fw_feature}")
+        logging.info(self.trans["- Setting Firmware Feature: {fw_feature}"].format(fw_feature=fw_feature))
         fw_feature = utilities.string_to_hex(fw_feature)
 
         # FirmwareFeatures
@@ -256,7 +260,7 @@ class BuildSMBIOS:
         self.config["PlatformInfo"]["UpdateDataHub"] = True
 
         if self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != "":
-            logging.info("- Adding custom serial numbers")
+            logging.info(self.trans["- Adding custom serial numbers"])
             sn = self.constants.custom_serial_number
             mlb = self.constants.custom_board_serial_number
 
@@ -281,7 +285,7 @@ class BuildSMBIOS:
         """
 
         if self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != "":
-            logging.info("- Adding custom serial numbers")
+            logging.info(self.trans["- Adding custom serial numbers"])
             self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = self.constants.custom_serial_number
             self.config["PlatformInfo"]["Generic"]["MLB"] = self.constants.custom_board_serial_number
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-SN"] = self.constants.custom_serial_number

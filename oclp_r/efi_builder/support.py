@@ -13,6 +13,8 @@ from pathlib import Path
 
 from .. import constants
 
+from ..support import translate_language
+
 
 class BuildSupport:
     """
@@ -23,6 +25,7 @@ class BuildSupport:
         self.model: str = model
         self.config: dict = config
         self.constants: constants.Constants = global_constants
+        self.trans = translate_language.TranslateLanguage_efi_builder(self.constants).support()
 
 
     @staticmethod
@@ -55,7 +58,7 @@ class BuildSupport:
 
         kext: dict = self.get_item_by_kv(self.config["Kernel"]["Add"], "BundlePath", bundle_path)
         if not kext:
-            logging.info(f"- Could not find kext {bundle_path}!")
+            logging.info(self.trans["- Could not find kext {bundle_path}!"])
             raise IndexError
         return kext
 
@@ -72,7 +75,7 @@ class BuildSupport:
 
         efi_binary: dict = self.get_item_by_kv(self.config[entry_type][efi_type], "Path", bundle_name)
         if not efi_binary:
-            logging.info(f"- Could not find {efi_type}: {bundle_name}!")
+            logging.info(self.trans["- Could not find {efi_type}: {bundle_name}!"].format(efi_type=efi_type, bundle_name=bundle_name))
             raise IndexError
         return efi_binary
 
@@ -96,7 +99,7 @@ class BuildSupport:
         if kext["Enabled"] is True:
             return
 
-        logging.info(f"- Adding {kext_name} {kext_version}")
+        logging.info(self.trans["- Adding {kext_name} {kext_version}"].format(kext_name=kext_name, kext_version=kext_version))
         shutil.copy(kext_path, self.constants.kexts_path)
         kext["Enabled"] = True
 
@@ -109,7 +112,7 @@ class BuildSupport:
         if self.constants.vault is False:
             return
 
-        logging.info("- Vaulting EFI\n=========================================")
+        logging.info(self.trans["- Vaulting EFI\n========================================="])
         popen = subprocess.Popen([str(self.constants.vault_path), f"{self.constants.oc_folder}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
         for stdout_line in iter(popen.stdout.readline, ""):
             logging.info(stdout_line.strip())
@@ -122,16 +125,16 @@ class BuildSupport:
         This ensures that OpenCore won't hit a critical error and fail to boot
         """
 
-        logging.info("- Validating generated config")
-        if not Path(self.constants.opencore_release_folder / Path("EFI/OC/config.plist")):
-            logging.info("- OpenCore config file missing!!!")
-            raise Exception("OpenCore config file missing")
+        logging.info(self.trans["- Validating generated config"])
+        if not Path(self.constants.opencore_release_folder / Path("EFI/OC/config.plist")).exists():
+            logging.info(self.trans["- OpenCore config file missing!!!"])
+            raise Exception(self.trans["OpenCore config file missing"])
 
         config_plist = plistlib.load(Path(self.constants.opencore_release_folder / Path("EFI/OC/config.plist")).open("rb"))
 
         for acpi in config_plist["ACPI"]["Add"]:
             if not Path(self.constants.opencore_release_folder / Path("EFI/OC/ACPI") / Path(acpi["Path"])).exists():
-                logging.info(f"- Missing ACPI Table: {acpi['Path']}")
+                logging.info(self.trans["- Missing ACPI Table: {acpi['Path']}"])
                 raise Exception(f"Missing ACPI Table: {acpi['Path']}")
 
         for kext in config_plist["Kernel"]["Add"]:
@@ -139,36 +142,36 @@ class BuildSupport:
             kext_binary_path = Path(kext_path / Path(kext["ExecutablePath"]))
             kext_plist_path = Path(kext_path / Path(kext["PlistPath"]))
             if not kext_path.exists():
-                logging.info(f"- Missing kext: {kext_path}")
-                raise Exception(f"Missing {kext_path}")
+                logging.info(self.trans["- Missing kext: {kext_path}"].format(kext_path=kext_path))
+                raise Exception(f"{self.trans["Missing"]} {kext_path}")
             if not kext_binary_path.exists():
-                logging.info(f"- Missing {kext['BundlePath']}'s binary: {kext_binary_path}")
-                raise Exception(f"Missing {kext_binary_path}")
+                logging.info(self.trans["- Missing {kext}'s binary: {kext_binary_path}"].format(kext=kext['BundlePath'], kext_binary_path=kext_binary_path))
+                raise Exception(f"{self.trans["Missing"]} {kext_binary_path}")
             if not kext_plist_path.exists():
-                logging.info(f"- Missing {kext['BundlePath']}'s plist: {kext_plist_path}")
-                raise Exception(f"Missing {kext_plist_path}")
+                logging.info(self.trans["- Missing {kext}'s plist: {kext_plist_path}"].format(kext=kext['BundlePath'], kext_plist_path=kext_plist_path))
+                raise Exception(f"{self.trans["Missing"]} {kext_plist_path}")
 
         for tool in config_plist["Misc"]["Tools"]:
             if not Path(self.constants.opencore_release_folder / Path("EFI/OC/Tools") / Path(tool["Path"])).exists():
-                logging.info(f"- Missing tool: {tool['Path']}")
-                raise Exception(f"Missing tool: {tool['Path']}")
+                logging.info(self.trans["- Missing tool: {tool}"].format(tool=tool['Path']))
+                raise Exception(self.trans["- Missing tool: {tool}"].format(tool=tool['Path']))
 
         for driver in config_plist["UEFI"]["Drivers"]:
             if not Path(self.constants.opencore_release_folder / Path("EFI/OC/Drivers") / Path(driver["Path"])).exists():
-                logging.info(f"- Missing driver: {driver['Path']}")
-                raise Exception(f"Missing driver: {driver['Path']}")
+                logging.info(self.trans["- Missing driver: {driver}"].format(driver=driver['Path']))
+                raise Exception(self.trans["- Missing driver: {driver}"].format(driver=driver['Path']))
 
         # Validating local files
         # Report if they have no associated config.plist entry (i.e. they're not being used)
         for tool_files in Path(self.constants.opencore_release_folder / Path("EFI/OC/Tools")).glob("*"):
             if tool_files.name not in [x["Path"] for x in config_plist["Misc"]["Tools"]]:
-                logging.info(f"- Missing tool from config: {tool_files.name}")
-                raise Exception(f"Missing tool from config: {tool_files.name}")
+                logging.info(self.trans["- Missing tool from config: {tool_files_name}"].format(tool_files_name=tool_files.name))
+                raise Exception(self.trans["- Missing tool from config: {tool_files_name}"].format(tool_files_name=tool_files.name))
 
         for driver_file in Path(self.constants.opencore_release_folder / Path("EFI/OC/Drivers")).glob("*"):
             if driver_file.name not in [x["Path"] for x in config_plist["UEFI"]["Drivers"]]:
-                logging.info(f"- Found extra driver: {driver_file.name}")
-                raise Exception(f"Found extra driver: {driver_file.name}")
+                logging.info(self.trans["- Found extra driver: {driver_file_name}"].format(driver_file_name=driver_file.name))
+                raise Exception(self.trans["- Found extra driver: {driver_file_name}"].format(driver_file_name=driver_file.name))
 
         self._validate_malformed_kexts(self.constants.opencore_release_folder / Path("EFI/OC/Kexts"))
 
@@ -185,8 +188,8 @@ class BuildSupport:
             if "CFBundleExecutable" in kext_data:
                 expected_executable = Path(kext_folder / Path("Contents/MacOS") / Path(kext_data["CFBundleExecutable"]))
                 if not expected_executable.exists():
-                    logging.info(f"- Missing executable for {kext_folder.name}: Contents/MacOS/{expected_executable.name}")
-                    raise Exception(f" - Missing executable for {kext_folder.name}: Contents/MacOS/{expected_executable.name}")
+                    logging.info(self.trans["- Missing executable for {kext_folder_name}: Contents/MacOS/{expected_executable_name}"].format(kext_folder_name=kext_folder.name, expected_executable_name=expected_executable.name))
+                    raise Exception(self.trans[" - Missing executable for {kext_folder_name}: Contents/MacOS/{expected_executable_name}"].format(kext_folder_name=kext_folder.name, expected_executable_name=expected_executable.name))
 
             if Path(kext_folder / Path("Contents/PlugIns")).exists():
                 self._validate_malformed_kexts(kext_folder / Path("Contents/PlugIns"))
@@ -197,7 +200,7 @@ class BuildSupport:
         Clean up files and entries
         """
 
-        logging.info("- Cleaning up files")
+        logging.info(self.trans["- Cleaning up files"])
         # Remove unused entries
         entries_to_clean = {
             "ACPI":   ["Add", "Delete", "Patch"],
@@ -246,7 +249,7 @@ class BuildSupport:
                         break
                 if should_remove:
                     if plugin.name not in known_unused_plugins:
-                        raise Exception(f" - Unknown plugin found: {plugin.name}")
+                        raise Exception(self.trans[" - Unknown plugin found: {plugin_name}"].format(plugin_name=plugin.name))
                     shutil.rmtree(plugin)
 
         Path(self.constants.opencore_zip_copied).unlink()

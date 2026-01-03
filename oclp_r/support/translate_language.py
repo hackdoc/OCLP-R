@@ -1,11 +1,27 @@
 from ..constants import Constants
-
+from plistlib import load
+from pathlib import Path
+import logging
+def _load_gui_defaults(self) -> None:
+    settings_plist = global_settings.GlobalEnviromentSettings().global_settings_plist
+    if not Path(settings_plist).exists():
+        return
+    
+    try:
+        plist = plistlib.load(Path(settings_plist).open("rb"))
+    except Exception as e:
+        logging.error("Error: Unable to read global settings file")
+        return
 class TranslateLanguage:
     def __init__(self, global_constants: Constants) -> None:
-        self.constants: Constants = global_constants
-        self.language_point = self.constants.language_choose
+        self.file_name:              str = ".com.hackdoc.oclp-r.plist"
+        self.global_settings_folder: str = "/Users/Shared"
+        self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"
+        self.plist = load(Path(self.global_settings_plist).open("rb"))
+       # self.constants: Constants = global_constants
+        self.language_point = self.plist["GUI:language_option"]
     def application_entry(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Current working directory:":"Current working directory:",
                 "Current working directory was invalid, switched to:":"Current working directory was invalid, switched to:",
@@ -13,7 +29,7 @@ class TranslateLanguage:
                 "Main entry point":"Main entry point",
             }
             return trans
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Current working directory:":"当前工作目录：",
                 "Current working directory was invalid, switched to:":"当前工作目录无效，已切换到：",
@@ -22,20 +38,20 @@ class TranslateLanguage:
             }
             return trans
     def gengrate_smbios(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Unknown SMBIOS for spoofing:":"Unknown SMBIOS for spoofing:",
                 "- Failed to find FirmwareFeatures, falling back on defaults":"- Failed to find FirmwareFeatures, falling back on defaults",
             }
             return trans
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Unknown SMBIOS for spoofing:":"未知 SMBIOS 用于 spoofing:",
                 "- Failed to find FirmwareFeatures, falling back on defaults":"- 未找到 FirmwareFeatures, 回退到默认值",
             }
             return trans
     def arguements(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Set Validation Mode": "Set Validation Mode",
                 "- Running from Installer Sandbox, blocking OS updaters":"- Running from Installer Sandbox, blocking OS updaters",
@@ -145,7 +161,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Selected macOS DMG {version} ({build})":"Selected macOS DMG {version} ({build})",
                 "Selected macOS {version} ({build})":"Selected macOS {version} ({build})"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans = {
                 "Set Validation Mode": "设置验证模式",
                 "- Running from Installer Sandbox, blocking OS updaters": "- 从安装程序沙箱运行, 阻止操作系统更新程序",
@@ -296,7 +312,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def kdk_handler(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Could not contact KDK API":"Could not contact KDK API",
                 "Could not fetch KDK list":"Could not fetch KDK list",
@@ -349,7 +365,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Failed to create KDK backup:":"Failed to create KDK backup:",
                 "Cleaning unused KDKs":"Cleaning unused KDKs"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Could not contact KDK API":"无法联系 KDK API",
                 "Pulling KDK list from KdkSupportPkg API":"从 KdkSupportPkg API 获取 KDK 列表",
@@ -404,7 +420,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         return trans
     def logging_handler(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Failed to create Hackdoc folder: {0}":"Failed to create Hackdoc folder: {0}",
                 "Failed to initialize logging framework: {0}":"Failed to initialize logging framework: {0}",
@@ -429,7 +445,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Uncaught exception in spawned thread":"Uncaught exception in spawned thread",
                 'display dialog "{error_msg}" with title "OCLP-R ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution':'display dialog "{error_msg}" with title "OCLP-R ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution',
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Uncaught exception in spawned thread":"未捕获的子线程异常",
                 'display dialog "{error_msg}" with title "OCLP-R ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution':'显示标题为"OCLP-R ({self.constants.patcher_version})"的对话框"{error_msg}"，按钮为“是”和“否”，默认按钮为"是"，并带有警告图标.',
@@ -456,7 +472,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         return trans
     def macos_installer_handler(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Extracting macOS installer from InstallAssistant.pkg":"Extracting macOS installer from InstallAssistant.pkg",
                 "Failed to install InstallAssistant":"Failed to install InstallAssistant",
@@ -467,7 +483,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Failed to copy installer to {0}":"Failed to copy installer to {0}",
                 "Installer has broken code signature":"Installer has broken code signature"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Extracting macOS installer from InstallAssistant.pkg":"正在从 InstallAssistant.pkg 提取 macOS 安装程序",
                 "Failed to install InstallAssistant":"无法安装 InstallAssistant",
@@ -480,7 +496,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         return trans
     def metallib_handler(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "MetallibSupportPkg is not required for macOS Sonoma or older":"MetallibSupportPkg is not required for macOS Sonoma or older",
                 "metallib already installed ({0}), skipping":"metallib already installed ({0}), skipping",
@@ -509,7 +525,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Cannot install metallib, no metallib was successfully retrieved":"Cannot install metallib, no metallib was successfully retrieved",
                 "No installation required, metallib already installed":"No installation required, metallib already installed"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "MetallibSupportPkg is not required for macOS Sonoma or older":"macOS Sonoma 或更早版本不需要 MetallibSupportPkg",
                 "metallib already installed ({0}), skipping":"metallib 已安装 ({0}), 跳过",
@@ -540,7 +556,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         return trans
     def network_handler(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Inactive":"Inactive",
                 "Downloading":"Downloading",
@@ -577,7 +593,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Downloaded {0} of {1}":"Downloaded {0} of {1}",
                 "Downloaded {0:.2f}% of {1} ({2}/s) ({3:.2f} seconds remaining)":"Downloaded {0:.2f}% of {1} ({2}/s) ({3:.2f} seconds remaining)",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Inactive":"未下载",
                 "Downloading":"正在下载",
@@ -616,13 +632,13 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         return trans
     def private(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "writing":"writing",
                 "File {0} not found":"File {0} not found",
                 "Invalid JSON in file {0}":"Invalid JSON in file {0}"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "writing":"正在写入",
                 "File {0} not found":"文件 {0} 未找到",
@@ -630,7 +646,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         return trans
     def reroute_payloads(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Running in compiled binary, switching to tmp directory":"Running in compiled binary, switching to tmp directory",
                 "New payloads location: {0}":"New payloads location: {0}",
@@ -640,7 +656,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Unmounting personal {0}":"Unmounting personal {0}",
                 "Unmounting {0} at: {1}":"Unmounting {0} at: {1}"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Running in compiled binary, switching to tmp directory":"正在运行编译后的二进制文件，切换到临时目录",
                 "New payloads location: {0}":"新的 payloads 位置: {0}",
@@ -652,7 +668,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         return trans
     def subprocess_wrapper(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Subprocess failed.":"Subprocess failed.",
                 "    Command: {0}":"    Command: {0}",
@@ -664,7 +680,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "File not found: {0}":"File not found: {0}",
                 "process_failed_with_exit_code: {0}":"process_failed_with_exit_code: {0}",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Subprocess failed.":"子进程失败.",
                 "    Command: {0}":"    命令: {0}",
@@ -678,12 +694,12 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         return trans
     def updates(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Found asset: {0}":"Found asset: {0}",
                 "Invalid version number for binary":"Invalid version number for binary",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Found asset: {0}":"找到assets: {0}",
                 "Invalid version number for binary":"无效的二进制版本号",
@@ -691,7 +707,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def utilities(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "FileVault is Off":"FileVault is Off",
                 "Over a month":"Over a month",
@@ -702,7 +718,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Re-enabling Idle Sleep":"Re-enabling Idle Sleep",
                 "Killing Process: {0} - {1}":"Killing Process: {0} - {1}"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "FileVault is Off":"文件保险箱已关闭",
                 "Over a month":"超过一个月",
@@ -716,7 +732,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def validation(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Validating predefined model: {model}":"Validating predefined model: {model}",
                 "Error on build!":"Error on build!",
@@ -737,7 +753,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Validating SNB Board ID patcher":"Validating SNB Board ID patcher",
                 "Unused files found:":"Unused files found:"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Validating predefined model: {model}":"正在验证预定义机型: {model}",
                 "Error on build!":"构建时出错!",
@@ -761,7 +777,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def arguments(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={"Set Validation Mode":"Set Validation Mode",
                     "Set System Volume patching":"Set System Volume patching",
                     "- Running from Installer Sandbox, blocking OS updaters":"- Running from Installer Sandbox, blocking OS updaters",
@@ -796,7 +812,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                     "- Unknown SMBIOS arg passed:":"- Unknown SMBIOS arg passed:",
                     "- Building for natively supported model":"- Building for natively supported model"
                     }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={"Set Validation Mode":"设置验证模式",
                     "Set System Volume patching":"设置系统卷补丁",
                     "- Running from Installer Sandbox, blocking OS updaters":"- 从安装程序沙箱运行，阻止系统更新程序",
@@ -834,7 +850,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
    
     
     def defaults(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Error: Unable to read global settings file":"Error: Unable to read global settings file",
                 "Global settings type mismatch for":"Global settings type mismatch for",
@@ -844,7 +860,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Setting":"Setting",
                 "to":"to"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Error: Unable to read global settings file":"错误: 无法读取全局设置文件",
                 "Global settings type mismatch for":"全局设置类型不匹配",
@@ -857,18 +873,18 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def generate_smbios(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "- Failed to find FirmwareFeatures, falling back on defaults":"- Failed to find FirmwareFeatures, falling back on defaults"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "- Failed to find FirmwareFeatures, falling back on defaults":"- 找不到 FirmwareFeatures，回退到默认值"
             }
         return trans
     
     def global_settings(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Error: Unable to read global settings file":"Error: Unable to read global settings file",
                 "Failed to write to global settings":"Failed to write to global settings",
@@ -877,7 +893,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Error: Unable to delete defaults plist":"Error: Unable to delete defaults plist",
                 "Developed by Dortania and Hackdoc":"Developed by Dortania and Hackdoc",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Developed by Dortania and Hackdoc":"开发人员: Dortania 和 Hackdoc",
                 "Error: Unable to read global settings file":"错误: 无法读取全局设置文件",
@@ -889,7 +905,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def install(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Mounting partition:":"Mounting partition:",
                 "Mount failed":"Mount failed",
@@ -907,7 +923,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Unmounting EFI partition":"Unmounting EFI partition",
                 "OpenCore transfer complete":"OpenCore transfer complete"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Mounting partition:":"正在挂载分区:",
                 "Mount failed":"挂载失败",
@@ -928,7 +944,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def integrity_verification(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "File":"File",
                 "does not exist":"does not exist",
@@ -937,7 +953,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "checksum status FAIL: chunk sum":"checksum status FAIL: chunk sum",
                 "calculated sum":"calculated sum"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "File":"文件",
                 "does not exist":"不存在",
@@ -949,7 +965,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def gui_KDK_download(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Error":"Error",
                 "Fetching KDK ERROR: ":"Fetching KDK ERROR: ",
@@ -973,7 +989,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Failed to detect OS build: ":"Failed to detect OS build: ",
                 "Available installers on Dortania":"Available installers on Dortania",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Failed to detect OS build: ":"无法检测操作系统版本: ",
                 "Error":"错误",
@@ -1000,7 +1016,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def gui_about(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Generating About frame":"Generating About frame",
                 "About":"About",
@@ -1009,7 +1025,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "I just wanted to relax, but I got addicted to it.":"I just wanted to relax, but I got addicted to it.",
                 "I just wanted to protect the last hackintosh.":"I just wanted to protect the last hackintosh."
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Generating About frame":"生成关于窗口",
                 "About":"关于",
@@ -1021,7 +1037,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def gui_build(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Initializing Build Frame":"Initializing Build Frame",
                 "Build and Install OpenCore":"Build and Install OpenCore",
@@ -1038,7 +1054,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "If you continue to see this error, delete the following file and restart the application:":"If you continue to see this error, delete the following file and restart the application:",
                 "Path: /Users/Shared/.com.hackdoc.oclp-r.plist":"Path: /Users/Shared/.com.hackdoc.oclp-r.plist"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Initializing Build Frame":"初始化构建窗口",
                 "Build and Install OpenCore":"构建并安装 OpenCore",
@@ -1058,7 +1074,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def gui_cache_os_update(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "KDK installed successfully":"KDK installed successfully",
                 "Failed to install KDK":"Failed to install KDK",
@@ -1087,7 +1103,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Failed to install Metallib":"Failed to install Metallib",
                 "Metallib installed successfully":"Metallib installed successfully",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Failed to install Metallib":"安装 Metallib 失败",
                 "Metallib installed successfully":"Metallib 安装成功",
@@ -1120,7 +1136,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def gui_download(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "downloaded":"downloaded",
                 "{0} left - {1} of {2} ({3}/s)":"{0} left - {1} of {2} ({3}/s)",
@@ -1136,7 +1152,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Cancelling":"Cancelling",
                 "User cancelled download":"User cancelled download"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "downloaded":"已下载",
                 "Error":"错误",
@@ -1155,12 +1171,12 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def gui_entry(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Entry point set:":"Entry point set:",
                 "Cleaning up wxPython GUI":"Cleaning up wxPython GUI"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Entry point set:":"入口点已设置:",
                 "Cleaning up wxPython GUI":"正在清理 wxPython GUI"
@@ -1168,7 +1184,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def gui_help(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Initializing Help Frame":"Initializing Help Frame",
                 "Patcher Resources":"Patcher Resources",
@@ -1178,7 +1194,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Community Discord Server":"Community Discord Server",
                 "Return to Main Menu":"Return to Main Menu"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Initializing Help Frame":"初始化帮助窗口",
                 "Patcher Resources":"补丁程序资源",
@@ -1191,7 +1207,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def gui_install_oc(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Initializing Install OpenCore Frame":"Initializing Install OpenCore Frame",
                 "Install OpenCore":"Install OpenCore",
@@ -1214,7 +1230,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Available disks:":"Available disks:",
                 "Available partitions for ":"Available partitions for ",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Available partitions for ":"Available partitions for ",
                 "Available disks:":"可用磁盘:",
@@ -1240,7 +1256,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def gui_macos_installer_download(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Create macOS Installer":"Create macOS Installer",
                 "Download macOS Installer":"Download macOS Installer",
@@ -1278,7 +1294,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Finished extracting the installer, would you like to continue and create a macOS installer?":"Finished extracting the installer, would you like to continue and create a macOS installer?",
                 "Create macOS Installer?":"Create macOS Installer?"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Create macOS Installer":"创建 macOS 安装程序",
                 "Download macOS Installer":"下载 macOS 安装程序",
@@ -1319,7 +1335,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def gui_macos_installer_flash(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Fetching local macOS Installers":"Fetching local macOS Installers",
                 "Select local macOS Installer":"Select local macOS Installer",
@@ -1345,7 +1361,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "If you want to install OpenCore to this USB, you will need to change the Target Model in settings":"If you want to install OpenCore to this USB, you will need to change the Target Model in settings",
                 "Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}":"Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Fetching local macOS Installers":"正在获取本地 macOS 安装程序",
                 "Select local macOS Installer":"选择本地 macOS 安装程序",
@@ -1374,7 +1390,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         return trans
     
     def gui_main_menu(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Initializing Main Menu Frame":'Initializing Main Menu Frame',
                 "Build and Install OpenCore":"Build and Install OpenCore",
@@ -1416,7 +1432,7 @@ Please check the Github page for more information about this release.""":"""## U
 
 Please check the Github page for more information about this release.""",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 """## Unable to fetch changelog
 
@@ -1465,7 +1481,7 @@ Please check the Github page for more information about this release.""":"""
         return trans
     
     def gui_metallib_download(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Updating OpenCore and root volume patches...":"更新 OpenCore 和根卷补丁...",
                 "Fetching Metallibs":"Fetching Metallibs",
@@ -1482,7 +1498,7 @@ Please check the Github page for more information about this release.""":"""
                 "Fetch Metal Libraries Error: {e}":"Fetch Metal Libraries Error: {e}",
                 "Error":"Error"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Fetching Metallibs":"正在获取 Metallib",
                 "Choose Metallib Version":"选择 Metallib 版本",
@@ -1501,7 +1517,7 @@ Please check the Github page for more information about this release.""":"""
         return trans
     
     def gui_settings(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Target Model":"Target Model",
                 "Host Model":"Host Model",
@@ -1835,7 +1851,7 @@ Booted Information:
                 "Updating System Defaults: {variable} = {value} ({value_type})":"Updating System Defaults: {variable} = {value} ({value_type})",
                 "Updating System Defaults (root): {variable} = {value} ({value_type})":"Updating System Defaults (root): {variable} = {value} ({value_type})",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Initializing Settings Frame":"初始化设置框架",
                 "Updating System Defaults (root): {variable} = {value} ({value_type})":"更新系统默认值（root）：{variable} = {value} ({value_type})",
@@ -1867,7 +1883,7 @@ Booted Information:
                 "GUI:custom_board_serial_number":"GUI:自定义主板序列号",
                 "GUI:custom_serial_number":"GUI:自定义序列号",
                 "Failed to generate serial number:":"生成序列号失败:",
-                "Please take caution when using serial spoofing. This should only be used on machines that were legally obtained and require reserialization.\n\nNote: new serials are only overlayed through OpenCore and are not permanently installed into ROM.\n\nMisuse of this setting can break power management and other aspects of the OS if the system does not need spoofing\n\nHackdoc does not condone the use of our software on stolen devices.\n\nAre you certain you want to continue?":"请谨慎使用序列号欺骗功能。此功能仅适用于合法获取且需要重新序列化的设备。\n\n注意：新序列号仅通过 OpenCore 覆盖，不会永久写入 ROM。\n\n如果系统不需要序列号欺骗，滥用此设置可能会破坏电源管理以及操作系统的其他功能。\n\nHackdoc 不赞成在被盗设备上使用我们的软件。\n\n您确定要继续吗？",
+                "Please take caution when using serial spoofing. This should only be used on machines that were legally obtained and require reserialization.\n\nNote: new serials are only overlayed through OpenCore and are not permanently installed into ROM.\n\nMisuse of this setting can break power management and other aspects of the OS if the system does not need spoofing\n\nHackdoc does not condone the use of our software on stolen devices.\n\nAre you certain you want to continue?":"请谨慎使用序列号仿冒功能。此功能仅适用于合法获取且需要重新序列化的设备。\n\n注意：新序列号仅通过 OpenCore 覆盖，不会永久写入 ROM。\n\n如果系统不需要序列号仿冒，滥用此设置可能会破坏电源管理以及操作系统的其他功能。\n\nHackdoc,Ghltbm 严厉禁止在被盗设备上使用我们的软件.若发现,将会通过法律和MIT License追究责任.\n\n您确定要继续吗?",
                 """
 Application Information:
     Application Version: {0}
@@ -2011,7 +2027,7 @@ Hardware Information:
                 "Disables firmware-based throttling":"禁用基于固件的限制",
                 "caused by missing hardware.":"由缺少硬件引起。",
                 "Ex. Missing Display, Battery, etc.":"例如：缺少显示器、电池等。",
-                "Software DeMUX":"软件 DeMUX",
+                "Software DeMUX":"Software DeMUX",
                 "Enable software based DeMUX":"启用基于软件的 DeMUX",
                 "for MacBookPro8,2 and MacBookPro8,3.":"为 MacBookPro8,2 和 MacBookPro8,3。",
                 "Prevents faulty dGPU from turning on.":"防止故障 dGPU 开启。",
@@ -2056,31 +2072,31 @@ Hardware Information:
                   "for systems with deeper":"需要。",
                   "root patches.":"",
                 "Secure Boot Model":"安全启动机型",
-                  "Set Apple Secure Boot Model Identifier":"如果进行欺骗，将 Apple 安全启动机型标识符",
+                  "Set Apple Secure Boot Model Identifier":"如果进行仿冒，将 Apple 安全启动机型标识符",
                   "to matching T2 model if spoofing.":"设置为匹配的 T2 机型。",
                   "Note: Incompatible with Root Patching.":"注：与根补丁不兼容。",
                 "System Integrity Protection":"系统完整性保护",
                 "SMBIOS":"SMBIOS",
-                "Model Spoofing":"机型欺骗",
-                "SMBIOS Spoof Level":"SMBIOS 欺骗级别",
+                "Model Spoofing":"机型仿冒",
+                "SMBIOS Spoof Level":"SMBIOS 仿冒级别",
                 "None":"无",
                 "Minimal":"最小",
                 "Moderate":"适度",
                 "Advanced":"高级",
                 "Supported Levels:":"支持的级别：",
-                  "   - None: No spoofing.":"   - 无：不进行欺骗。",
+                  "   - None: No spoofing.":"   - 无：不进行仿冒。",
                   "   - Minimal: Overrides Board ID.":"   - 最小：覆盖 Board ID。",
                   "   - Moderate: Overrides Model.":"   - 适度：覆盖机型。",
                   "   - Advanced: Overrides Model and serial.":"   - 高级：覆盖机型和序列号。",
-                "SMBIOS Spoof Model":"SMBIOS 欺骗机型",
+                "SMBIOS Spoof Model":"SMBIOS 仿冒机型",
                 "Default":"默认",
-                "Set Mac Model to spoof to.":"设置要欺骗的 Mac 机型。",
-                "Allow spoofing native Macs":"允许欺骗原生 Mac",
-                "Allow OpenCore to spoof natively":"允许 OpenCore 欺骗原生",
+                "Set Mac Model to spoof to.":"设置要仿冒的 Mac 机型。",
+                "Allow spoofing native Macs":"允许仿冒原生 Mac",
+                "Allow OpenCore to spoof natively":"允许 OpenCore 仿冒原生",
                   "supported Macs.":"支持的 Mac。",
                   "Primarily used for enabling":"主要用于启用",
                   "Universal Control on unsupported Macs":"在不支持的 Mac 上的通用控制。",
-                "Serial Spoofing":"序列号欺骗",
+                "Serial Spoofing":"序列号仿冒",
                 "Patch":"补丁",
                 "Patch-General":"补丁-通用",
                 "TeraScale 2 Acceleration":"TeraScale 2 加速",
@@ -2183,7 +2199,7 @@ Hardware Information:
         return trans
     
     def gui_support(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "&About OCLP-R":"&About OCLP-R",
                 "&Reveal Log File":"&Reveal Log File",
@@ -2193,7 +2209,7 @@ Hardware Information:
                 "Reboot":"Reboot",
                 "Ignore":"Ignore"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "&About OCLP-R":"&关于 OCLP-R",
                 "&Reveal Log File":"&显示日志文件",
@@ -2206,7 +2222,7 @@ Hardware Information:
         return trans
     
     def gui_sys_patch_display(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Checking if new patches are needed":"Checking if new patches are needed",
                 "No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?":"No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?",
@@ -2232,7 +2248,7 @@ Hardware Information:
                 "No new patches detected for system":"No new patches detected for system",
                 "- Patch":"- Patch",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Checking if new patches are needed":"检查是否需要新的补丁",
                 "Initializing Root Patch Display Frame":"初始化根卷补丁显示框架",
@@ -2261,7 +2277,7 @@ Hardware Information:
         return trans
     
     def gui_sys_patch_start(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "An internal error occurred while running the Root Patcher:\n":"An internal error occurred while running the Root Patcher:\n",
                 "Starting root patching":"Starting root patching",
@@ -2304,7 +2320,7 @@ Hardware Information:
                 "No new patches detected for system":"No new patches detected for system",
                 "- Patch {patch} not installed":"- Patch {patch} not installed",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "- Patch {patch} not installed":"- 补丁 {patch} 未安装",
                 "No new patches detected for system":"没有新的系统补丁",
@@ -2350,7 +2366,7 @@ Hardware Information:
         return trans
     
     def gui_update(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Failed to install update.":"Failed to install update.",
                 "Extracting nightly update":"Extracting nightly update",
@@ -2381,7 +2397,7 @@ Hardware Information:
                 "seconds":"seconds",
                 "Failed to install update. Please try installing the OCLP-R.pkg manually or download from GitHub":"Failed to install update. Please try installing the OCLP-R.pkg manually or download from GitHub",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "seconds":"秒",
                 "Closing old process in":"此进程将在",
@@ -2415,10 +2431,14 @@ Hardware Information:
         return trans
 class TranslateLanguage_sys_patch:
     def __init__(self, global_constants: Constants) -> None:
-        self.constants: Constants = global_constants
-        self.language_point = self.constants.language_choose
+        self.file_name:              str = ".com.hackdoc.oclp-r.plist"
+        self.global_settings_folder: str = "/Users/Shared"
+        self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"
+        self.plist = load(Path(self.global_settings_plist).open("rb"))
+       # self.constants: Constants = global_constants
+        self.language_point = self.plist["GUI:language_option"]
     def detect(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Failed to parse diskutil output.":"Failed to parse diskutil output.",
                 "FileVault is Off":"FileVault is Off",
@@ -2443,7 +2463,7 @@ class TranslateLanguage_sys_patch:
                 "Installed patches are from different commit, unpatching is required":"Installed patches are from different commit, unpatching is required",
                 "Patch(es) already installed: {0}, unpatching is required":"Patch(es) already installed: {0}, unpatching is required",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Patch(es) already installed: {0}, unpatching is required":"已安装的补丁：{0}，需要取消修补",
                 "Installed patches are from different commit, unpatching is required":"已安装的补丁来自不同的提交，需要取消修补",
@@ -2472,16 +2492,20 @@ class TranslateLanguage_sys_patch:
 
 class TranslateLanguage_efi_builder:
     def __init__(self, global_constants: Constants) -> None:
-        self.constants: Constants = global_constants
-        self.language_point = self.constants.language_choose
+        self.file_name:              str = ".com.hackdoc.oclp-r.plist"
+        self.global_settings_folder: str = "/Users/Shared"
+        self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"
+        self.plist = load(Path(self.global_settings_plist).open("rb"))
+       # self.constants: Constants = global_constants
+        self.language_point = self.plist["GUI:language_option"]
     def bluetooth(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "- Fixing Legacy Bluetooth for macOS Monterey":"- Fixing Legacy Bluetooth for macOS Monterey",
                 "- Detected 3rd Party Bluetooth Chipset":"- Detected 3rd Party Bluetooth Chipset",
                 "- Enabling Bluetooth FeatureFlags":"- Enabling Bluetooth FeatureFlags"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "- Fixing Legacy Bluetooth for macOS Monterey":"- 修复 macOS Monterey 中的传统蓝牙",
                 "- Detected 3rd Party Bluetooth Chipset":"- 检测到第三方蓝牙芯片组",
@@ -2489,7 +2513,7 @@ class TranslateLanguage_efi_builder:
             }
         return trans
     def build(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "Building Configuration {0} model: {1}":"Building Configuration {0} model: {1}",
                 "- Adding bootmgfw.efi BlessOverride":"- Adding bootmgfw.efi BlessOverride",
@@ -2502,7 +2526,7 @@ class TranslateLanguage_efi_builder:
                 "Your OpenCore EFI for {0} has been built at:":"Your OpenCore EFI for {0} has been built at:",
                 "    {0}":"    {0}"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "Building Configuration {0} model: {1}":"正在为{1}构建配置{0}",
                 "- Adding bootmgfw.efi BlessOverride":"- 添加 bootmgfw.efi BlessOverride",
@@ -2517,7 +2541,7 @@ class TranslateLanguage_efi_builder:
             }
         return trans
     def firmware(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "- Enabling Boot Logo patch":"- Enabling Boot Logo patch",
                 "- Enabling legacy power management support":"- Enabling legacy power management support",
@@ -2543,7 +2567,7 @@ class TranslateLanguage_efi_builder:
                 "- Disabling Hardware NVRAM Write":"- Disabling Hardware NVRAM Write",
                 "- Adding 4K/5K Display Patch":"- Adding 4K/5K Display Patch"
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
                 "- Enabling Boot Logo patch":"- 启用启动徽标补丁",
                 "- Enabling legacy power management support":"- 启用传统电源管理支持",
@@ -2571,7 +2595,7 @@ class TranslateLanguage_efi_builder:
             }
         return trans
     def graphics_audio(self):
-        if self.language_point==1:
+        if self.language_point=="English":
             trans={
                 "- Adding Mac Pro, Xserve DRM patches":"- Adding Mac Pro, Xserve DRM patches",
                 "- Enabling Nvidia Output Patch":"- Enabling Nvidia Output Patch",
@@ -2598,10 +2622,12 @@ class TranslateLanguage_efi_builder:
                 "- Adding dual GPU patch":"- Adding dual GPU patch",
                 "- Prioritizing DRM support over Intel QuickSync":"- Prioritizing DRM support over Intel QuickSync",
                 "- Adding Metal GPU patches on request":"- Adding Metal GPU patches on request",
-                "- Failed to find vendor":"- Failed to find vendor"
+                "- Failed to find vendor":"- Failed to find vendor",
+                "- Detected dGPU: ":"- Detected dGPU: ",
             }
-        elif self.language_point==0:
+        elif self.language_point=="简体中文":
             trans={
+                "- Detected dGPU: ":"- 检测到 dGPU: ",
                 "- Adding Mac Pro, Xserve DRM patches":"- 添加 Mac Pro, Xserve DRM 补丁",
                 "- Enabling Nvidia Output Patch":"- 启用 Nvidia 输出补丁",
                 "- Falling back to boot-args":"- 回退到 boot-args",
@@ -2613,8 +2639,8 @@ class TranslateLanguage_efi_builder:
                 "- Adding AMD DRM patches":"- 添加 AMD DRM 补丁",
                 "- Adding iMac9,1 Brightness Control and DRM patches":"- 添加 iMac9,1 亮度控制和 DRM 补丁",
                 "- Adding Legacy GCN Power Gate Patches":"- 添加传统 GCN 电源门控补丁",
-                "- Adding Lexa Spoofing Patches":"- 添加 Lexa 欺骗补丁",
-                "- Adding Navi Spoofing Patches":"- 添加 Navi 欺骗补丁",
+                "- Adding Lexa Spoofing Patches":"- 添加 Lexa 仿冒补丁",
+                "- Adding Navi Spoofing Patches":"- 添加 Navi 仿冒补丁",
                 "- Adding UGA to GOP Patch":"- 添加 UGA 到 GOP 补丁",
                 "- Enabling software demux":"- 启用软件解复用",
                 "- Allowing GMUX switching in Windows":"- 允许在 Windows 中切换 GMUX",
@@ -2628,5 +2654,243 @@ class TranslateLanguage_efi_builder:
                 "- Prioritizing DRM support over Intel QuickSync":"- 优先支持 DRM 而非 Intel QuickSync",
                 "- Adding Metal GPU patches on request":"- 根据请求添加 Metal GPU 补丁",
                 "- Failed to find vendor":"- 未能找到供应商"
+            }
+        return trans
+    def misc(self):
+        if self.language_point=="English":
+            trans={
+                "- Disabling memory error reporting":"- Disabling memory error reporting",
+                "- Disabling mediaanalysisd":"- Disabling mediaanalysisd",
+                "- Fixing CoreGraphics support on Ivy Bridge":"- Fixing CoreGraphics support on Ivy Bridge",
+                "- Enabling FireWire Boot Support":"- Enabling FireWire Boot Support",
+                "- Enabling SPI-based top case support":"- Enabling SPI-based top case support",
+                "- Disabling 2013-2014 laptop Thunderbolt Controller":"- Disabling 2013-2014 laptop Thunderbolt Controller",
+                "- Adding USB-Map.kext and USB-Map-Tahoe.kext":"- Adding USB-Map.kext and USB-Map-Tahoe.kext",
+                "- Adding UHCI/OHCI USB support":"- Adding UHCI/OHCI USB support",
+                "- Enabling Verbose boot":"- Enabling Verbose boot",
+                "- Enabling DEBUG Kexts":"- Enabling DEBUG Kexts",
+                "- Enabling DEBUG OpenCore":"- Enabling DEBUG OpenCore",
+                "- Adding OpenCanopy GUI":"- Adding OpenCanopy GUI",
+                "- Hiding OpenCore picker":"- Hiding OpenCore picker",
+                "- Setting custom OpenCore picker timeout to {self.constants.oc_timeout} seconds":"- Setting custom OpenCore picker timeout to {self.constants.oc_timeout} seconds",
+                "- Setting Vault configuration":"- Setting Vault configuration",
+                "- Enabling T1 Security Chip support":"- Enabling T1 Security Chip support",
+                "- Adding additional FeatureUnlock args: {}":"- Adding additional FeatureUnlock args: {}",
+                "- Setting RestrictEvents block arguments: {}":"- Setting RestrictEvents block arguments: {}",
+                "- Setting RestrictEvents patch arguments: {}":"- Setting RestrictEvents patch arguments: {}"
+            }
+        elif self.language_point=="简体中文":
+            trans={
+                "- Disabling memory error reporting":"- 禁用内存错误报告",
+                "- Disabling mediaanalysisd":"- 禁用 mediaanalysisd",
+                "- Fixing CoreGraphics support on Ivy Bridge":"- 修复 Ivy Bridge 上的 CoreGraphics 支持",
+                "- Enabling FireWire Boot Support":"- 启用 FireWire 启动支持",
+                "- Enabling SPI-based top case support":"- 启用基于 SPI 的顶壳支持",
+                "- Disabling 2013-2014 laptop Thunderbolt Controller":"- 禁用 2013-2014 笔记本电脑 Thunderbolt 控制器",
+                "- Adding USB-Map.kext and USB-Map-Tahoe.kext":"- 添加 USB-Map.kext 和 USB-Map-Tahoe.kext",
+                "- Adding UHCI/OHCI USB support":"- 添加 UHCI/OHCI USB 支持",
+                "- Enabling Verbose boot":"- 启用详细启动",
+                "- Enabling DEBUG Kexts":"- 启用 DEBUG Kexts",
+                "- Enabling DEBUG OpenCore":"- 启用 DEBUG OpenCore",
+                "- Adding OpenCanopy GUI":"- 添加 OpenCanopy GUI",
+                "- Hiding OpenCore picker":"- 隐藏 OpenCore 选择器",
+                "- Setting custom OpenCore picker timeout to {self.constants.oc_timeout} seconds":"- 设置自定义 OpenCore 选择器超时为 {self.constants.oc_timeout} 秒",
+                "- Setting Vault configuration":"- 设置 Vault 配置",
+                "- Enabling T1 Security Chip support":"- 启用 T1 安全芯片支持",
+                "- Adding additional FeatureUnlock args: {}":"- 添加额外的 FeatureUnlock 参数: {}",
+                "- Setting RestrictEvents block arguments: {}":"- 设置 RestrictEvents 阻止参数: {}",
+                "- Setting RestrictEvents patch arguments: {}":"- 设置 RestrictEvents 补丁参数: {}"
+            }
+        return trans
+    def security(self):
+        if self.language_point=="English":
+            trans={
+                "- Adding ipc_control_port_options=0 to boot-args":"- Adding ipc_control_port_options=0 to boot-args",
+                "- Setting SIP value to: {self.constants.custom_sip_value}":"- Setting SIP value to: {self.constants.custom_sip_value}",
+                "- Set SIP to allow Root Volume patching":"- Set SIP to allow Root Volume patching",
+                "- Allowing FileVault on Root Patched systems":"- Allowing FileVault on Root Patched systems",
+                "- Enabling KC UUID mismatch patch":"- Enabling KC UUID mismatch patch",
+                "- Disabling AMFI":"- Disabling AMFI",
+                "- Disabling Library Validation":"- Disabling Library Validation",
+                "- Disabling SecureBootModel":"- Disabling SecureBootModel",
+                "- Enabling AMFIPass":"- Enabling AMFIPass"
+            }
+        elif self.language_point=="简体中文":
+            trans={
+                "- Adding ipc_control_port_options=0 to boot-args":"- 将 ipc_control_port_options=0 添加到 boot-args",
+                "- Setting SIP value to: {self.constants.custom_sip_value}":"- 设置 SIP 值为: {self.constants.custom_sip_value}",
+                "- Set SIP to allow Root Volume patching":"- 设置 SIP 以允许根卷修补",
+                "- Allowing FileVault on Root Patched systems":"- 允许在根卷修补系统上使用 FileVault",
+                "- Enabling KC UUID mismatch patch":"- 启用 KC UUID 不匹配补丁",
+                "- Disabling AMFI":"- 禁用 AMFI",
+                "- Disabling Library Validation":"- 禁用库验证",
+                "- Disabling SecureBootModel":"- 禁用 SecureBootModel",
+                "- Enabling AMFIPass":"- 启用 AMFIPass"
+            }
+        return trans
+    def smbios(self):
+        if self.language_point=="English":
+            trans={
+                "- Enabling Board ID exemption patch":"- Enabling Board ID exemption patch",
+                "- Enabling SMC exemption patch":"- Enabling SMC exemption patch",
+                "- Enabling USB Rename Patches":"- Enabling USB Rename Patches",
+                "- Adding -no_compat_check":"- Adding -no_compat_check",
+                "- Setting macOS Monterey Supported SMBIOS":"- Setting macOS Monterey Supported SMBIOS",
+                "- Using Model ID: {spoofed_model}":"- Using Model ID: {spoofed_model}",
+                "- Using Board ID: {spoofed_board}":"- Using Board ID: {spoofed_board}",
+                "- Detected UEFI 1.2 or older Mac, updating BoardProduct":"- Detected UEFI 1.2 or older Mac, updating BoardProduct",
+                "- Adding custom serial numbers":"- Adding custom serial numbers",
+                "- Patching G State for MacBookPro6,2":"- Patching G State for MacBookPro6,2",
+                "- Setting Firmware Feature: {fw_feature}":"- Setting Firmware Feature: {fw_feature}",
+                "- Using Moderate SMBIOS patching":"- Using Moderate SMBIOS patching",
+                "- Using Advanced SMBIOS patching":"- Using Advanced SMBIOS patching",
+                "- Using Minimal SMBIOS patching":"- Using Minimal SMBIOS patching"
+            }
+        elif self.language_point=="简体中文":
+            trans={
+                "- Enabling Board ID exemption patch":"- 启用 Board ID 仿冒补丁",
+                "- Enabling SMC exemption patch":"- 启用 SMC 仿冒补丁",
+                "- Enabling USB Rename Patches":"- 启用 USB 重命名补丁",
+                "- Adding -no_compat_check":"- 添加 -no_compat_check",
+                "- Setting macOS Monterey Supported SMBIOS":"- 设置 macOS Monterey 支持的 SMBIOS",
+                "- Using Model ID: {spoofed_model}":"- 使用型号 ID: {spoofed_model}",
+                "- Using Board ID: {spoofed_board}":"- 使用主板 ID: {spoofed_board}",
+                "- Detected UEFI 1.2 or older Mac, updating BoardProduct":"- 检测到 UEFI 1.2 或更早版本的 Mac，正在更新 BoardProduct",
+                "- Adding custom serial numbers":"- 添加自定义序列号",
+                "- Patching G State for MacBookPro6,2":"- 为 MacBookPro6,2 修补 G 状态",
+                "- Setting Firmware Feature: {fw_feature}":"- 设置固件特性: {fw_feature}",
+                "- Using Moderate SMBIOS patching":"- 使用适度的 SMBIOS 修补",
+                "- Using Advanced SMBIOS patching":"- 使用高级的 SMBIOS 修补",
+                "- Using Minimal SMBIOS patching":"- 使用最小的 SMBIOS 修补"
+            }
+        return trans
+    def storage(self):
+        if self.language_point=="English":
+            trans={
+                "- Enabling AHCI SSD patch":"- Enabling AHCI SSD patch",
+                "- Adding SATA Hibernation Patch":"- Adding SATA Hibernation Patch",
+                "- Fixing PCIe Storage Controller ({i + 1}) reporting":"- Fixing PCIe Storage Controller ({i + 1}) reporting",
+                "- Failed to find Device path for PCIe Storage Controller {i}, falling back to Innie":"- Failed to find Device path for PCIe Storage Controller {i}, falling back to Innie",
+                "- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}":"- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}",
+                "- Found NVMe ({i}) at {controller.pci_path}":"- Found NVMe ({i}) at {controller.pci_path}",
+                "- Falling back to -nvmefaspm":"- Falling back to -nvmefaspm",
+                "- Disabling APFS TRIM timeout":"- Disabling APFS TRIM timeout"
+            }
+        elif self.language_point=="简体中文":
+            trans={
+                "- Enabling AHCI SSD patch":"- 启用 AHCI SSD 补丁",
+                "- Adding SATA Hibernation Patch":"- 添加 SATA 休眠补丁",
+                "- Fixing PCIe Storage Controller ({i + 1}) reporting":"- 修复 PCIe 存储控制器 ({i + 1}) 报告",
+                "- Failed to find Device path for PCIe Storage Controller {i}, falling back to Innie":"- 无法找到 PCIe 存储控制器 {i} 的设备路径，回退到 Innie",
+                "- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}":"- 发现第三方 NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}",
+                "- Found NVMe ({i}) at {controller.pci_path}":"- 在 {controller.pci_path} 发现 NVMe ({i})",
+                "- Falling back to -nvmefaspm":"- 回退到 -nvmefaspm",
+                "- Disabling APFS TRIM timeout":"- 禁用 APFS TRIM 超时"
+            }
+        return trans
+    def support(self):
+        if self.language_point=="English":
+            trans={
+                "- Could not find kext {bundle_path}!":"- Could not find kext {bundle_path}!",
+                "- Could not find {efi_type}: {bundle_name}!":"- Could not find {efi_type}: {bundle_name}!",
+                "- Adding {kext_name} {kext_version}":"- Adding {kext_name} {kext_version}",
+                "- Vaulting EFI\n=========================================":"- Vaulting EFI\n=========================================",
+                "- Validating generated config":"- Validating generated config",
+                "- OpenCore config file missing!!!":"- OpenCore config file missing!!!",
+                "- Missing ACPI Table: {acpi['Path']}":"- Missing ACPI Table: {acpi['Path']}",
+                "- Missing kext: {kext_path}":"- Missing kext: {kext_path}",
+                "- Missing {kext}'s binary: {kext_binary_path}":"- Missing {kext}'s binary: {kext_binary_path}",
+                "- Missing {kext}'s plist: {kext_plist_path}":"- Missing {kext}'s plist: {kext_plist_path}",
+                "- Missing tool: {tool}":"- Missing tool: {tool}",
+                "- Missing driver: {driver}":"- Missing driver: {driver}",
+                "- Missing tool from config: {tool_files_name}":"- Missing tool from config: {tool_files_name}",
+                "- Found extra driver: {driver_file_name}":"- Found extra driver: {driver_file_name}",
+                "- Missing executable for {kext_folder_name}: Contents/MacOS/{expected_executable_name}":"- Missing executable for {kext_folder_name}: Contents/MacOS/{expected_executable_name}",
+                "- Cleaning up files":"- Cleaning up files",
+                "OpenCore config file missing":"OpenCore config file missing",
+                "Missing":"Missing",
+                " - Unknown plugin found: {plugin_name}":" - Unknown plugin found: {plugin_name}",
+            }
+        elif self.language_point=="简体中文":
+            trans={
+                "- Unknown plugin found: {plugin_name}":"- 找到未知插件：{plugin_name}",
+                "Missing":"缺失",
+                "OpenCore config file missing":"OpenCore 配置文件缺失",
+                "- Could not find kext {bundle_path}!":"- 找不到 kext {bundle_path}!",
+                "- Could not find {efi_type}: {bundle_name}!":"- 找不到 {efi_type}: {bundle_name}!",
+                "- Adding {kext_name} {kext_version}":"- 添加 {kext_name} {kext_version}",
+                "- Vaulting EFI\n=========================================":"- 正在加密 EFI\n=========================================",
+                "- Validating generated config":"- 正在验证生成的配置",
+                "- OpenCore config file missing!!!":"- OpenCore 配置文件缺失！！！",
+                "- Missing ACPI Table: {acpi['Path']}":"- 缺失 ACPI 表：{acpi['Path']}",
+                "- Missing kext: {kext_path}":"- 缺失 kext：{kext_path}",
+                "- Missing {kext}'s binary: {kext_binary_path}":"- 缺失 {kext} 的二进制文件：{kext_binary_path}",
+                "- Missing {kext}'s plist: {kext_plist_path}":"- 缺失 {kext} 的 plist：{kext_plist_path}",
+                "- Missing tool: {tool}":"- 缺失工具：{tool}",
+                "- Missing driver: {driver}":"- 缺失驱动：{driver}",
+                "- Missing tool from config: {tool_files_name}":"- 配置中缺失工具：{tool_files_name}",
+                "- Found extra driver: {driver_file_name}":"- 发现额外驱动：{driver_file_name}",
+                "- Missing executable for {kext_folder_name}: Contents/MacOS/{expected_executable_name}":"- 缺失 {kext_folder_name} 的可执行文件：Contents/MacOS/{expected_executable_name}",
+                "- Cleaning up files":"- 正在清理文件"
+            }
+        return trans
+
+    def wired(self):
+        if self.language_point=="English":
+            trans={
+                "- Detected Ethernet hardware, using on-model detection":"- Detected Ethernet hardware, using on-model detection",
+                "- No Ethernet detected, using pre-built assumptions":"- No Ethernet detected, using pre-built assumptions",
+                "- Enabling USB ECM dongle support":"- Enabling USB ECM dongle support",
+                "- Enabling i210 NIC support":"- Enabling i210 NIC support",
+                "- Enabling BCM5701 Ethernet support":"- Enabling BCM5701 Ethernet support",
+                "- Enabling Intel I210 Ethernet support":"- Enabling Intel I210 Ethernet support",
+                "- Enabling Intel 8254X Ethernet support":"- Enabling Intel 8254X Ethernet support",
+                "- Enabling Intel 82574L Ethernet support":"- Enabling Intel 82574L Ethernet support",
+                "- Enabling NVIDIA nForce Ethernet support":"- Enabling NVIDIA nForce Ethernet support",
+                "- Enabling Marvell Ethernet support":"- Enabling Marvell Ethernet support",
+                "- Enabling Aquantia Ethernet support":"- Enabling Aquantia Ethernet support"
+            }
+        elif self.language_point=="简体中文":
+            trans={
+                "- Detected Ethernet hardware, using on-model detection":"- 检测到以太网硬件，使用型号检测",
+                "- No Ethernet detected, using pre-built assumptions":"- 未检测到以太网，使用预构建假设",
+                "- Enabling USB ECM dongle support":"- 启用 USB ECM 加密狗支持",
+                "- Enabling i210 NIC support":"- 启用 i210 网卡支持",
+                "- Enabling BCM5701 Ethernet support":"- 启用 BCM5701 以太网支持",
+                "- Enabling Intel I210 Ethernet support":"- 启用 Intel I210 以太网支持",
+                "- Enabling Intel 8254X Ethernet support":"- 启用 Intel 8254X 以太网支持",
+                "- Enabling Intel 82574L Ethernet support":"- 启用 Intel 82574L 以太网支持",
+                "- Enabling NVIDIA nForce Ethernet support":"- 启用 NVIDIA nForce 以太网支持",
+                "- Enabling Marvell Ethernet support":"- 启用 Marvell 以太网支持",
+                "- Enabling Aquantia Ethernet support":"- 启用 Aquantia 以太网支持"
+            }
+        return trans
+
+    def wireless(self):
+        if self.language_point=="English":
+            trans={
+                "- Found Wireless Device {utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}":"- Found Wireless Device {utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}",
+                "- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}":"- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}",
+                "- Found ARPT device at {arpt_path}":"- Found ARPT device at {arpt_path}",
+                "- Enabling Wake on WLAN support":"- Enabling Wake on WLAN support",
+                "- Enabling BCM943224 and BCM94331 Networking Support":"- Enabling BCM943224 and BCM94331 Networking Support",
+                "- Enabling BCM94328 Networking Support":"- Enabling BCM94328 Networking Support",
+                "- Enabling Atheros Networking Support":"- Enabling Atheros Networking Support",
+                "No known PCI pathing for this model":"No known PCI pathing for this model",
+                "- Using known ARPT Path: {arpt_path}":"- Using known ARPT Path: {arpt_path}",
+                "- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}":"- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}"
+            }
+        elif self.language_point=="简体中文":
+            trans={
+                "- Found Wireless Device {utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}":"- 发现无线设备 {utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}",
+                "- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}":"- 设置无线网卡的国家代码：{self.computer.wifi.country_code}",
+                "- Found ARPT device at {arpt_path}":"- 在 {arpt_path} 发现 ARPT 设备",
+                "- Enabling Wake on WLAN support":"- 启用无线局域网唤醒支持",
+                "- Enabling BCM943224 and BCM94331 Networking Support":"- 启用 BCM943224 和 BCM94331 网络支持",
+                "- Enabling BCM94328 Networking Support":"- 启用 BCM94328 网络支持",
+                "- Enabling Atheros Networking Support":"- 启用 Atheros 网络支持",
+                "No known PCI pathing for this model":"此型号没有已知的 PCI 路径",
+                "- Using known ARPT Path: {arpt_path}":"- 使用已知的 ARPT 路径：{arpt_path}",
+                "- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}":"- 为 WiFi 应用假 ID，设置国家代码：{self.computer.wifi.country_code}"
             }
         return trans

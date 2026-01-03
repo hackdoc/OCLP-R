@@ -490,7 +490,7 @@ class BuildGraphicsAudio:
             else:
                 logging.info(self.trans["- Failed to find vendor"])
         elif not self.constants.custom_model and self.model in model_array.LegacyGPU and self.computer.dgpu:
-            logging.info(f"- Detected dGPU: {utilities.friendly_hex(self.computer.dgpu.vendor_id)}:{utilities.friendly_hex(self.computer.dgpu.device_id)}")
+            logging.info(self.trans["- Detected dGPU: "] + f"{utilities.friendly_hex(self.computer.dgpu.vendor_id)}:{utilities.friendly_hex(self.computer.dgpu.device_id)}")
             if self.computer.dgpu.arch in [
                 device_probe.AMD.Archs.Legacy_GCN_7000,
                 device_probe.AMD.Archs.Legacy_GCN_8000,

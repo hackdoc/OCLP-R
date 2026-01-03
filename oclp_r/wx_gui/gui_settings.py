@@ -2,6 +2,7 @@
 gui_settings.py: Settings Frame for the GUI
 """
 
+from pdb import Restart
 import wx
 import wx.adv
 import pprint
@@ -95,10 +96,10 @@ class SettingsFrame(wx.Frame):
         model_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
         sizer.Add(model_label, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        model_choice = wx.Choice(frame, choices=model_array.SupportedSMBIOS + ["Host Model"], pos=(-1, -1), size=(150, -1))
+        model_choice = wx.Choice(frame, choices=model_array.SupportedSMBIOS + [self.trans["Host Model"]], pos=(-1, -1), size=(150, -1))
         model_choice.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         model_choice.Bind(wx.EVT_CHOICE, lambda event: self.on_model_choice(event, model_choice))
-        selection = self.constants.custom_model if self.constants.custom_model else "Host Model"
+        selection = self.constants.custom_model if self.constants.custom_model else self.trans["Host Model"]
         model_choice.SetSelection(model_choice.FindString(selection))
         sizer.Add(model_choice, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
@@ -958,6 +959,18 @@ class SettingsFrame(wx.Frame):
                         self.trans["you download KDKs and metallibs manually."],
                     ],
                 },
+                "Choose Your Language":{
+                    "type": "choice",
+                    "choices": self.constants.language_key,
+                    "value": self.constants.language_option,
+                    "variable": "language_option",
+                    "constants_variable": "language_option",
+                    "description": [
+                        "Provide English & Chinese Simplified."
+                    ],
+                    #"override_function": self.close,
+                },
+                
                 self.trans["Misc"]: {
                     "type": "title",
                 },
@@ -1039,7 +1052,7 @@ class SettingsFrame(wx.Frame):
         """
 
         selection = model_choice.GetStringSelection()
-        if selection == "Host Model":
+        if selection == self.trans["Host Model"]:
             selection = self.constants.computer.real_model
             self.constants.custom_model = None
             logging.info(self.trans["Using Real Model: {model}"].format(model=self.constants.computer.real_model))
@@ -1309,6 +1322,8 @@ Hardware Information:
         if global_setting is not None:
             self._update_setting(global_setting, value)
 
+    def close(self):
+        exit(0)
 
     def _update_system_defaults(self, variable, value, global_setting = None):
         value_type = type(value)

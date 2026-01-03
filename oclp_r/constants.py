@@ -12,6 +12,9 @@ from .detections import device_probe
 import getpass
 class Constants:
     def __init__(self) -> None:
+        self.language_key:                     list = ["简体中文","English"]
+        
+        self.language_option:                str    = "English" #en:English zh:中文
         #API Link
         self.kdk_api_link:                    str = ""
         self.metallib_api_link:               str = ""
@@ -252,7 +255,10 @@ class Constants:
         self.apfs_trim_timeout:      bool = True   #  Set APFS Trim timeout
         self.custom_sip_value:        int = None   #  Set custom SIP value
         self.allow_apfs_aligned_patch:           bool = True
-        self.language_choose:                   int = 1 #1:en 0:zh
+        
+        
+       
+        
 
         ## Non-Metal OS support
         self.legacy_accel_support = [
@@ -269,7 +275,7 @@ class Constants:
         ###https://gitapi.simplehac.top
         self.github_mirror: str = ""
         self.api_link()
-
+    
     def api_link(self):
         if self.github_proxy_link!="SimpleHac":
             self.kdk_api_link="https://dortania.github.io/KdkSupportPkg/manifest.json"

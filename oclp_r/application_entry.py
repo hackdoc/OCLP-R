@@ -36,7 +36,9 @@ class OpenCoreLegacyPatcher:
 
     def __init__(self) -> None:
         self.constants: constants.Constants = constants.Constants()
-        self.trans: dict = TranslateLanguage(self.constants).application_entry()
+        self.trans= TranslateLanguage(self.constants).application_entry()
+        
+        
 
         logging_handler.InitializeLoggingSupport(self.constants)
 
