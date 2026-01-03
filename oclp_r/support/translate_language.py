@@ -2,24 +2,18 @@ from ..constants import Constants
 from plistlib import load
 from pathlib import Path
 import logging
-def _load_gui_defaults(self) -> None:
-    settings_plist = global_settings.GlobalEnviromentSettings().global_settings_plist
-    if not Path(settings_plist).exists():
-        return
-    
-    try:
-        plist = plistlib.load(Path(settings_plist).open("rb"))
-    except Exception as e:
-        logging.error("Error: Unable to read global settings file")
-        return
+
 class TranslateLanguage:
     def __init__(self, global_constants: Constants) -> None:
         self.file_name:              str = ".com.hackdoc.oclp-r.plist"
         self.global_settings_folder: str = "/Users/Shared"
         self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"
-        self.plist = load(Path(self.global_settings_plist).open("rb"))
-       # self.constants: Constants = global_constants
-        self.language_point = self.plist["GUI:language_option"]
+        try:
+            self.plist = load(Path(self.global_settings_plist).open("rb"))
+            self.language_point = self.plist["GUI:language_option"]
+        except FileNotFoundError:
+            self.language_point = "English"
+        
     def application_entry(self):
         if self.language_point=="English":
             trans={
@@ -2434,9 +2428,11 @@ class TranslateLanguage_sys_patch:
         self.file_name:              str = ".com.hackdoc.oclp-r.plist"
         self.global_settings_folder: str = "/Users/Shared"
         self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"
-        self.plist = load(Path(self.global_settings_plist).open("rb"))
-       # self.constants: Constants = global_constants
-        self.language_point = self.plist["GUI:language_option"]
+        try:
+            self.plist = load(Path(self.global_settings_plist).open("rb"))
+            self.language_point = self.plist["GUI:language_option"]
+        except FileNotFoundError:
+            self.language_point = "English"
     def detect(self):
         if self.language_point=="English":
             trans={
@@ -2495,9 +2491,11 @@ class TranslateLanguage_efi_builder:
         self.file_name:              str = ".com.hackdoc.oclp-r.plist"
         self.global_settings_folder: str = "/Users/Shared"
         self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"
-        self.plist = load(Path(self.global_settings_plist).open("rb"))
-       # self.constants: Constants = global_constants
-        self.language_point = self.plist["GUI:language_option"]
+        try:
+            self.plist = load(Path(self.global_settings_plist).open("rb"))
+            self.language_point = self.plist["GUI:language_option"]
+        except FileNotFoundError:
+            self.language_point = "English"
     def bluetooth(self):
         if self.language_point=="English":
             trans={
