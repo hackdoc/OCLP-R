@@ -143,7 +143,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         # Grab installer catalog
         def _fetch_installers():
-            logging.info(self.trans["Fetching installer catalog: {seed_type}"].format(sucatalog.SeedType.DeveloperSeed.name))
+            logging.info(self.trans["Fetching installer catalog: {seed_type}"].format(seed_type=sucatalog.SeedType.DeveloperSeed.name))
 
             sucatalog_contents = sucatalog.CatalogURL(seed=sucatalog.SeedType.DeveloperSeed).url_contents
             if sucatalog_contents is None:
@@ -619,8 +619,8 @@ class macOSInstallerDownloadFrame(wx.Frame):
             host_space = utilities.get_free_space()
             needed_space = selected_installer['InstallAssistant']['Size'] * 2
             if host_space < needed_space:
-                logging.error(f"Insufficient space to download and extract: {utilities.human_fmt(host_space)} available vs {utilities.human_fmt(needed_space)} required")
-                dlg = wx.MessageDialog(self.frame_modal, f"You do not have enough free space to download and extract this installer. Please free up some space and try again\n\n{utilities.human_fmt(host_space)} available vs {utilities.human_fmt(needed_space)} required", "Insufficient Space", wx.OK | wx.ICON_WARNING)
+                logging.error(self.trans["Insufficient space to download and extract: {0} available vs {1} required"].format(utilities.human_fmt(host_space), utilities.human_fmt(needed_space)))
+                dlg = wx.MessageDialog(self.frame_modal, self.trans["Insufficient space to download and extract: {0} available vs {1} required"].format(utilities.human_fmt(host_space), utilities.human_fmt(needed_space)), self.trans["Insufficient Space"], wx.OK | wx.ICON_WARNING)
                 dlg.ShowModal()
                 return
 
@@ -705,12 +705,12 @@ class macOSInstallerDownloadFrame(wx.Frame):
             child.Destroy()
 
         # Title: Validating macOS Installer
-        title_label = wx.StaticText(self, label="Validating macOS Installer", pos=(-1,5))
+        title_label = wx.StaticText(self, label=self.trans["Validating macOS Installer"], pos=(-1,5))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
         # Label: Validating chunk 0 of 0
-        chunk_label = wx.StaticText(self, label="Validating chunk 0 of 0", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
+        chunk_label = wx.StaticText(self, label=self.trans["Validating chunk 0 of 0"], pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
         chunk_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         chunk_label.Centre(wx.HORIZONTAL)
 
@@ -724,7 +724,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         chunklist_stream = network_handler.NetworkUtilities().get(chunklist_link).content
         if chunklist_stream:
-            logging.info("Validating macOS installer")
+            logging.info(self.trans["Validating macOS Installer"])
             utilities.disable_sleep_while_running()
             chunk_obj = integrity_verification.ChunklistVerification(self.constants.payload_path / Path("InstallAssistant.pkg"), chunklist_stream)
             if chunk_obj.chunks:
@@ -736,23 +736,23 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
                 while chunk_obj.status == integrity_verification.ChunklistStatus.IN_PROGRESS:
                     progress_bar.SetValue(chunk_obj.current_chunk)
-                    chunk_label.SetLabel(f"Validating chunk {chunk_obj.current_chunk} of {chunk_obj.total_chunks}")
+                    chunk_label.SetLabel(self.trans["Validating chunk {0} of {1}"].format(chunk_obj.current_chunk, chunk_obj.total_chunks))
                     chunk_label.Centre(wx.HORIZONTAL)
                     wx.App.Get().Yield()
 
                 if chunk_obj.status == integrity_verification.ChunklistStatus.FAILURE:
-                    logging.error(f"Chunklist validation failed: Hash mismatch on {chunk_obj.current_chunk}")
-                    wx.MessageBox(f"Chunklist validation failed: Hash mismatch on {chunk_obj.current_chunk}\n\nThis generally happens when downloading on unstable connections such as WiFi or cellular.\n\nPlease try redownloading again on a stable connection (ie. Ethernet)", "Corrupted Installer!", wx.OK | wx.ICON_ERROR)
+                    logging.error(self.trans["Chunklist validation failed: Hash mismatch on {0}"].format(chunk_obj.current_chunk))
+                    wx.MessageBox(self.trans["Chunklist validation failed: Hash mismatch on {0}"].format(chunk_obj.current_chunk)+"\n\n"+self.trans["This generally happens when downloading on unstable connections such as WiFi or cellular.\n\nPlease try redownloading again on a stable connection (ie. Ethernet)"], self.trans["Corrupted Installer!"], wx.OK | wx.ICON_ERROR)
                     self.on_return_to_main_menu()
                     return
 
-        logging.info("macOS installer validated")
+        logging.info(self.trans["macOS installer validated"])
 
         # Extract installer
-        title_label.SetLabel("Extracting macOS Installer")
+        title_label.SetLabel(self.trans["Extracting macOS Installer"])
         title_label.Centre(wx.HORIZONTAL)
 
-        chunk_label.SetLabel("May take a few minutes...")
+        chunk_label.SetLabel(self.trans["May take a few minutes..."])
         chunk_label.Centre(wx.HORIZONTAL)
 
         progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
@@ -774,18 +774,18 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         progress_bar_animation.stop_pulse()
         progress_bar.Hide()
-        chunk_label.SetLabel("Successfully extracted macOS installer" if self.result is True else "Failed to extract macOS installer")
+        chunk_label.SetLabel(self.trans["Successfully extracted macOS installer"] if self.result is True else self.trans["Failed to extract macOS installer"])
         chunk_label.Centre(wx.HORIZONTAL)
 
         # Create macOS Installer button
-        create_installer_button = wx.Button(self, label="Create macOS Installer", pos=(-1, progress_bar.GetPosition()[1]), size=(170, 30))
+        create_installer_button = wx.Button(self, label=self.trans["Create macOS Installer"], pos=(-1, progress_bar.GetPosition()[1]), size=(170, 30))
         create_installer_button.Bind(wx.EVT_BUTTON, self.on_existing)
         create_installer_button.Centre(wx.HORIZONTAL)
         if self.result is False:
             create_installer_button.Disable()
 
         # Return to main menu button
-        return_button = wx.Button(self, label="Return to Main Menu", pos=(-1, create_installer_button.GetPosition()[1] + create_installer_button.GetSize()[1]), size=(150, 30))
+        return_button = wx.Button(self, label=self.trans["Return to Main Menu"], pos=(-1, create_installer_button.GetPosition()[1] + create_installer_button.GetSize()[1]), size=(150, 30))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
         return_button.Centre(wx.HORIZONTAL)
 
@@ -796,10 +796,10 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.Show()
 
         if self.result is False:
-            wx.MessageBox("An error occurred while extracting the macOS installer. Could be due to a corrupted installer", "Error", wx.OK | wx.ICON_ERROR)
+            wx.MessageBox(self.trans["An error occurred while extracting the macOS installer. Could be due to a corrupted installer"], self.trans["Error"], wx.OK | wx.ICON_ERROR)
             return
 
-        user_input = wx.MessageBox("Finished extracting the installer, would you like to continue and create a macOS installer?", "Create macOS Installer?", wx.YES_NO | wx.ICON_QUESTION)
+        user_input = wx.MessageBox(self.trans["Finished extracting the installer, would you like to continue and create a macOS installer?"], self.trans["Create macOS Installer?"], wx.YES_NO | wx.ICON_QUESTION)
         if user_input == wx.YES:
             self.on_existing()
 

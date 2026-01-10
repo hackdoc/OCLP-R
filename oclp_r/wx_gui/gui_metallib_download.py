@@ -190,13 +190,13 @@ class MetallibDownloadFrame(wx.Frame):
                 self.list.SetItem(index, 3, f"{item['seen']}")
         else:
             logging.error(self.trans["Cannot find any installers"])
-            wx.MessageDialog(self.frame_modal, self.trans["Failed to download Metallib message from Github"], "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+            wx.MessageDialog(self.frame_modal, self.trans["Failed to download Metallib message from Github"], self.trans["Error"], wx.OK | wx.ICON_ERROR).ShowModal()
             self.on_return_to_main_menu()
         if show_full is False:
             self.list.Select(-1)
         self.list.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.on_select_list)
         self.list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_select_list)
-        self.select_button = wx.Button(self.frame_modal, label="Download", pos=(-1, -1), size=(150, -1))
+        self.select_button = wx.Button(self.frame_modal, label=self.trans["Download"], pos=(-1, -1), size=(150, -1))
         self.select_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         self.select_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_download_installer(installers))
         self.select_button.SetToolTip(self.trans["Download Selected Metallib"])
