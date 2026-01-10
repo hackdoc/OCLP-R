@@ -23,6 +23,7 @@ class HardwareVariant(StrEnum):
     NETWORKING:    str = "Networking"
     AUDIO:         str = "Audio"
     MISCELLANEOUS: str = "Miscellaneous"
+    USB:           str = "USB"
 
 
 class HardwareVariantGraphicsSubclass(StrEnum):
@@ -171,6 +172,6 @@ class BaseHardware(BasePatchset):
 
     def _hackdoc_internal_check(self) -> None:
         """
-        Determine whether to unlock Intsant Developer mode
+        Determine whether to unlock Hackdoc Developer mode
         """
         return Path("~/.hackdoc_developer").expanduser().exists()

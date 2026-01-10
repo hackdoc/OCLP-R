@@ -2,9 +2,12 @@
 wired.py: Class for handling Wired Networking Patches, invocation from build.py
 """
 
+import logging
+
 from .. import support
 
 from ... import constants
+from ...support import translate_language
 
 from ...detections import device_probe
 
@@ -27,6 +30,7 @@ class BuildWiredNetworking:
         self.config: dict = config
         self.constants: constants.Constants = global_constants
         self.computer: device_probe.Computer = self.constants.computer
+        self.trans = translate_language.TranslateLanguage_efi_builder(global_constants).wired()
 
         self._build()
 
@@ -38,12 +42,16 @@ class BuildWiredNetworking:
 
         # Check if Ethernet was detected, otherwise fall back to assumptions (mainly for 2011 MacBook Airs and TB Ethernet)
         if not self.constants.custom_model and self.constants.computer.ethernet:
+            logging.info(self.trans["- Detected Ethernet hardware, using on-model detection"])
             self._on_model()
         else:
+            logging.info(self.trans["- No Ethernet detected, using pre-built assumptions"])
             self._prebuilt_assumption()
 
         # Always enable due to chance of hot-plugging
+        logging.info(self.trans["- Enabling USB ECM dongle support"])
         self._usb_ecm_dongles()
+        logging.info(self.trans["- Enabling i210 NIC support"])
         self._i210_handling()
 
 
@@ -92,6 +100,7 @@ class BuildWiredNetworking:
                 if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.ivy_bridge.value:
                     # Required due to Big Sur's BCM5701 requiring VT-D support
                     # Applicable for pre-Ivy Bridge models
+                    logging.info(self.trans["- Enabling BCM5701 Ethernet support"])
                     support.BuildSupport(self.model, self.constants, self.config).enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
             elif isinstance(controller, device_probe.IntelEthernet):
                 if not self.model in smbios_data.smbios_dictionary:
@@ -100,14 +109,19 @@ class BuildWiredNetworking:
                     # Apple's IOSkywalkFamily in DriverKit requires VT-D support
                     # Applicable for pre-Ivy Bridge models
                     if controller.chipset == device_probe.IntelEthernet.Chipsets.AppleIntelI210Ethernet:
+                        logging.info(self.trans["- Enabling Intel I210 Ethernet support"])
                         support.BuildSupport(self.model, self.constants, self.config).enable_kext("CatalinaIntelI210Ethernet.kext", self.constants.i210_version, self.constants.i210_path)
                     elif controller.chipset == device_probe.IntelEthernet.Chipsets.AppleIntel8254XEthernet:
+                        logging.info(self.trans["- Enabling Intel 8254X Ethernet support"])
                         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleIntel8254XEthernet.kext", self.constants.intel_8254x_version, self.constants.intel_8254x_path)
                     elif controller.chipset == device_probe.IntelEthernet.Chipsets.Intel82574L:
+                        logging.info(self.trans["- Enabling Intel 82574L Ethernet support"])
                         support.BuildSupport(self.model, self.constants, self.config).enable_kext("Intel82574L.kext", self.constants.intel_82574l_version, self.constants.intel_82574l_path)
             elif isinstance(controller, device_probe.NVIDIAEthernet):
+                logging.info(self.trans["- Enabling NVIDIA nForce Ethernet support"])
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path)
             elif isinstance(controller, device_probe.Marvell) or isinstance(controller, device_probe.SysKonnect):
+                logging.info(self.trans["- Enabling Marvell Ethernet support"])
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path)
 
             # Pre-Ivy Bridge Aquantia Ethernet Patch
@@ -115,6 +129,7 @@ class BuildWiredNetworking:
                 if not self.model in smbios_data.smbios_dictionary:
                     continue
                 if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.ivy_bridge.value:
+                    logging.info(self.trans["- Enabling Aquantia Ethernet support"])
                     support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleEthernetAbuantiaAqtion.kext", self.constants.aquantia_version, self.constants.aquantia_path)
 
 

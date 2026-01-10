@@ -1,4 +1,4 @@
-# OCLP-R License
+# OpenCore Legacy Patcher License
 
 This patcher is made of multiple external applications from different people and organizations. See each program for their licensing:
 
@@ -22,4 +22,4 @@ This patcher is made of multiple external applications from different people and
   * Apple Binaries - Apple Inc.
   * All other patches - respective authors
 
-The remaining files within the OCLP-R repository are distributed under the [BSD 4-Clause license](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/LICENSE.txt).
+The remaining files within the OpenCore Legacy Patcher repository are distributed under the [BSD 4-Clause license](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/LICENSE.txt).

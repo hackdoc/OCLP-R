@@ -4,7 +4,7 @@
 
 Another year, another release.
 
-This time Apple dropped surprisingly few amount of Macs. With the release of OCLP-R 2.0.0, early support for macOS Sequoia has been implemented.
+This time Apple dropped surprisingly few amount of Macs. With the release of OpenCore Legacy Patcher 2.0.0, early support for macOS Sequoia has been implemented.
 
 
 ## Newly dropped hardware
@@ -14,7 +14,7 @@ This time Apple dropped surprisingly few amount of Macs. With the release of OCL
 
 ## Current status
 
-OCLP-R 2.0.0 will support Sequoia for most models normally supported by the Patcher, however some challenges remain. You can find information about them below.
+OpenCore Legacy Patcher 2.0.0 will support Sequoia for most models normally supported by the Patcher, however some challenges remain. You can find information about them below.
 
 Unfortunately due to T2 related problems, the recently dropped MacBookAir8,x models cannot be supported at this time.
 
@@ -36,7 +36,7 @@ iPhone Mirroring requires T2 for attestation and Apple Intelligence requires an 
 
 ### Dual socket CPUs with Mac Pro 2008 and Xserve 2008
 
-Booting Sequoia on Mac Pro 2008 (MacPro3,1) or Xserve 2008 (Xserve2,1) with more than 4 cores will cause Sequoia to panic. OCLP-R will automatically disable additional cores.
+Booting Sequoia on Mac Pro 2008 (MacPro3,1) or Xserve 2008 (Xserve2,1) with more than 4 cores will cause Sequoia to panic. OpenCore Legacy Patcher will automatically disable additional cores.
 
 This is due to the dual socket nature of the machine, and likely some firmware/ACPI table incompatibility. 
 

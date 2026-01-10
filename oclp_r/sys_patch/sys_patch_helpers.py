@@ -162,7 +162,7 @@ class SysPatchHelpers:
         which forgets to handle Preboot BootKC syncing.
 
         Thus this application will try to re-sync the BootKC with SysKC in the event of a panic
-            Reference: https://github.com/intsant/OpenCore-Legacy-Patcher/issues/1019
+            Reference: https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1019
 
         This is a (hopefully) temporary work-around, however likely to stay.
         RSRRepair has the added bonus of fixing desynced KCs from 'bless', so useful in Big Sur+

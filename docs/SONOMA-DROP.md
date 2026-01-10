@@ -4,7 +4,7 @@
 
 *Well here we are again, it's always such a pleasure~*
 
-Apple has yet again dropped a bunch of models, continuing their journey on discontinuing Intel Macs. With the release of OCLP-R 1.0.0, early support for macOS Sonoma has been implemented.
+Apple has yet again dropped a bunch of models, continuing their journey on discontinuing Intel Macs. With the release of OpenCore Legacy Patcher 1.0.0, early support for macOS Sonoma has been implemented.
 
 ## Newly dropped hardware
 
@@ -18,7 +18,7 @@ Apple has yet again dropped a bunch of models, continuing their journey on disco
 
 ## Current status
 
-OCLP-R 1.0.0 will support Sonoma for all models normally supported by the Patcher, however some challenges remain. You can find information about them below.
+OpenCore Legacy Patcher 1.0.0 will support Sonoma for all models normally supported by the Patcher, however some challenges remain. You can find information about them below.
 
 ## Issues
 

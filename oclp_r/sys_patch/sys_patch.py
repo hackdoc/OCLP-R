@@ -31,7 +31,7 @@ Alternative to mounting via 'mount', Apple's update system uses 'mount_apfs' dir
   '/sbin/mount_apfs -R /dev/disk5s5 /System/Volumes/Update/mnt1'
 
 With macOS Ventura, you will also need to install the KDK onto root if you plan to use kmutil
-This is because Apple removed on-disk binaries (ref: https://github.com/intsant/OpenCore-Legacy-Patcher/issues/998)
+This is because Apple removed on-disk binaries (ref: https://github.com/dortania/OpenCore-Legacy-Patcher/issues/998)
   'sudo ditto /Library/Developer/KDKs/<KDK Version>/System /System/Volumes/Update/mnt1/System'
 """
 
@@ -179,8 +179,10 @@ class PatchSysVolume:
             self.mount_location,
             self.skip_root_kmutil_requirement
         ).merge(save_hid_cs)
-
-
+    def clean_launchpad(self) -> None:
+        logging.info("- Cleaning LaunchPad Settings")
+        subprocess.run("mkdir -p /Library/Preferences/FeatureFlags/Domain",capture_output=True,text=True,shell=True)
+        subprocess.run("defaults write /Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist SpotlightPlus -dict Enabled -bool true",capture_output=True,text=True,shell=True)
     def _unpatch_root_vol(self):
         """
         Reverts APFS snapshot and cleans up any changes made to the root and data volume
@@ -191,7 +193,7 @@ class PatchSysVolume:
 
         self._clean_skylight_plugins()
         self._delete_nonmetal_enforcement()
-
+        self.clean_launchpad()
         kernelcache.KernelCacheSupport(
             mount_location_data=self.mount_location_data,
             detected_os=self.constants.detected_os,
@@ -222,7 +224,6 @@ class PatchSysVolume:
 
         if self._create_new_apfs_snapshot() is False:
             return False
-
         self._unmount_root_vol()
 
         logging.info("- Patching complete")
@@ -302,8 +303,6 @@ class PatchSysVolume:
         else:
             logging.info("- Creating SkylightPlugins folder")
             subprocess_wrapper.run_as_root_and_verify(["/bin/mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-
     def _delete_nonmetal_enforcement(self) -> None:
         """
         Remove defaults related to forced OpenGL rendering
@@ -353,6 +352,7 @@ class PatchSysVolume:
             InstallAutomaticPatchingServices(self.constants).install_auto_patcher_launch_agent(kdk_caching_needed=needs_daemon)
 
         self._rebuild_root_volume()
+        
 
 
     def _execute_patchset(self, required_patches: dict):
@@ -471,7 +471,6 @@ class PatchSysVolume:
         # After install, check if it's present
         return self._resolve_metallib_support_pkg()
 
-
     @cache
     def _resolve_dynamic_patchset(self, variant: DynamicPatchset) -> str:
         """
@@ -557,7 +556,7 @@ class PatchSysVolume:
         if self.patch_set_dictionary == {}:
             logging.info("- No Root Patches required for your machine!")
             return
-
+        
         logging.info("- Verifying whether Root Patching possible")
         if patchset_obj.can_patch is False:
             logging.error("- Cannot continue with patching!!!")
@@ -580,7 +579,6 @@ class PatchSysVolume:
             return
 
         self._patch_root_vol()
-
 
     def start_unpatch(self) -> None:
         """

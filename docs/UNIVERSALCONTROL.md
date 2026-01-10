@@ -31,7 +31,7 @@ Technical requirements:
 * Bluetooth 4.0
 * macOS Monterey 12.4 or newer
 * iPadOS 15.4 or newer (if applicable)
-* OCLP-R 0.4.3 or newer
+* OpenCore Legacy Patcher 0.4.3 or newer
 
 Check the [table of models](#table-of-models) below to see whether you need to upgrade hardware and exactly what hardware is required to be changed based on the offending Macs listed. For help on how to upgrade the Wi-Fi card in older 2008-2011 models, refer to the `#hardware` channel in the [Discord server](https://discord.gg/rqdPgH8xSN) if required.
 
@@ -209,7 +209,7 @@ Before we continue, please keep in mind that SMBIOS Spoofing is an advanced feat
 
 ::: details macOS Sequoia
 
-Firstly run OCLP-R.
+Firstly run OpenCore Legacy Patcher.
 
 Then go to **Settings** and **SMBIOS** tab, set SMBIOS Spoof Level to **Moderate**. Set SMBIOS Spoof Model **one listed next to your native model in the table for spoofed models below.**
 
@@ -241,7 +241,7 @@ Spoofing to any model with native Sequoia support should work, but these are the
 
 ::: details macOS Sonoma
 
-Firstly run OCLP-R.
+Firstly run OpenCore Legacy Patcher.
 
 Then go to **Settings** and **SMBIOS** tab, set SMBIOS Spoof Level to **Moderate**. Set SMBIOS Spoof Model **one listed next to your native model in the table for spoofed models below.**
 
@@ -273,7 +273,7 @@ Spoofing to any model with native Sonoma support should work, but these are the 
 
 ::: details macOS Ventura
 
-Firstly run OCLP-R.
+Firstly run OpenCore Legacy Patcher.
 
 Then go to **Settings** and **SMBIOS** tab, set SMBIOS Spoof Level to **Moderate**. Set SMBIOS Spoof Model **one listed next to your native model in the table for spoofed models below.**
 
@@ -305,7 +305,7 @@ Spoofing to any model with native Ventura support should work, but these are the
 
 ::: details macOS Monterey
 
-Firstly, run OCLP-R. Secondly, go to **Settings** then the **App** tab and tick **Allow native models**.
+Firstly, run OpenCore Legacy Patcher. Secondly, go to **Settings** then the **App** tab and tick **Allow native models**.
 
 [](./images/OCLP-App-Allow-Native-Models.png)
 

@@ -60,6 +60,13 @@ UNUSED_DRIVERS = [
     "RamDiskDxe.efi",
     "Mtftp6Dxe.efi",
     "OpenNetworkBoot.efi",
+    "Virtio10.efi",
+    "VirtioBlkDxe.efi",
+    "VirtioGpuDxe.efi",
+    "VirtioNetDxe.efi",
+    "VirtioPciDeviceDxe.efi",
+    "VirtioScsiDxe.efi",
+    "VirtioSerialDxe.efi"
 ]
 
 UNUSED_TOOLS = [
@@ -177,7 +184,7 @@ class GenerateOpenCore:
     def download_new_binaries(self, variant):
         # Get latest release
         print(f"Getting latest {variant}...")
-        latest_release = requests.get(REPO_URL).json()
+        latest_release = requests.get(REPO_URL,verify=False).json()
 
         # Get latest release download url
         print(f"   Getting latest {variant} download url...")
@@ -196,7 +203,7 @@ class GenerateOpenCore:
 
         # Download latest release
         print(f"   Downloading latest {variant}...")
-        download = requests.get(download_url)
+        download = requests.get(download_url,verify=False)
         with open(f"{self.working_dir}/{asset['name']}", "wb") as f:
             f.write(download.content)
 

@@ -305,7 +305,7 @@ class Macmini:
         secure_boot_policy=0,
         oclp_sys_version='v0.5.0',
         oclp_sys_date='October 04, 2022 @ 12:04:48',
-        oclp_sys_url='https://github.com/intsant/OCLP-R/commit/daf28a62effb2ce06a71cb5961c9d0c79d72c16b',
+        oclp_sys_url='https://github.com/dortania/OpenCore-Legacy-Patcher/commit/daf28a62effb2ce06a71cb5961c9d0c79d72c16b',
         firmware_vendor='Apple',
         rosetta_active=False
     )

@@ -27,7 +27,7 @@ from .support import (
     logging_handler,
     analytics_handler
 )
-
+from .support.translate_language import TranslateLanguage
 
 class OpenCoreLegacyPatcher:
     """
@@ -36,6 +36,9 @@ class OpenCoreLegacyPatcher:
 
     def __init__(self) -> None:
         self.constants: constants.Constants = constants.Constants()
+        self.trans= TranslateLanguage(self.constants).application_entry()
+        
+        
 
         logging_handler.InitializeLoggingSupport(self.constants)
 
@@ -52,11 +55,11 @@ class OpenCoreLegacyPatcher:
         _test_dir = None
         try:
             _test_dir = Path.cwd()
-            logging.info(f"Current working directory: {_test_dir}")
+            logging.info(f"{self.trans['Current working directory:']} {_test_dir}")
         except FileNotFoundError:
             _test_dir = Path(__file__).parent.parent.resolve()
             os.chdir(_test_dir)
-            logging.warning(f"Current working directory was invalid, switched to: {_test_dir}")
+            logging.warning(f"{self.trans['Current working directory was invalid, switched to:']} {_test_dir}")
 
 
     def _generate_base_data(self) -> None:
@@ -120,7 +123,7 @@ class OpenCoreLegacyPatcher:
             self.constants.cli_mode = False
             return
 
-        logging.info("Detected arguments, switching to CLI mode")
+        logging.info(self.trans["Detected arguments, switching to CLI mode"])
         self.constants.gui_mode = True  # Assumes no user interaction is required
 
         ignore_args = ["--auto_patch", "--gui_patch", "--gui_unpatch", "--update_installed"]

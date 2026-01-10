@@ -1,12 +1,12 @@
 # Supported Models
 
-Any Intel-based Mac listed below can install and make use of OCLP-R. To check your hardware model, open System Information and look for the `Model Identifier` key.
+Any Intel-based Mac listed below can install and make use of OpenCore Legacy Patcher. To check your hardware model, open System Information and look for the `Model Identifier` key.
 * This applies even if Apple supports the model natively.
-* OCLP-R does not support PowerPC- or Apple Silicon-based Macs.
+* OpenCore Legacy Patcher does not support PowerPC- or Apple Silicon-based Macs.
 * If your model is not listed below, it is not supported by this patcher.
 
 ::: warning Note
-It is **extremely recommended** to update your Mac to its latest native version before using OCLP-R, to ensure you're on the highest firmware.
+It is **extremely recommended** to update your Mac to its latest native version before using OpenCore Legacy Patcher, to ensure you're on the highest firmware.
 :::
 
 ::: warning 3GB+ RAM required for installing macOS Sonoma and newer

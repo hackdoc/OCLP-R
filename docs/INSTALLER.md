@@ -11,7 +11,7 @@ Before proceeding, please read the application and macOS installer creation requ
 
 To start off, you'll want to grab the app:
 
-* [OCLP-R Release Apps](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
+* [OpenCore Legacy Patcher Release Apps](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
 
 Once downloaded, open the app and you should be greeted by the main menu. 
 

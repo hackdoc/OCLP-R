@@ -260,6 +260,7 @@ class CatalogProducts:
                 version_map[version] = installer
 
         products_copy = list(version_map.values())
+
         # Remove EOL versions (older than n-3)
         for installer in products:
             if installer["Version"].split(".")[0] < supported_versions[-4].value:

@@ -40,7 +40,7 @@ class DisplayBacklight(BaseHardware):
         """
         Dropped support with macOS 10.13, High Sierra
         """
-        return self._xnu_major < os_data.high_sierra.value
+        return self._xnu_major < os_data.high_sierra.value  or self._xnu_major >= os_data.tahoe.value
 
 
     def hardware_variant(self) -> HardwareVariant:

@@ -16,11 +16,13 @@ from . import subprocess_wrapper
 
 from .. import constants
 
-
+from .translate_language import TranslateLanguage
 class RoutePayloadDiskImage:
 
     def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
+        self.trans = TranslateLanguage(self.constants).reroute_payloads()
+
 
         self._setup_tmp_disk_image()
 
@@ -34,10 +36,10 @@ class RoutePayloadDiskImage:
         """
 
         if self.constants.wxpython_variant is True and not self.constants.launcher_script:
-            logging.info("Running in compiled binary, switching to tmp directory")
+            logging.info(self.trans["Running in compiled binary, switching to tmp directory"])
             self.temp_dir = tempfile.TemporaryDirectory()
-            logging.info(f"New payloads location: {self.temp_dir.name}")
-            logging.info("Creating payloads directory")
+            logging.info(self.trans["New payloads location: {0}"].format(self.temp_dir.name))
+            logging.info(self.trans["Creating payloads directory"])
             Path(self.temp_dir.name / Path("payloads")).mkdir(parents=True, exist_ok=True)
             self._unmount_active_dmgs(unmount_all_active=False)
             output = subprocess.run(
@@ -51,12 +53,12 @@ class RoutePayloadDiskImage:
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT
             )
             if output.returncode == 0:
-                logging.info("Mounted payloads.dmg")
+                logging.info(self.trans["Mounted payloads.dmg"])
                 self.constants.current_path = Path(self.temp_dir.name)
                 self.constants.payload_path = Path(self.temp_dir.name) / Path("payloads")
                 atexit.register(self._unmount_active_dmgs, unmount_all_active=False)
             else:
-                logging.info("Failed to mount payloads.dmg")
+                logging.info(self.trans["Failed to mount payloads.dmg"])
                 subprocess_wrapper.log(output)
 
 

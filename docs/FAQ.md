@@ -45,7 +45,7 @@ Refer to [Updating OpenCore and patches](https://dortania.github.io/OpenCore-Leg
 
 ## Why are the settings "not saving"?
 
-Starting with OCLP-R 2.1.0, the status of settings in the GUI will now be saved under ```/Users/Shared/.com.dortania.opencore-legacy-patcher.plist```. The application will utilize this file to keep track of and retain settings for relaunches and application updates, no longer requiring a reconfiguring each time. The user interface will reset if any model other than "Host Model" is selected, as building for a different model will require different settings.
+Starting with OpenCore Legacy Patcher 2.1.0, the status of settings in the GUI will now be saved under ```/Users/Shared/.com.dortania.opencore-legacy-patcher.plist```. The application will utilize this file to keep track of and retain settings for relaunches and application updates, no longer requiring a reconfiguring each time. The user interface will reset if any model other than "Host Model" is selected, as building for a different model will require different settings.
 
 In case of issues, delete the file and restart the application to revert the GUI to default settings, then rebuild OpenCore with newly configured settings.
 
@@ -57,7 +57,7 @@ Only settings made within OCLP are accounted for, modifications made directly in
 
 ::: details Explainer for older versions (click to expand)
 
-OCLP-R is a config build tool and as such the user interface always reverts to safe defaults, the user interface therefore **does not** reflect the status of settings. Settings are accounted for and saved by the OpenCore building process and you will always have to build OpenCore again after settings change. 
+OpenCore Legacy Patcher is a config build tool and as such the user interface always reverts to safe defaults, the user interface therefore **does not** reflect the status of settings. Settings are accounted for and saved by the OpenCore building process and you will always have to build OpenCore again after settings change. 
 
 Settings are saved to a config.plist file inside your EFI partition.
 
@@ -170,7 +170,7 @@ Refer to [Supported models,](https://dortania.github.io/OpenCore-Legacy-Patcher/
 
 ## What are FeatureUnlock and mediaanalysisd?
 
-**Important:** These features have the potential to cause instability in many places and as such a decision has been made to disable them by default (mediaanalysisd only on 3802-based* systems) starting from OCLP-R version 2.1.0.  If you want to enable these features at the risk of additional instability, you can do so in the OCLP settings and rebuilding OpenCore.
+**Important:** These features have the potential to cause instability in many places and as such a decision has been made to disable them by default (mediaanalysisd only on 3802-based* systems) starting from OpenCore Legacy Patcher version 2.1.0.  If you want to enable these features at the risk of additional instability, you can do so in the OCLP settings and rebuilding OpenCore.
 
 FeatureUnlock may also have issues functioning with some OS versions and systems due to race condition during system bootup. If this happens to you, try rebooting multiple times or different (older) OS versions to see if it will remedy the issue.
 

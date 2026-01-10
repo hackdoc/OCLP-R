@@ -9,7 +9,7 @@
 
 Once you've installed macOS through OpenCore, you can boot up and go through the regular install process. To boot without the USB drive plugged in is quite simple:
 
-* Download OCLP-R
+* Download OpenCore Legacy Patcher
 * Change Patcher settings as you'd like
 * Build OpenCore again
 * Install OpenCore to internal drive
@@ -149,7 +149,7 @@ Machines that require this are those with AMD Metal dGPUs:
 
 :::
 
-Below entries represent GPUs no longer natively supported, ie. requiring root volume patching with OCLP-R:
+Below entries represent GPUs no longer natively supported, ie. requiring root volume patching with OpenCore Legacy Patcher:
 
 :::details GPUs requiring patching in different macOS versions
 

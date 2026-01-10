@@ -24,12 +24,14 @@ from ..support import (
 )
 
 
+from ..support.translate_language import TranslateLanguage
 class UpdateFrame(wx.Frame):
     """
     Create a frame for updating the patcher
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: wx.Point, url: str = "", version_label: str = "") -> None:
-        logging.info("Initializing Update Frame")
+        self.trans = TranslateLanguage(global_constants=global_constants).gui_update()
+        logging.info(self.trans["Initializing Update Frame"])
         if parent:
             self.parent: wx.Frame = parent
 
@@ -58,14 +60,14 @@ class UpdateFrame(wx.Frame):
                 version_label = dict["Version"]
                 url = dict["Link"]
             else:
-                wx.MessageBox("Failed to get update info", "Critical Error")
+                wx.MessageBox(self.trans["Failed to get update info"], self.trans["Critical Error"])
                 sys.exit(1)
 
         self.version_label = version_label
         self.url = url
 
-        logging.info(f"Update URL: {url}")
-        logging.info(f"Update Version: {version_label}")
+        logging.info(self.trans["Update URL: {url}"].format(url=url))
+        logging.info(self.trans["Update Version: {version_label}"].format(version_label=version_label))
 
         self.frame: wx.Frame = wx.Frame(
             parent=parent if parent else self,
@@ -76,7 +78,7 @@ class UpdateFrame(wx.Frame):
         )
 
         # Title: Preparing update
-        title_label = wx.StaticText(self.frame, label="Preparing download...", pos=(-1,1))
+        title_label = wx.StaticText(self.frame, label=self.trans["Preparing download..."], pos=(-1,1))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
@@ -116,11 +118,11 @@ class UpdateFrame(wx.Frame):
         if download_obj.download_complete is False:
             progress_bar_animation.stop_pulse()
             progress_bar.SetValue(0)
-            wx.MessageBox("Failed to download update. If you continue to have this issue, please manually download OCLP-R off Github", "Critical Error!", wx.OK | wx.ICON_ERROR)
+            wx.MessageBox(self.trans["Failed to download update. If you continue to have this issue, please manually download OCLP-R off Github"], f"{self.trans["Critical Error"]}!", wx.OK | wx.ICON_ERROR)
             sys.exit(1)
 
         # Title: Extracting update
-        title_label.SetLabel("Extracting update...")
+        title_label.SetLabel(self.trans["Extracting update..."])
         title_label.Centre(wx.HORIZONTAL)
         wx.Yield()
 
@@ -130,7 +132,7 @@ class UpdateFrame(wx.Frame):
         gui_support.wait_for_thread(thread)
 
         # Title: Installing update
-        title_label.SetLabel("Installing update...")
+        title_label.SetLabel(self.trans["Installing update..."])
         title_label.Centre(wx.HORIZONTAL)
 
         thread = threading.Thread(target=self._install_update)
@@ -139,7 +141,7 @@ class UpdateFrame(wx.Frame):
         gui_support.wait_for_thread(thread)
 
         # Title: Update complete
-        title_label.SetLabel("Update complete!")
+        title_label.SetLabel(self.trans["Update complete!"])
         title_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
@@ -147,17 +149,17 @@ class UpdateFrame(wx.Frame):
         progress_bar_animation.stop_pulse()
 
         # Label: 0.6.6 has been installed to:
-        installed_label = wx.StaticText(self.frame, label=f"{version_label} has been installed:", pos=(-1, progress_bar.GetPosition().y - 15))
+        installed_label = wx.StaticText(self.frame, label=f"{version_label} {self.trans["has been installed:"]}", pos=(-1, progress_bar.GetPosition().y - 15))
         installed_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
         installed_label.Centre(wx.HORIZONTAL)
 
-        # Label: '/Library/Application Support/Intsant'
-        installed_path_label = wx.StaticText(self.frame, label='/Library/Application Support/Intsant', pos=(-1, installed_label.GetPosition().y + 20))
+        # Label: '/Library/Application Support/Hackdoc'
+        installed_path_label = wx.StaticText(self.frame, label='/Library/Application Support/Hackdoc', pos=(-1, installed_label.GetPosition().y + 20))
         installed_path_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         installed_path_label.Centre(wx.HORIZONTAL)
 
         # Label: Launching update shortly...
-        launch_label = wx.StaticText(self.frame, label="Launching update shortly...", pos=(-1, installed_path_label.GetPosition().y + 30))
+        launch_label = wx.StaticText(self.frame, label=self.trans["Launching update shortly..."], pos=(-1, installed_path_label.GetPosition().y + 30))
         launch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         launch_label.Centre(wx.HORIZONTAL)
 
@@ -171,7 +173,7 @@ class UpdateFrame(wx.Frame):
 
         timer = 5
         while True:
-            launch_label.SetLabel(f"Closing old process in {timer} seconds")
+            launch_label.SetLabel(f"{self.trans["Closing old process in"]} {timer} {self.trans["seconds"]} {self.trans["close_chinese"]}")
             launch_label.Centre(wx.HORIZONTAL)
             wx.Yield()
             time.sleep(1)
@@ -194,7 +196,7 @@ class UpdateFrame(wx.Frame):
         if not self.url.endswith(".zip"):
             return
 
-        logging.info("Extracting nightly update")
+        logging.info(self.trans["Extracting nightly update"])
         if Path(self.pkg_download_path).exists():
             subprocess.run(["/bin/rm", "-rf", str(self.pkg_download_path)])
 
@@ -202,11 +204,11 @@ class UpdateFrame(wx.Frame):
             ["/usr/bin/ditto", "-xk", str(self.constants.payload_path / "OCLP-R.pkg.zip"), str(self.constants.payload_path)], capture_output=True
         )
         if result.returncode != 0:
-            logging.error(f"Failed to extract update.")
+            logging.error(self.trans["Failed to extract update."])
             subprocess_wrapper.log(result)
             wx.CallAfter(self.progress_bar_animation.stop_pulse)
             wx.CallAfter(self.progress_bar.SetValue, 0)
-            wx.CallAfter(wx.MessageBox, f"Failed to extract update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
+            wx.CallAfter(wx.MessageBox, self.trans["Failed to extract update. Error: {0}"].format(result.stderr.decode('utf-8')), f"{self.trans["Critical Error"]}!", wx.OK | wx.ICON_ERROR)
             wx.CallAfter(sys.exit, 1)
 
 
@@ -214,23 +216,23 @@ class UpdateFrame(wx.Frame):
         """
         Install PKG
         """
-        logging.info(f"Installing update: {self.pkg_download_path}")
+        logging.info(self.trans["Installing update: {0}"].format(self.pkg_download_path))
         result = subprocess_wrapper.run_as_root(["/usr/sbin/installer", "-pkg", str(self.pkg_download_path), "-target", "/"], capture_output=True)
         if result.returncode != 0:
             wx.CallAfter(self.progress_bar_animation.stop_pulse)
             wx.CallAfter(self.progress_bar.SetValue, 0)
-            if "User cancelled" in result.stderr.decode("utf-8"):
-                logging.info("User cancelled update")
-                wx.CallAfter(wx.MessageBox, "User cancelled update", "Update Cancelled", wx.OK | wx.ICON_INFORMATION)
+            if self.trans["User cancelled"] in result.stderr.decode("utf-8"):
+                logging.info(self.trans["User cancelled update"])
+                wx.CallAfter(wx.MessageBox, self.trans["User cancelled update"], self.trans["Update Cancelled"], wx.OK | wx.ICON_INFORMATION)
             else:
-                logging.critical("Failed to install update.")
+                logging.critical(self.trans["Failed to install update."])
                 subprocess_wrapper.log(result)
 
                 # If it fails, fall back to opening the PKG
-                logging.error("Failed to install update, attempting to open PKG")
+                logging.error(self.trans["Failed to install update, attempting to open PKG"])
                 subprocess.run(["/usr/bin/open", str(self.pkg_download_path)])
 
-                wx.CallAfter(wx.MessageBox, f"Failed to install update. Please try installing the OCLP-R.pkg manually or download from GitHub", "Critical Error!", wx.OK | wx.ICON_ERROR)
+                wx.CallAfter(wx.MessageBox, self.trans["Failed to install update. Please try installing the OCLP-R.pkg manually or download from GitHub"], f"{self.trans["Critical Error"]}!", wx.OK | wx.ICON_ERROR)
             wx.CallAfter(sys.exit, 1)
 
 
@@ -238,5 +240,5 @@ class UpdateFrame(wx.Frame):
         """
         Launches newly installed update
         """
-        logging.info("Launching update: '/Library/Application Support/Intsant/OCLP-R.app'")
-        subprocess.Popen(["/Library/Application Support/Intsant/OCLP-R.app/Contents/MacOS/OCLP-R", "--update_installed"])
+        logging.info("Launching update: '/Library/Application Support/Hackdoc/OCLP-R.app'")
+        subprocess.Popen(["/Library/Application Support/Hackdoc/OCLP-R.app/Contents/MacOS/OCLP-R", "--update_installed"])

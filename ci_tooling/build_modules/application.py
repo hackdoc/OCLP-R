@@ -119,7 +119,7 @@ class GenerateApplication:
         """
         _file = self._application_output / "Contents" / "MacOS" / "OCLP-R"
 
-        _find    = b'\x00\x0D\x0A\x00' # 10.13 (0xA0D)
+        _find    = b'\x00\x0D\x0A\x00'
         _replace = b'\x00\x0A\x0A\x00' # 10.10 (0xA0A)
 
         print("Patching LC_VERSION_MIN_MACOSX")
@@ -129,6 +129,7 @@ class GenerateApplication:
 
         with open(_file, "wb") as f:
             f.write(data)
+
 
     def _patch_sdk_version(self) -> None:
         """
@@ -145,10 +146,12 @@ class GenerateApplication:
         print("Patching LC_BUILD_VERSION")
         with open(_file, "rb") as f:
             data = f.read()
+            
             data = data.replace(_find, _replace)
 
         with open(_file, "wb") as f:
             f.write(data)
+
     def _embed_git_data(self) -> None:
         """
         Embed git data
@@ -179,10 +182,12 @@ class GenerateApplication:
                 generate_copy_arguments(str(file), self._application_output / "Contents" / "Resources/"),
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
+
         subprocess_wrapper.run_and_verify(
             generate_copy_arguments("payloads/Icon/AppIcons/Assets.car", self._application_output / "Contents/Resources/"),
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
+
 
     def generate(self) -> None:
         """
@@ -191,7 +196,7 @@ class GenerateApplication:
         self._embed_analytics_key()
         self._generate_application()
         self._remove_analytics_key()
-        self._patch_sdk_version()
         self._patch_load_command()
+        self._patch_sdk_version() #if not self._git_branch or not self._git_branch.startswith('refs/tags') else None
         self._embed_git_data()
         self._embed_resources()

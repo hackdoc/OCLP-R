@@ -94,7 +94,7 @@ class LegacyMetal3802(BaseSharedPatchSet):
         Thus we need to patch all .metallib files to support 3802 GPUs using MetallibSupportPkg
 
         Reference:
-        https://github.com/intsant/MetallibSupportPkg
+        https://github.com/dortania/MetallibSupportPkg
         """
         if self._xnu_major < os_data.sequoia.value:
             return {}

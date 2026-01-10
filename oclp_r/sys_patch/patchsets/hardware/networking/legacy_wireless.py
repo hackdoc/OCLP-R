@@ -19,13 +19,11 @@ class LegacyWireless(BaseHardware):
     def __init__(self, xnu_major, xnu_minor, os_build, global_constants: Constants) -> None:
         super().__init__(xnu_major, xnu_minor, os_build, global_constants)
 
-
     def name(self) -> str:
         """
         Display name for end users
         """
         return f"{self.hardware_variant()}: Legacy Wireless"
-
 
     def present(self) -> bool:
         """
@@ -45,13 +43,11 @@ class LegacyWireless(BaseHardware):
 
         return False
 
-
     def native_os(self) -> bool:
         """
         Dropped support with macOS 12, Monterey
         """
-        return self._xnu_major < os_data.monterey.value
-
+        return self._xnu_major < os_data.monterey.value  or self._xnu_major >= os_data.tahoe.value
 
     def hardware_variant(self) -> HardwareVariant:
         """
@@ -59,10 +55,9 @@ class LegacyWireless(BaseHardware):
         """
         return HardwareVariant.NETWORKING
 
-
     def _affected_by_cve_2024_23227(self) -> bool:
-        """
-        CVE-2024-23227 broke our airportd patches for 12.7.4, 13.6.5 and 14.4
+        """ 14.4
+        CVE-2024-23227 broke our airportd patches for 12.7.4, 13.6.5 and
 
         Note that since the XNU version's security patch level is not increment
         """
@@ -81,7 +76,6 @@ class LegacyWireless(BaseHardware):
             return parsed_version >= packaging.version.parse("14.4")
 
         return False
-
 
     def _base_patch(self) -> dict:
         """
@@ -105,7 +99,6 @@ class LegacyWireless(BaseHardware):
                 },
             },
         }
-
 
     def _extended_patch(self) -> dict:
         """
@@ -134,7 +127,6 @@ class LegacyWireless(BaseHardware):
                 }
             },
         }
-
 
     def patches(self) -> dict:
         """

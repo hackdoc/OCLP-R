@@ -28,7 +28,8 @@ from ..datasets import (
 from . import (
     utilities,
     defaults,
-    validation
+    validation,
+    translate_language
 )
 
 
@@ -38,6 +39,7 @@ class arguments:
 
     def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
+        self.trans = translate_language.TranslateLanguage(self.constants).arguements()
 
         self.args = utilities.check_cli_args()
 
@@ -82,7 +84,7 @@ class arguments:
         """
         Enter validation mode
         """
-        logging.info("Set Validation Mode")
+        logging.info(self.trans["Set Validation Mode"])
         validation.PatcherValidation(self.constants)
 
 
@@ -91,9 +93,9 @@ class arguments:
         Start root volume patching
         """
 
-        logging.info("Set System Volume patching")
+        logging.info(self.trans["Set System Volume patching"])
         if "Library/InstallerSandboxes/" in str(self.constants.payload_path):
-            logging.info("- Running from Installer Sandbox, blocking OS updaters")
+            logging.info(self.trans["- Running from Installer Sandbox, blocking OS updaters"])
             thread = threading.Thread(target=sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, None).start_patch)
             thread.start()
             while thread.is_alive():
@@ -107,7 +109,7 @@ class arguments:
         """
         Start root volume unpatching
         """
-        logging.info("Set System Volume unpatching")
+        logging.info(self.trans["Set System Volume unpatching"])
         sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, None).start_unpatch()
 
 
@@ -116,7 +118,7 @@ class arguments:
         Start root volume auto patching
         """
 
-        logging.info("Set Auto patching")
+        logging.info(self.trans["Set Auto patching"])
         StartAutomaticPatching(self.constants).start_auto_patch()
 
 
@@ -124,17 +126,17 @@ class arguments:
         """
         Prepare host for macOS update
         """
-        logging.info("Preparing host for macOS update")
+        logging.info(self.trans["Preparing host for macOS update"])
 
         os_data = utilities.fetch_staged_update(variant="Update")
         if os_data[0] is None:
-            logging.info("No update staged, skipping")
+            logging.info(self.trans["No update staged, skipping"])
             return
 
         os_version = os_data[0]
         os_build   = os_data[1]
 
-        logging.info(f"Preparing for update to {os_version} ({os_build})")
+        logging.info(f"{self.trans['Preparing for update to']} {os_version} ({os_build})")
 
         self._clean_le_handler()
 
@@ -145,7 +147,7 @@ class arguments:
         """
         results = subprocess.run(["/bin/ps", "-ax"], stdout=subprocess.PIPE)
         if results.stdout.decode("utf-8").count("OCLP-R --cache_os") > 1:
-            logging.info("Another instance of OS caching is running, exiting")
+            logging.info(self.trans["Another instance of OS caching is running, exiting"])
             return
 
         gui_entry.EntryPoint(self.constants).start(entry=gui_entry.SupportedEntryPoints.OS_CACHE)
@@ -160,7 +162,7 @@ class arguments:
         if self.constants.detected_os < os_data.os_data.sonoma:
             return
 
-        logging.info("Cleaning /Library/Extensions")
+        logging.info(self.trans["Cleaning /Library/Extensions"])
 
         for kext in Path("/Library/Extensions").glob("*.kext"):
             if not Path(f"{kext}/Contents/Info.plist").exists():
@@ -168,11 +170,11 @@ class arguments:
             try:
                 kext_plist = plistlib.load(open(f"{kext}/Contents/Info.plist", "rb"))
             except Exception as e:
-                logging.info(f"  - Failed to load plist for {kext.name}: {e}")
+                logging.info(f"  {self.trans['- Failed to load plist for']} {kext.name}: {e}")
                 continue
             if "GPUCompanionBundles" not in kext_plist:
                 continue
-            logging.info(f"  - Removing {kext.name}")
+            logging.info(f"  {self.trans['- Removing']} {kext.name}")
             subprocess_wrapper.run_as_root(["/bin/rm", "-rf", kext])
 
 
@@ -180,80 +182,80 @@ class arguments:
         """
         Start config building process
         """
-        logging.info("Set OpenCore Build")
+        logging.info(self.trans["Set OpenCore Build"])
 
         if self.args.model:
             if self.args.model:
-                logging.info(f"- Using custom model: {self.args.model}")
+                logging.info(f"{self.trans['- Using custom model:']} {self.args.model}")
                 self.constants.custom_model = self.args.model
                 defaults.GenerateDefaults(self.constants.custom_model, False, self.constants)
             elif self.constants.computer.real_model not in model_array.SupportedSMBIOS and self.constants.allow_oc_everywhere is False:
                 logging.info(
-                    """Your model is not supported by this patcher for running unsupported OSes!"
+                    self.trans["""Your model is not supported by this patcher for running unsupported OSes!
 
-If you plan to create the USB for another machine, please select the "Change Model" option in the menu."""
+If you plan to create the USB for another machine, please select the "Change Model" option in the menu."""]
                 )
                 sys.exit(1)
             else:
-                logging.info(f"- Using detected model: {self.constants.computer.real_model}")
+                logging.info(f"{self.trans['- Using detected model:']} {self.constants.computer.real_model}")
                 defaults.GenerateDefaults(self.constants.custom_model, True, self.constants)
 
         if self.args.verbose:
-            logging.info("- Set verbose configuration")
+            logging.info(self.trans["- Set verbose configuration"])
             self.constants.verbose_debug = True
         else:
             self.constants.verbose_debug = False  # Override Defaults detected
 
         if self.args.debug_oc:
-            logging.info("- Set OpenCore DEBUG configuration")
+            logging.info(self.trans["- Set OpenCore DEBUG configuration"])
             self.constants.opencore_debug = True
 
         if self.args.debug_kext:
-            logging.info("- Set kext DEBUG configuration")
+            logging.info(self.trans["- Set kext DEBUG configuration"])
             self.constants.kext_debug = True
 
         if self.args.hide_picker:
-            logging.info("- Set HidePicker configuration")
+            logging.info(self.trans["- Set HidePicker configuration"])
             self.constants.showpicker = False
 
         if self.args.disable_sip:
-            logging.info("- Set Disable SIP configuration")
+            logging.info(self.trans["- Set Disable SIP configuration"])
             self.constants.sip_status = False
         else:
             self.constants.sip_status = True  # Override Defaults detected
 
         if self.args.disable_smb:
-            logging.info("- Set Disable SecureBootModel configuration")
+            logging.info(self.trans["- Set Disable SecureBootModel configuration"])
             self.constants.secure_status = False
         else:
             self.constants.secure_status = True  # Override Defaults detected
 
         if self.args.vault:
-            logging.info("- Set Vault configuration")
+            logging.info(self.trans["- Set Vault configuration"])
             self.constants.vault = True
 
         if self.args.firewire:
-            logging.info("- Set FireWire Boot configuration")
+            logging.info(self.trans["- Set FireWire Boot configuration"])
             self.constants.firewire_boot = True
 
         if self.args.nvme:
-            logging.info("- Set NVMe Boot configuration")
+            logging.info(self.trans["- Set NVMe Boot configuration"])
             self.constants.nvme_boot = True
 
         if self.args.wlan:
-            logging.info("- Set Wake on WLAN configuration")
+            logging.info(self.trans["- Set Wake on WLAN configuration"])
             self.constants.enable_wake_on_wlan = True
 
         if self.args.disable_tb:
-            logging.info("- Set Disable Thunderbolt configuration")
+            logging.info(self.trans["- Set Disable Thunderbolt configuration"])
             self.constants.disable_tb = True
 
         if self.args.force_surplus:
-            logging.info("- Forcing SurPlus override configuration")
+            logging.info(self.trans["- Forcing SurPlus override configuration"])
             self.constants.force_surplus = True
 
         if self.args.moderate_smbios:
-            logging.info("- Set Moderate SMBIOS Patching configuration")
+            logging.info(self.trans["- Set Moderate SMBIOS Patching configuration"])
             self.constants.serial_settings = "Moderate"
 
         if self.args.smbios_spoof:
@@ -264,10 +266,10 @@ If you plan to create the USB for another machine, please select the "Change Mod
             elif self.args.smbios_spoof == "Advanced":
                 self.constants.serial_settings = "Advanced"
             else:
-                logging.info(f"- Unknown SMBIOS arg passed: {self.args.smbios_spoof}")
+                logging.info(f"{self.trans['- Unknown SMBIOS arg passed:']} {self.args.smbios_spoof}")
 
         if self.args.support_all:
-            logging.info("- Building for natively supported model")
+            logging.info(self.trans["- Building for natively supported model"])
             self.constants.allow_oc_everywhere = True
             self.constants.serial_settings = "None"
 

@@ -1,6 +1,6 @@
 # Privacy Policy
 
-OCLP-R may collect pseudo-anonymized data about the host system and the OCLP-R application. This data is used to improve the project and to help diagnose issues. The data collected is as follows:
+OpenCore Legacy Patcher may collect pseudo-anonymized data about the host system and the OpenCore Legacy Patcher application. This data is used to improve the project and to help diagnose issues. The data collected is as follows:
 
 * System's UUID as a SHA1 hash
   * This is used to identify the system and to prevent duplicate reports
@@ -23,3 +23,4 @@ defaults write com.dortania.opencore-legacy-patcher DisableCrashAndAnalyticsRepo
 ```
 
 To have your data removed, please contact us via our [Discord server](https://discord.gg/rqdPgH8xSN) and provide the UUID of your system.
+

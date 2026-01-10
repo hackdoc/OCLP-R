@@ -60,7 +60,7 @@ class GraphicsMultiplexer(BaseHardware):
         Sierra uses a legacy GMUX control method needed for dGPU switching on MacBookPro5,x
         Same method is also used for demuxed machines
         Note that MacBookPro5,x machines are extremely unstable with this patch set, so disabled until investigated further
-        Ref: https://github.com/intsant/OpenCore-Legacy-Patcher/files/7360909/KP-b10-030.txt
+        Ref: https://github.com/dortania/OpenCore-Legacy-Patcher/files/7360909/KP-b10-030.txt
         """
         return self._computer.real_model in ["MacBookPro8,2", "MacBookPro8,3"] and self._detect_demux()
 
@@ -69,7 +69,7 @@ class GraphicsMultiplexer(BaseHardware):
         """
         Dropped support with macOS 10.13, High Sierra
         """
-        return self._xnu_major < os_data.sierra.value
+        return self._xnu_major < os_data.sierra.value  or self._xnu_major >= os_data.tahoe.value
 
 
     def hardware_variant(self) -> HardwareVariant:

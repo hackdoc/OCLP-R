@@ -2,7 +2,7 @@
 
 Here are some common errors that users may experience while using this patcher:
 
-* [OCLP-R not launching](#opencore-legacy-patcher-not-launching)
+* [OpenCore Legacy Patcher not launching](#opencore-legacy-patcher-not-launching)
 * ["You don't have permission to save..." error when creating USB installer](#you-don-t-have-permission-to-save-error-when-creating-usb-installer)
 * [Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform-or-🚫-prohibited-symbol)
 * [Stuck on hard disk selection with greyed out buttons in installer](#stuck-on-hard-disk-selection-with-greyed-out-buttons-in-installer)
@@ -13,7 +13,7 @@ Here are some common errors that users may experience while using this patcher:
 * [Stuck on boot after root patching](#stuck-on-boot-after-root-patching)
 * ["Unable to resolve dependencies, error code 71" when root patching](#unable-to-resolve-dependencies-error-code-71-when-root-patching)
 * [Reboot when entering Hibernation (`Sleep Wake Failure`)](#reboot-when-entering-hibernation-sleep-wake-failure)
-* [How to Boot Recovery through OCLP-R](#how-to-boot-recovery-through-opencore-legacy-patcher)
+* [How to Boot Recovery through OpenCore Legacy Patcher](#how-to-boot-recovery-through-opencore-legacy-patcher)
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
 * [No Brightness Control](#no-brightness-control)
 * [Cannot connect Wi-Fi on Monterey with legacy cards](#cannot-connect-Wi-Fi-on-Monterey-with-legacy-cards)
@@ -28,7 +28,7 @@ Here are some common errors that users may experience while using this patcher:
 * [No T1 functionality after installing Sonoma or newer](#no-t1-functionality-after-installing-sonoma-or-newer)
 
 
-## OCLP-R not launching
+## OpenCore Legacy Patcher not launching
 
 If the application won't launch (e.g. icon will bounce in the Dock), try launching OCLP via Terminal by typing the following command.
 
@@ -46,17 +46,17 @@ In some cases, a following error saying "The bless of the installer disk failed"
 </div>
 
 
-To resolve this, you may try adding Full Disk Access permission for OCLP-R. To add it, first go to the settings
+To resolve this, you may try adding Full Disk Access permission for OpenCore Legacy Patcher. To add it, first go to the settings
 
 * Ventura and Sonoma: Go to System Settings -> Privacy and Security -> Full Disk Access
 
 * Big Sur and Monterey: Go to System Preferences -> Security and Privacy -> Full Disk Access
 
-Enable OpenCore-Patcher in the list. If not found on the list, press the + sign to add a new entity and find OCLP-R from Applications.
+Enable OpenCore-Patcher in the list. If not found on the list, press the + sign to add a new entity and find OpenCore Legacy Patcher from Applications.
 
-Restart OCLP-R and try creating your USB drive again.
+Restart OpenCore Legacy Patcher and try creating your USB drive again.
 
-Optional: After you've created your USB drive, you can remove OCLP-R from Full Disk Access again.
+Optional: After you've created your USB drive, you can remove OpenCore Legacy Patcher from Full Disk Access again.
 
 
 ## Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol
@@ -77,13 +77,13 @@ You can switch back to different language once macOS has installed.
 
 By default, the OpenCore Patcher won't install OpenCore onto the internal drive itself during installs.
 
-After installing macOS, OCLP-R should automatically prompt you to install OpenCore onto the internal drive. However, if it doesn't show the prompt, you'll need to either [manually transfer](https://dortania.github.io/OpenCore-Post-Install/universal/oc2hdd.html) OpenCore to the internal drive's EFI or Build and Install again and select your internal drive.
+After installing macOS, OpenCore Legacy Patcher should automatically prompt you to install OpenCore onto the internal drive. However, if it doesn't show the prompt, you'll need to either [manually transfer](https://dortania.github.io/OpenCore-Post-Install/universal/oc2hdd.html) OpenCore to the internal drive's EFI or Build and Install again and select your internal drive.
 
 Reminder that once this is done, you'll need to select OpenCore in the boot picker again for your hardware to remember this entry and auto boot from then on.
 
 ## Infinite Recovery OS Booting
 
-With OCLP-R, we rely on Apple Secure Boot to ensure OS updates work correctly and reliably with Big Sur. However this installs NVRAM variables that will confuse your Mac if not running with OpenCore. To resolve this, simply uninstall OpenCore and [reset NVRAM](https://support.apple.com/en-mide/HT201255).
+With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates work correctly and reliably with Big Sur. However this installs NVRAM variables that will confuse your Mac if not running with OpenCore. To resolve this, simply uninstall OpenCore and [reset NVRAM](https://support.apple.com/en-mide/HT201255).
 
 * Note: Machines with modified root volumes will also result in an infinite recovery loop until integrity is restored.
 
@@ -121,7 +121,6 @@ There are few options to resolve it:
    * You can try doing an in-place install without wiping the disk to keep your data but this may not be possible due to the OS being partially on newer version and it will complain about downgrade.
 4. Use an experimental "PurgePendingUpdate" tool [from the Discord server](https://discord.com/channels/417165963327176704/1253268648324235345/1257348959454625985).
    * Download it and then run it in Terminal to get rid of a pending update, then repatch again. If "purge failed" appears, you can ignore it.
-   * Sometimes you may have to give the file an execution permission with `chmod +x` and putting the application path after the command (type or drag the file) before the tool can be ran.
    * This may be integrated into OCLP later on, however there is currently no ETA.
 
 **Disabling automatic macOS updates is extremely recommended once recovered, to prevent it from happening again.**
@@ -203,7 +202,7 @@ Run OCLP root patcher again.
 sudo pmset -a hibernatemode 0
 ```
 
-## How to Boot Recovery through OCLP-R
+## How to Boot Recovery through OpenCore Legacy Patcher
 
 By default, the patcher will try to hide extra boot options such as recovery from the user. To make them appear, simply press the `Spacebar` key while inside OpenCore's Picker to list all boot options.
 
@@ -300,7 +299,7 @@ The reason for this is that the autopatcher will assume that you will be using t
 
 ## Keyboard, Mouse and Trackpad not working in installer or after update
 
-Starting from macOS Ventura, USB 1.1 drivers are no longer provided in the operating system. For Macs using legacy USB 1.1 controllers, OCLP-R can only restore support once it has performed root volume patches which restore the drivers. Thus when installing macOS or after an update, you need to hook up a USB hub between your Mac and keyboard/mouse, forcing USB 2.0 mode in order to install the root patches.
+Starting from macOS Ventura, USB 1.1 drivers are no longer provided in the operating system. For Macs using legacy USB 1.1 controllers, OpenCore Legacy Patcher can only restore support once it has performed root volume patches which restore the drivers. Thus when installing macOS or after an update, you need to hook up a USB hub between your Mac and keyboard/mouse, forcing USB 2.0 mode in order to install the root patches.
 
 * For MacBook users, you'll need to find an external keyboard/mouse in addition to the USB hub
 

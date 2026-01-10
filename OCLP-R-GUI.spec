@@ -18,13 +18,13 @@ from oclp_r import constants
 block_cipher = None
 
 datas = [
+   ('payloads/Icon/AppIcons/Assets.car', '.'),
    ('payloads.dmg', '.'),
    ('Universal-Binaries.dmg', '.'),
 ]
 
 if Path("HackdocInternalResources.dmg").exists():
    datas.append(('HackdocInternalResources.dmg', '.'))
-
 
 a = Analysis(['OCLP-R-GUI.command'],
              pathex=[],
@@ -55,7 +55,7 @@ exe = EXE(pyz,
           upx=True,
           console=False,
           disable_windowed_traceback=False,
-          target_arch="universal2",
+          target_arch="x86_64",
           codesign_identity=None,
           entitlements_file=None)
 
@@ -71,17 +71,18 @@ coll = COLLECT(exe,
 app = BUNDLE(coll,
              name='OCLP-R.app',
              icon="payloads/Icon/AppIcons/OC-Patcher.icns",
-             bundle_identifier="com.intsant.oclp-r",
+             bundle_identifier="com.hackdoc.oclp-r",
              info_plist={
                 "CFBundleName": "OCLP-R",
                 "CFBundleVersion": constants.Constants().patcher_version,
                 "CFBundleShortVersionString": constants.Constants().patcher_version,
                 "NSHumanReadableCopyright": constants.Constants().copyright_date,
-                "LSMinimumSystemVersion": "10.10.0",
+                "LSMinimumSystemVersion": "10.13.0",
                 "NSRequiresAquaSystemAppearance": False,
                 "NSHighResolutionCapable": True,
                 "Build Date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
                 "BuildMachineOSBuild": subprocess.run(["/usr/bin/sw_vers", "-buildVersion"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode().strip(),
                 "NSPrincipalClass": "NSApplication",
-                "CFBundleIconName": "oclp",
+                "CFBundleIconName": "oclp-r",
              })
+

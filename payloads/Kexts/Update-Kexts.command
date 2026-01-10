@@ -175,7 +175,7 @@ class GenerateKexts:
     def _get_latest_release(self, kext_folder, kext_name, override_kext_zip_name=None):
         # Get latest release from GitHub API
         repo_url = KEXT_DICTIONARY[kext_folder][kext_name]["Repository"].replace("https://github.com", "https://api.github.com/repos")
-        latest_release = requests.get(f"{repo_url}/releases/latest").json()
+        latest_release = requests.get(f"{repo_url}/releases/latest",verify=False).json()
 
         for variant in ["RELEASE", "DEBUG"]:
 
@@ -242,7 +242,7 @@ class GenerateKexts:
             os.remove(file_path)
 
         with tempfile.TemporaryDirectory() as temp_dir:
-            download = requests.get(url)
+            download = requests.get(url,verify=False)
             with open(f"{temp_dir}/temp.zip", "wb") as f:
                 f.write(download.content)
 

@@ -12,7 +12,7 @@ from . import support
 
 from .. import constants
 
-from ..support import generate_smbios
+from ..support import generate_smbios, translate_language
 from ..detections import device_probe
 
 from ..datasets import (
@@ -35,6 +35,8 @@ xw
         self.config: dict = config
         self.constants: constants.Constants = global_constants
         self.computer: device_probe.Computer = self.constants.computer
+        self.translator = translate_language.TranslateLanguage_efi_builder(self.constants)
+        self.trans = self.translator.misc()
 
         self._build()
 
@@ -73,7 +75,7 @@ xw
 
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path)
         if self.constants.fu_arguments is not None and self.constants.fu_arguments != "":
-            logging.info(f"- Adding additional FeatureUnlock args: {self.constants.fu_arguments}")
+            logging.info(self.trans["- Adding additional FeatureUnlock args: {}"].format(self.constants.fu_arguments))
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += self.constants.fu_arguments
 
 
@@ -86,7 +88,7 @@ xw
         patch_args = ",".join(self._re_generate_patch_arguments())
 
         if block_args != "":
-            logging.info(f"- Setting RestrictEvents block arguments: {block_args}")
+            logging.info(self.trans["- Setting RestrictEvents block arguments: {}"].format(block_args))
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revblock"] = block_args
 
@@ -95,7 +97,7 @@ xw
             patch_args = "none"
 
         if patch_args != "":
-            logging.info(f"- Setting RestrictEvents patch arguments: {patch_args}")
+            logging.info(self.trans["- Setting RestrictEvents patch arguments: {}"].format(patch_args))
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revpatch"] = patch_args
 
@@ -121,13 +123,13 @@ xw
 
         # Resolve memory error reporting on MacPro7,1 SMBIOS
         if self.model in model_array.MacPro:
-            logging.info("- Disabling memory error reporting")
+            logging.info(self.trans["- Disabling memory error reporting"])
             re_block_args.append("pcie")
 
         # Resolve mediaanalysisd crashing on 3802 GPUs
         # Applicable for systems that are the primary iCloud Photos library host, with large amounts of unprocessed faces
         if self.constants.disable_mediaanalysisd is True:
-            logging.info("- Disabling mediaanalysisd")
+            logging.info(self.trans["- Disabling mediaanalysisd"])
             re_block_args.append("media")
 
         return re_block_args
@@ -152,7 +154,7 @@ xw
         # Resolve CoreGraphics.framework crashing on Ivy Bridge in macOS 13.3+
         # Ref: https://github.com/acidanthera/RestrictEvents/pull/12
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.CPUGen.ivy_bridge.value:
-            logging.info("- Fixing CoreGraphics support on Ivy Bridge")
+            logging.info(self.trans["- Fixing CoreGraphics support on Ivy Bridge"])
             re_patch_args.append("f16c")
 
         return re_patch_args
@@ -188,7 +190,7 @@ xw
 
         # Enable FireWire Boot Support
         # Applicable for both native FireWire and Thunderbolt to FireWire adapters
-        logging.info("- Enabling FireWire Boot Support")
+        logging.info(self.trans["- Enabling FireWire Boot Support"])
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOFireWireFamily.kext", self.constants.fw_kext, self.constants.fw_family_path)
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOFireWireSBP2.kext", self.constants.fw_kext, self.constants.fw_sbp2_path)
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOFireWireSerialBusProtocolTransport.kext", self.constants.fw_kext, self.constants.fw_bus_path)
@@ -203,7 +205,7 @@ xw
         # macOS 14.4 Beta 1 strips SPI-based top case support for Broadwell through Kaby Lake MacBooks (and MacBookAir6,x)
         if self.model.startswith("MacBook") and self.model in smbios_data.smbios_dictionary:
             if self.model.startswith("MacBookAir6") or (cpu_data.CPUGen.broadwell <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.kaby_lake):
-                logging.info("- Enabling SPI-based top case support")
+                logging.info(self.trans["- Enabling SPI-based top case support"])
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleHSSPISupport.kext", self.constants.apple_spi_version, self.constants.apple_spi_path)
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleHSSPIHIDDriver.kext", self.constants.apple_spi_hid_version, self.constants.apple_spi_hid_path)
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleTopCaseInjector.kext", self.constants.topcase_inj_version, self.constants.top_case_inj_path)
@@ -249,7 +251,7 @@ xw
         """
 
         if self.constants.disable_tb is True and self.model in ["MacBookPro11,1", "MacBookPro11,2", "MacBookPro11,3", "MacBookPro11,4", "MacBookPro11,5"]:
-            logging.info("- Disabling 2013-2014 laptop Thunderbolt Controller")
+            logging.info(self.trans["- Disabling 2013-2014 laptop Thunderbolt Controller"])
             if self.model in ["MacBookPro11,3", "MacBookPro11,5"]:
                 # 15" dGPU models: IOACPIPlane:/_SB/PCI0@0/PEG1@10001/UPSB@0/DSB0@0/NHI0@0
                 tb_device_path = "PciRoot(0x0)/Pci(0x1,0x1)/Pci(0x0,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)"
@@ -295,7 +297,7 @@ xw
                 (self.model in model_array.Missing_USB_Map or self.model in model_array.Missing_USB_Map_Ventura)
                 or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
-            logging.info("- Adding USB-Map.kext and USB-Map-Tahoe.kext")
+            logging.info(self.trans["- Adding USB-Map.kext and USB-Map-Tahoe.kext"])
             Path(self.constants.map_kext_folder).mkdir()
             Path(self.constants.map_kext_folder_tahoe).mkdir()
             Path(self.constants.map_contents_folder).mkdir()
@@ -324,14 +326,16 @@ xw
             smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.penryn.value or \
             self.model in ["MacPro4,1", "MacPro5,1", "Xserve3,1"]
         ):
-            logging.info("- Adding UHCI/OHCI USB support")
+            logging.info(self.trans["- Adding UHCI/OHCI USB support"])
             shutil.copy(self.constants.apple_usb_11_injector_path, self.constants.kexts_path)
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCI.kext")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCIPCI.kext")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCI.kext")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCIPCI.kext")["Enabled"] = True
-             # Also remove MaxKernel from the USB-Map.kext, as USB stack will be downgraded after root patching
+
+            # Also remove MaxKernel from the USB-Map.kext, as USB stack will be downgraded after root patching
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB-Map.kext")["MaxKernel"] = ""
+
 
     def _debug_handling(self) -> None:
         """
@@ -339,11 +343,11 @@ xw
         """
 
         if self.constants.verbose_debug is True:
-            logging.info("- Enabling Verbose boot")
+            logging.info(self.trans["- Enabling Verbose boot"])
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -v"
 
         if self.constants.kext_debug is True:
-            logging.info("- Enabling DEBUG Kexts")
+            logging.info(self.trans["- Enabling DEBUG Kexts"])
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -liludbgall liludump=90"
             # Disabled due to macOS Monterey crashing shortly after kernel init
             # Use DebugEnhancer.kext instead
@@ -351,7 +355,7 @@ xw
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path)
 
         if self.constants.opencore_debug is True:
-            logging.info("- Enabling DEBUG OpenCore")
+            logging.info(self.trans["- Enabling DEBUG OpenCore"])
             self.config["Misc"]["Debug"]["Target"] = 0x43
             self.config["Misc"]["Debug"]["DisplayLevel"] = 0x80000042
 
@@ -361,7 +365,7 @@ xw
         General OpenCorePkg Handler
         """
 
-        logging.info("- Adding OpenCanopy GUI")
+        logging.info(self.trans["- Adding OpenCanopy GUI"])
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
         support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenCanopy.efi", "UEFI", "Drivers")["Enabled"] = True
         support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenRuntime.efi", "UEFI", "Drivers")["Enabled"] = True
@@ -369,15 +373,15 @@ xw
         support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("ResetNvramEntry.efi", "UEFI", "Drivers")["Enabled"] = True
 
         if self.constants.showpicker is False:
-            logging.info("- Hiding OpenCore picker")
+            logging.info(self.trans["- Hiding OpenCore picker"])
             self.config["Misc"]["Boot"]["ShowPicker"] = False
 
         if self.constants.oc_timeout != 5:
-            logging.info(f"- Setting custom OpenCore picker timeout to {self.constants.oc_timeout} seconds")
+            logging.info(self.trans["- Setting custom OpenCore picker timeout to {self.constants.oc_timeout} seconds"].format(self=self))
             self.config["Misc"]["Boot"]["Timeout"] = self.constants.oc_timeout
 
         if self.constants.vault is True:
-            logging.info("- Setting Vault configuration")
+            logging.info(self.trans["- Setting Vault configuration"])
             self.config["Misc"]["Security"]["Vault"] = "Secure"
 
     def _t1_handling(self) -> None:
@@ -387,7 +391,7 @@ xw
         if self.model not in ["MacBookPro13,2", "MacBookPro13,3", "MacBookPro14,2", "MacBookPro14,3"]:
             return
 
-        logging.info("- Enabling T1 Security Chip support")
+        logging.info(self.trans["- Enabling T1 Security Chip support"])
 
         support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Block"], "Identifier", "com.apple.driver.AppleSSE")["Enabled"] = True
         support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Block"], "Identifier", "com.apple.driver.AppleKeyStore")["Enabled"] = True

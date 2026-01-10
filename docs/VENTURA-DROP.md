@@ -2,11 +2,11 @@
 
 ![](./images/ventura.png)
 
-With the release of OCLP-R v0.5.0 and newer, early support for macOS Ventura has been implemented for most Metal-capable Macs. This page will be used to inform users regarding current issues and will be updated as new patch sets are developed and added to our patcher.
+With the release of OpenCore Legacy Patcher v0.5.0 and newer, early support for macOS Ventura has been implemented for most Metal-capable Macs. This page will be used to inform users regarding current issues and will be updated as new patch sets are developed and added to our patcher.
 
 ## Newly dropped hardware
 
-Ventura's release dropped a large amount of Intel hardware, thus requiring the usage of OCLP-R on the following models (in addition to previously removed models):
+Ventura's release dropped a large amount of Intel hardware, thus requiring the usage of OpenCore Legacy Patcher on the following models (in addition to previously removed models):
 
 * iMac16,1 (21.5-inch, Late 2015)
 * iMac16,2 (21.5-inch and 21.5-inch 4K, Late 2015)
@@ -44,7 +44,7 @@ For users with 2008 to 2013 Mac Pros (MacPro3,1-6,1) and 2009 to 2011 iMacs (iMa
 
 * CPUs supporting AVX2.0 are Haswell or newer, which no pre-2019 Mac Pros can be upgraded with.
 
-Currently at this time, OCLP-R only supports patching the AMD Polaris and Vega Graphics stack to no longer require AVX2.0. We're recently received an AMD RX 6600 donation, so hopefully in the future the project can support AMD Navi with pre-Haswell Macs. However, no time estimates can be given.
+Currently at this time, OpenCore Legacy Patcher only supports patching the AMD Polaris and Vega Graphics stack to no longer require AVX2.0. We're recently received an AMD RX 6600 donation, so hopefully in the future the project can support AMD Navi with pre-Haswell Macs. However, no time estimates can be given.
 
 Following GPUs are applicable:
 
@@ -88,7 +88,7 @@ The following machines shipped stock with these cards:
 * MacPro5,1 and older
 
 
-Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported by OCLP-R. Consider upgrading to these cards if possible.
+Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported by OpenCore Legacy Patcher. Consider upgrading to these cards if possible.
 
 :::
 

@@ -14,6 +14,7 @@ from .. import constants
 
 from ..support import utilities
 from ..detections import device_probe
+from ..support.translate_language import TranslateLanguage_efi_builder
 
 from ..datasets import (
     smbios_data,
@@ -36,6 +37,7 @@ class BuildGraphicsAudio:
         self.config: dict = config
         self.constants: constants.Constants = global_constants
         self.computer: device_probe.Computer = self.constants.computer
+        self.trans = TranslateLanguage_efi_builder(global_constants=global_constants).graphics_audio()
 
         self.gfx0_path = None
 
@@ -76,10 +78,10 @@ class BuildGraphicsAudio:
                     if device.pci_path and device.acpi_path:
                         logging.info(f"- Found dGPU ({i + 1}) at {device.pci_path}")
                         if isinstance(device, device_probe.AMD):
-                            logging.info("- Adding Mac Pro, Xserve DRM patches")
+                            logging.info(self.trans["- Adding Mac Pro, Xserve DRM patches"])
                             self.config["DeviceProperties"]["Add"][device.pci_path] = {"shikigva": 128, "unfairgva": 1, "rebuild-device-tree": 1, "agdpmod": "pikera", "enable-gva-support": 1}
                         elif isinstance(device, device_probe.NVIDIA):
-                            logging.info("- Enabling Nvidia Output Patch")
+                            logging.info(self.trans["- Enabling Nvidia Output Patch"])
                             self.config["DeviceProperties"]["Add"][device.pci_path] = {"rebuild-device-tree": 1, "agdpmod": "vit9696"}
                             self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
                             self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
@@ -87,25 +89,25 @@ class BuildGraphicsAudio:
                     else:
                         logging.info(f"- Failed to find Device path for dGPU {i + 1}")
                         if isinstance(device, device_probe.AMD):
-                            logging.info("- Adding Mac Pro, Xserve DRM patches")
-                            if "shikigva=128 unfairgva=1" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
-                                logging.info("- Falling back to boot-args")
-                                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 agdpmod=pikera radgva=1" + (
-                                    " -wegtree" if "-wegtree" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] else ""
-                                )
+                            logging.info(self.trans["- Adding Mac Pro, Xserve DRM patches"])
+                        if "shikigva=128 unfairgva=1" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
+                            logging.info(self.trans["- Falling back to boot-args"])
+                            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 agdpmod=pikera radgva=1" + (
+                                " -wegtree" if "-wegtree" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] else ""
+                            )
                         elif isinstance(device, device_probe.NVIDIA):
-                            logging.info("- Enabling Nvidia Output Patch")
-                            if "-wegtree agdpmod=vit9696" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
-                                logging.info("- Falling back to boot-args")
-                                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -wegtree agdpmod=vit9696"
-                            self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
-                            self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
+                                logging.info(self.trans["- Enabling Nvidia Output Patch"])
+                                if "-wegtree agdpmod=vit9696" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
+                                    logging.info(self.trans["- Falling back to boot-args"])
+                                    self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -wegtree agdpmod=vit9696"
+                                self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
+                                self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 
                 if not self.computer.gpus:
-                    logging.info("- No socketed dGPU found")
+                    logging.info(self.trans["- No socketed dGPU found"])
 
             else:
-                logging.info("- Adding Mac Pro, Xserve DRM patches")
+                logging.info(self.trans["- Adding Mac Pro, Xserve DRM patches"])
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
 
             if not support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
@@ -152,7 +154,7 @@ class BuildGraphicsAudio:
                         self.computer.dgpu=self.computer.gpus[i]
 
                     if device.pci_path != self.computer.dgpu.pci_path:
-                        logging.info("- device path and GFX0 Device path are different")
+                        logging.info(self.trans["- device path and GFX0 Device path are different"])
                         self.gfx0_path = device.pci_path
                         logging.info(f"- Set GFX0 Device Path: {self.gfx0_path}")
                         self.computer.dgpu.device_id = device.device_id
@@ -170,7 +172,7 @@ class BuildGraphicsAudio:
 
         else:
             if not self.constants.custom_model:
-                logging.info("- Failed to find GFX0 Device path, falling back on known logic")
+                logging.info(self.trans["- Failed to find GFX0 Device path, falling back on known logic"])
             if self.model in ["iMac11,1", "iMac11,3"]:
                 self.gfx0_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
             elif self.model in ["iMac9,1", "iMac10,1"]:
@@ -188,7 +190,7 @@ class BuildGraphicsAudio:
             # Ensure WEG is enabled as we need if for Backlight patching
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_navi_version, self.constants.whatevergreen_navi_path)
         if self.model in ["iMac11,1", "iMac11,2", "iMac11,3", "iMac10,1"]:
-            logging.info("- Adding Nvidia Brightness Control and DRM patches")
+            logging.info(self.trans["- Adding Nvidia Brightness Control and DRM patches"])
             self.config["DeviceProperties"]["Add"][backlight_path] = {
                 "applbkl": binascii.unhexlify("01000000"),
                 "@0,backlight-control": binascii.unhexlify("01000000"),
@@ -207,7 +209,7 @@ class BuildGraphicsAudio:
                     "agdpmod": "vit9696",
                 }
         elif self.model in ["iMac12,1", "iMac12,2"]:
-            logging.info("- Adding Nvidia Brightness Control and DRM patches")
+            logging.info(self.trans["- Adding Nvidia Brightness Control and DRM patches"])
             self.config["DeviceProperties"]["Add"][backlight_path] = {
                 "applbkl": binascii.unhexlify("01000000"),
                 "@0,backlight-control": binascii.unhexlify("01000000"),
@@ -215,7 +217,7 @@ class BuildGraphicsAudio:
                 "shikigva": 256,
                 "agdpmod": "vit9696",
             }
-            logging.info("- Disabling unsupported iGPU")
+            logging.info(self.trans["- Disabling unsupported iGPU"])
             self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
                 "name": binascii.unhexlify("23646973706C6179"),
                 "class-code": binascii.unhexlify("FFFFFFFF"),
@@ -231,13 +233,13 @@ class BuildGraphicsAudio:
         iMac AMD GCN and Navi MXM Handler
         """
 
-        logging.info("- Adding AMD DRM patches")
+        logging.info(self.trans["- Adding AMD DRM patches"])
         if not support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
             # Ensure WEG is enabled as we need if for Backlight patching
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_navi_version, self.constants.whatevergreen_navi_path)
 
         if self.model == "iMac9,1":
-            logging.info("- Adding iMac9,1 Brightness Control and DRM patches")
+            logging.info(self.trans["- Adding iMac9,1 Brightness Control and DRM patches"])
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("BacklightInjector.kext", self.constants.backlight_injectorA_version, self.constants.backlight_injectorA_path)
 
         if not self.constants.custom_model:
@@ -259,7 +261,7 @@ class BuildGraphicsAudio:
             # Set both properties when we cannot run hardware detection
             self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
         if self.model in ["iMac12,1", "iMac12,2"]:
-            logging.info("- Disabling unsupported iGPU")
+            logging.info(self.trans["- Disabling unsupported iGPU"])
             self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
                 "name": binascii.unhexlify("23646973706C6179"),
                 "class-code": binascii.unhexlify("FFFFFFFF"),
@@ -268,7 +270,7 @@ class BuildGraphicsAudio:
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path)
         if self.computer and self.computer.dgpu:
             if self.computer.dgpu.arch == device_probe.AMD.Archs.Legacy_GCN_7000:
-                logging.info("- Adding Legacy GCN Power Gate Patches")
+                logging.info(self.trans["- Adding Legacy GCN Power Gate Patches"])
                 self.config["DeviceProperties"]["Add"][backlight_path].update({
                     "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
                     "CAIL,CAIL_DisableGfxCGPowerGating": 1,
@@ -276,7 +278,7 @@ class BuildGraphicsAudio:
                     "CAIL,CAIL_DisableVCEPowerGating": 1,
                 })
         if self.constants.imac_model == "GCN":
-            logging.info("- Adding Legacy GCN Power Gate Patches")
+            logging.info(self.trans["- Adding Legacy GCN Power Gate Patches"])
             self.config["DeviceProperties"]["Add"][backlight_path].update({
                 "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
                 "CAIL,CAIL_DisableGfxCGPowerGating": 1,
@@ -291,7 +293,7 @@ class BuildGraphicsAudio:
                     "CAIL,CAIL_DisableVCEPowerGating": 1,
                 })
         elif self.constants.imac_model == "Lexa":
-            logging.info("- Adding Lexa Spoofing Patches")
+            logging.info(self.trans["- Adding Lexa Spoofing Patches"])
             self.config["DeviceProperties"]["Add"][backlight_path].update({
                 "model": "AMD Radeon Pro WX 3200",
                 "device-id": binascii.unhexlify("FF67"),
@@ -302,7 +304,7 @@ class BuildGraphicsAudio:
                     "device-id": binascii.unhexlify("FF67"),
                 })
         elif self.constants.imac_model == "Navi":
-            logging.info("- Adding Navi Spoofing Patches")
+            logging.info(self.trans["- Adding Navi Spoofing Patches"])
             navi_backlight_path = backlight_path+"/Pci(0x0,0x0)/Pci(0x0,0x0)"
             self.config["DeviceProperties"]["Add"][navi_backlight_path] = {
                 "ATY,bin_image": binascii.unhexlify(video_bios_data.RX5500XT_64K),
@@ -365,12 +367,12 @@ class BuildGraphicsAudio:
 
         # Add UGA to GOP layer
         if "UGA Graphics" in smbios_data.smbios_dictionary[self.model]:
-            logging.info("- Adding UGA to GOP Patch")
+            logging.info(self.trans["- Adding UGA to GOP Patch"])
             self.config["UEFI"]["Output"]["GopPassThrough"] = "Apple"
 
         # GMUX handling
         if self.constants.software_demux is True and self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
-            logging.info("- Enabling software demux")
+            logging.info(self.trans["- Enabling software demux"])
             # Add ACPI patches
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-DGPU.aml")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "_INI to XINI")["Enabled"] = True
@@ -380,32 +382,32 @@ class BuildGraphicsAudio:
             self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {
                 "class-code": binascii.unhexlify("FFFFFFFF"),
                 "device-id": binascii.unhexlify("FFFF0000"),
-                "IOName": "Intsant Disabled Card",
-                "name": "Intsant Disabled Card"
+                "IOName": "Hackdoc Disabled Card",
+                "name": "Hackdoc Disabled Card"
             }
             self.config["DeviceProperties"]["Delete"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = ["class-code", "device-id", "IOName", "name"]
             # Add AMDGPUWakeHandler
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("AMDGPUWakeHandler.kext", self.constants.gpu_wake_version, self.constants.gpu_wake_path)
 
         if self.constants.dGPU_switch is True and "Switchable GPUs" in smbios_data.smbios_dictionary[self.model]:
-            logging.info("- Allowing GMUX switching in Windows")
+            logging.info(self.trans["- Allowing GMUX switching in Windows"])
             self.config["Booter"]["Quirks"]["SignalAppleOS"] = True
 
         # Force Output support PC VBIOS on Mac Pros
         if self.constants.force_output_support is True:
-            logging.info("- Forcing GOP Support")
+            logging.info(self.trans["- Forcing GOP Support"])
             self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
             self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 
         # AMD GOP VBIOS injection for AMD GCN 1-4 GPUs
         if self.constants.amd_gop_injection is True:
-            logging.info("- Adding AMDGOP.efi")
+            logging.info(self.trans["- Adding AMDGOP.efi"])
             shutil.copy(self.constants.amd_gop_driver_path, self.constants.drivers_path)
             support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("AMDGOP.efi", "UEFI", "Drivers")["Enabled"] = True
 
         # Nvidia Kepler GOP VBIOS injection
         if self.constants.nvidia_kepler_gop_injection is True:
-            logging.info("- Adding NVGOP_GK.efi")
+            logging.info(self.trans["- Adding NVGOP_GK.efi"])
             shutil.copy(self.constants.nvidia_kepler_gop_driver_path, self.constants.drivers_path)
             support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("NVGOP_GK.efi", "UEFI", "Drivers")["Enabled"] = True
 
@@ -420,7 +422,7 @@ class BuildGraphicsAudio:
 
         # AppleMuxControl Override
         if self.model == "MacBookPro9,1":
-            logging.info("- Adding AppleMuxControl Override")
+            logging.info(self.trans["- Adding AppleMuxControl Override"])
             amc_map_path = Path(self.constants.plist_folder_path) / Path("AppleMuxControl/Info.plist")
             self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
             Path(self.constants.amc_kext_folder).mkdir()
@@ -429,7 +431,7 @@ class BuildGraphicsAudio:
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AMC-Override.kext")["Enabled"] = True
 
         if self.model not in model_array.NoAGPMSupport:
-            logging.info("- Adding AppleGraphicsPowerManagement Override")
+            logging.info(self.trans["- Adding AppleGraphicsPowerManagement Override"])
             agpm_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsPowerManagement/Info.plist")
             Path(self.constants.agpm_kext_folder).mkdir()
             Path(self.constants.agpm_contents_folder).mkdir()
@@ -437,7 +439,7 @@ class BuildGraphicsAudio:
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AGPM-Override.kext")["Enabled"] = True
 
         if self.model in model_array.AGDPSupport:
-            logging.info("- Adding AppleGraphicsDevicePolicy Override")
+            logging.info(self.trans["- Adding AppleGraphicsDevicePolicy Override"])
             agdp_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsDevicePolicy/Info.plist")
             Path(self.constants.agdp_kext_folder).mkdir()
             Path(self.constants.agdp_contents_folder).mkdir()
@@ -446,17 +448,17 @@ class BuildGraphicsAudio:
 
         # AGPM Patch
         if self.model in model_array.DualGPUPatch:
-            logging.info("- Adding dual GPU patch")
+            logging.info(self.trans["- Adding dual GPU patch"])
             if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
                 self.gfx0_path = self.computer.dgpu.pci_path
                 logging.info(f"- Found GFX0 Device Path: {self.gfx0_path}")
             else:
                 if not self.constants.custom_model:
-                    logging.info("- Failed to find GFX0 Device path, falling back on known logic")
+                    logging.info(self.trans["- Failed to find GFX0 Device path, falling back on known logic"])
                 self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
 
             if self.model in model_array.IntelNvidiaDRM and self.constants.drm_support is True:
-                logging.info("- Prioritizing DRM support over Intel QuickSync")
+                logging.info(self.trans["- Prioritizing DRM support over Intel QuickSync"])
                 self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696", "shikigva": 256}
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
                     "name": binascii.unhexlify("23646973706C6179"),
@@ -480,15 +482,15 @@ class BuildGraphicsAudio:
         self._backlight_path_detection()
         # Check GPU Vendor
         if self.constants.metal_build is True:
-            logging.info("- Adding Metal GPU patches on request")
+            logging.info(self.trans["- Adding Metal GPU patches on request"])
             if self.constants.imac_vendor == "AMD":
                 self._amd_mxm_patch(self.gfx0_path)
             elif self.constants.imac_vendor == "Nvidia":
                 self._nvidia_mxm_patch(self.gfx0_path)
             else:
-                logging.info("- Failed to find vendor")
+                logging.info(self.trans["- Failed to find vendor"])
         elif not self.constants.custom_model and self.model in model_array.LegacyGPU and self.computer.dgpu:
-            logging.info(f"- Detected dGPU: {utilities.friendly_hex(self.computer.dgpu.vendor_id)}:{utilities.friendly_hex(self.computer.dgpu.device_id)}")
+            logging.info(self.trans["- Detected dGPU: "] + f"{utilities.friendly_hex(self.computer.dgpu.vendor_id)}:{utilities.friendly_hex(self.computer.dgpu.device_id)}")
             if self.computer.dgpu.arch in [
                 device_probe.AMD.Archs.Legacy_GCN_7000,
                 device_probe.AMD.Archs.Legacy_GCN_8000,

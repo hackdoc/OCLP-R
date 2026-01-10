@@ -21,7 +21,7 @@ from .hardware.graphics import (
     intel_haswell,
     intel_broadwell,
     intel_skylake,
-
+    
     nvidia_tesla,
     nvidia_kepler,
     nvidia_webdriver,
@@ -40,13 +40,21 @@ from .hardware.misc import (
     display_backlight,
     gmux,
     keyboard_backlight,
-    legacy_audio,
+    apfs_aligned,
     pcie_webcam,
     t1_security,
-    usb11,
     cpu_missing_avx,
+    
 )
-
+from .hardware.USB import (
+    modern_usb,
+    legacy_usb11,
+)
+from .hardware.audio import(
+    legacy_audio,
+    modern_audio,
+    voodoo_audio,
+)
 from ... import constants
 
 from ...datasets import sip_data
@@ -61,34 +69,38 @@ from ...detections import (
     amfi_detect,
     device_probe
 )
+from ...support import translate_language
 
+cons=constants.Constants()
+trans=translate_language.TranslateLanguage_sys_patch(cons).detect()
 
 class HardwarePatchsetSettings(StrEnum):
     """
     Enum for patch settings
     """
-    KERNEL_DEBUG_KIT_REQUIRED     = "Settings: Kernel Debug Kit required"
-    KERNEL_DEBUG_KIT_MISSING      = "Settings: Kernel Debug Kit missing"
-    METALLIB_SUPPORT_PKG_REQUIRED = "Settings: MetallibSupportPkg.pkg required"
-    METALLIB_SUPPORT_PKG_MISSING  = "Settings: MetallibSupportPkg.pkg missing"
+    KERNEL_DEBUG_KIT_REQUIRED     = trans["Settings: Kernel Debug Kit required"]
+    KERNEL_DEBUG_KIT_MISSING      = trans["Settings: Kernel Debug Kit missing"]
+    METALLIB_SUPPORT_PKG_REQUIRED = trans["Settings: MetallibSupportPkg.pkg required"]
+    METALLIB_SUPPORT_PKG_MISSING  = trans["Settings: MetallibSupportPkg.pkg missing"]
 
 
 class HardwarePatchsetValidation(StrEnum):
     """
     Enum for validation settings
     """
-    UNSUPPORTED_HOST_OS           = "Validation: Unsupported Host OS"
-    MISSING_NETWORK_CONNECTION    = "Validation: Missing Network Connection"
-    FILEVAULT_ENABLED             = "Validation: FileVault is enabled"
-    SIP_ENABLED                   = "Validation: System Integrity Protection is enabled"
-    SECURE_BOOT_MODEL_ENABLED     = "Validation: SecureBootModel is enabled"
-    AMFI_ENABLED                  = "Validation: AMFI is enabled"
-    WHATEVERGREEN_MISSING         = "Validation: WhateverGreen.kext missing"
-    FORCE_OPENGL_MISSING          = "Validation: Force OpenGL property missing"
-    FORCE_COMPAT_MISSING          = "Validation: Force compat property missing"
-    NVDA_DRV_MISSING              = "Validation: nvda_drv(_vrl) variable missing"
-    PATCHING_NOT_POSSIBLE         = "Validation: Patching not possible"
-    UNPATCHING_NOT_POSSIBLE       = "Validation: Unpatching not possible"
+    UNSUPPORTED_HOST_OS           = trans["Validation: Unsupported Host OS"]
+    MISSING_NETWORK_CONNECTION    = trans["Validation: Missing Network Connection"]
+    FILEVAULT_ENABLED             = trans["Validation: FileVault is enabled"]
+    SIP_ENABLED                   = trans["Validation: System Integrity Protection is enabled"]
+    SECURE_BOOT_MODEL_ENABLED     = trans["Validation: SecureBootModel is enabled"]
+    AMFI_ENABLED                  = trans["Validation: AMFI is enabled"]
+    WHATEVERGREEN_MISSING         = trans["Validation: WhateverGreen.kext missing"]
+    FORCE_OPENGL_MISSING          = trans["Validation: Force OpenGL property missing"]
+    FORCE_COMPAT_MISSING          = trans["Validation: Force compat property missing"]
+    NVDA_DRV_MISSING              = trans["Validation: nvda_drv(_vrl) variable missing"]
+    PATCHING_NOT_POSSIBLE         = trans["Validation: Patching not possible"]
+    UNPATCHING_NOT_POSSIBLE       = trans["Validation: Unpatching not possible"]
+    REPATCHING_NOT_SUPPORTED      = trans["Validation: Root volume dirty"]
 
 
 class HardwarePatchsetDetection:
@@ -105,7 +117,7 @@ class HardwarePatchsetDetection:
         self._os_build   = os_build   or self._constants.detected_os_build
         self._os_version = os_version or self._constants.detected_os_version
         self._validation = validation
-
+        self.trans = trans
         self._hardware_variants = [
             intel_iron_lake.IntelIronLake,
             intel_sandy_bridge.IntelSandyBridge,
@@ -113,27 +125,27 @@ class HardwarePatchsetDetection:
             intel_haswell.IntelHaswell,
             intel_broadwell.IntelBroadwell,
             intel_skylake.IntelSkylake,
-
             nvidia_tesla.NvidiaTesla,
             nvidia_kepler.NvidiaKepler,
             nvidia_webdriver.NvidiaWebDriver,
-
             amd_terascale_1.AMDTeraScale1,
             amd_terascale_2.AMDTeraScale2,
             amd_legacy_gcn.AMDLegacyGCN,
             amd_polaris.AMDPolaris,
             amd_vega.AMDVega,
-
             legacy_wireless.LegacyWireless,
             modern_wireless.ModernWireless,
-
+            legacy_audio.LegacyAudio,
+            modern_audio.ModernAudio,
+            apfs_aligned.APFSP,
+            voodoo_audio.VoodooAudio,
+            modern_usb.LegacyUSBHost,
             display_backlight.DisplayBacklight,
             gmux.GraphicsMultiplexer,
             keyboard_backlight.KeyboardBacklight,
-            legacy_audio.LegacyAudio,
             pcie_webcam.PCIeFaceTimeCamera,
             t1_security.T1SecurityChip,
-            usb11.USB11Controller,
+            legacy_usb11.USB11Controller,
             cpu_missing_avx.CPUMissingAVX,
         ]
 
@@ -151,7 +163,7 @@ class HardwarePatchsetDetection:
         Determine if host OS is unsupported
         """
         _min_os = os_data.big_sur.value
-        _max_os = os_data.sequoia.value
+        _max_os = os_data.tahoe.value
         if self._hackdoc_internal_check() is True:
             return False
         if self._xnu_major < _min_os or self._xnu_major > _max_os:
@@ -183,8 +195,67 @@ class HardwarePatchsetDetection:
                 return False
 
         return "FileVault is Off" not in subprocess.run(["/usr/bin/fdesetup", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+    def _is_root_volume_dirty(self) -> bool:
+        """
+        Determine if system volume is not sealed
+        """
+        # macOS 11.0 introduced sealed system volumes
+        if self._xnu_major < os_data.big_sur.value:
+            return False
+
+        try:
+            content = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", "/"], capture_output=True).stdout)
+        except plistlib.InvalidFileException:
+            raise RuntimeError(self.trans["Failed to parse diskutil output."])
+        
+        seal = content["Sealed"]
+
+        if "Broken" in seal:
+            logging.error(self.trans["System volume is tainted, unpatching is required"])
+            return True
+
+        return False
+    def _validation_check_repatching_is_possible(self) -> bool:
+        """
+        Determine if repatching is not allowed
+        """
+        oclp_patch_path = "/System/Library/CoreServices/oclp-r.plist"
+        if not Path(oclp_patch_path).exists():
+            return self._is_root_volume_dirty()
+
+        oclp_plist = plistlib.load(open(oclp_patch_path, "rb"))
+
+        if self._constants.computer.oclp_sys_url != self._constants.commit_info[2]:
+            logging.error(self.trans["Installed patches are from different commit, unpatching is required"])
+            return True
 
 
+
+        wireless_keys = {"Legacy Wireless", "Modern Wireless", "Modern Wireless Common", "Modern Wireless Extended"}
+
+        # Keep in sync with generate_patchset_plist
+        metadata_keys = {
+            "oclp-r",
+            "oclp-R",
+            "OCLP-r",
+            "OCLP-R",
+           # "OpenCore Legacy Patcher",
+            "PatcherSupportPkg",
+            "Time Patched",
+            "Commit URL",
+            "Kernel Debug Kit Used",
+            "Metal Library Used",
+            "OS Version",
+            "Custom Signature",
+        }
+
+        existing_patches = set(oclp_plist) - wireless_keys - metadata_keys
+        if existing_patches:
+            logging.error(self.trans["Patch(es) already installed: {0}, unpatching is required"].format(", ".join(existing_patches)))
+            return True
+
+        return False
+    
     def _validation_check_system_integrity_protection_enabled(self, configs: list[str]) -> bool:
         """
         Determine if System Integrity Protection is enabled
@@ -273,7 +344,7 @@ class HardwarePatchsetDetection:
 
     def _hackdoc_internal_check(self) -> None:
         """
-        Determine whether to unlock Intsant Developer mode
+        Determine whether to unlock Hackdoc Developer mode
         """
         return Path("~/.hackdoc_developer").expanduser().exists()
 
@@ -500,6 +571,7 @@ class HardwarePatchsetDetection:
             HardwarePatchsetValidation.SIP_ENABLED:                 self._validation_check_system_integrity_protection_enabled(required_sip_configs),
             HardwarePatchsetValidation.SECURE_BOOT_MODEL_ENABLED:   self._validation_check_secure_boot_model_enabled(),
             HardwarePatchsetValidation.AMFI_ENABLED:                self._validation_check_amfi_enabled(highest_amfi_level),
+            HardwarePatchsetValidation.REPATCHING_NOT_SUPPORTED: self._validation_check_repatching_is_possible(),
             HardwarePatchsetValidation.WHATEVERGREEN_MISSING:       self._validation_check_whatevergreen_missing() if has_nvidia_web_drivers is True else False,
             HardwarePatchsetValidation.FORCE_OPENGL_MISSING:        self._validation_check_force_opengl_missing()  if has_nvidia_web_drivers is True else False,
             HardwarePatchsetValidation.FORCE_COMPAT_MISSING:        self._validation_check_force_compat_missing()  if has_nvidia_web_drivers is True else False,

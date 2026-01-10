@@ -9,44 +9,53 @@ from packaging import version
 from .datasets import os_data
 from .detections import device_probe
 
-
+import getpass
 class Constants:
     def __init__(self) -> None:
+        self.language_key:                     list = ["简体中文","English"]
+        
+        self.language_option:                str    = "English" #en:English zh:中文
+        #API Link
+        self.kdk_api_link:                    str = ""
+        self.metallib_api_link:               str = ""
+
         # Patcher Versioning
-        self.patcher_version:                 str = "2.5.2"  # OCLP-R
-        self.patcher_support_pkg_version:     str = "1.9.5"  # PatcherSupportPkg
-        self.copyright_date:                  str = "Copyright © 2020-2025 Dortania and Intsant"
+        self.patcher_version:                 str = "3.0.1"  # OCLP-R
+        self.patcher_support_pkg_version:     str = "1.11.0"  # PatcherSupportPkg
+        self.copyright_date:                  str = "Copyright © 2020-2025 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
-
+        
         # URLs
-        self.url_patcher_support_pkg:         str = "https://github.com/intsant/PatcherSupportPkg/releases/download/"
+        self.github_proxy_link:               str = "Default"
+        self.url_patcher_support_pkg:         str = "https://github.com/hackdoc/PatcherSupportPkg/releases/download/"
         self.discord_link:                    str = "https://discord.gg/rqdPgH8xSN"
-        self.guide_link:                      str = "https://dortania.github.io/OpenCore-Legacy-Patcher/"
-        self.repo_link:                       str = "https://github.com/intsant/OCLP-R"
+        self.guide_link:                      str = "https://hackdoc.github.io/oclpr/"
+        self.repo_link:                       str = "https://github.com/hackdoc/OCLP-R/releases/"
         self.installer_pkg_url:               str = f"{self.repo_link}/releases/download/{self.patcher_version}/AutoPkg-Assets.pkg"
-        self.installer_pkg_url_nightly:       str = "http://nightly.link/intsant/OCLP-R/workflows/build-app-wxpython/main/AutoPkg-Assets.pkg.zip"
-
+        self.installer_pkg_url_nightly:       str = "http://nightly.link/hackdoc/OCLP-R/workflows/build-app-wxpython/main/AutoPkg-Assets.pkg.zip"
+        self.user_download_file:              str = f"/Users/{getpass.getuser()}/Downloads"
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_version: str = "1.0.4"
+        self.opencore_version: str = "1.0.6"
 
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
         self.lilu_version:               str = "1.7.0"  #      Lilu
-        self.whatevergreen_version:      str = "1.6.9"  #      WhateverGreen
+        self.whatevergreen_version:      str = "1.7.1"  #      WhateverGreen
         self.whatevergreen_navi_version: str = "1.6.9-Navi"  # WhateverGreen (Navi Patch)
         self.airportbcrmfixup_version:   str = "2.1.9"  #      AirPortBrcmFixup
         self.nvmefix_version:            str = "1.1.2"  #      NVMeFix
         self.applealc_version:           str = "1.6.3"  #      AppleALC
-        self.restrictevents_version:     str = "1.1.5"  #      RestrictEvents
+        self.restrictevents_version:     str = "1.1.7"  #      RestrictEvents
         self.featureunlock_version:      str = "1.1.7"  #      FeatureUnlock
-        self.debugenhancer_version:      str = "1.1.0"  #      DebugEnhancer
-        self.cpufriend_version:          str = "1.2.9"  #      CPUFriend
+        self.debugenhancer_version:      str = "1.1.1"  #      DebugEnhancer
+        self.cpufriend_version:          str = "1.3.0"  #      CPUFriend
         self.bluetool_version:           str = "2.6.9"  #      BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version:          str = "2.6.1"  #      CSLVFixup
         self.autopkg_version:            str = "1.0.4"  #      AutoPkgInstaller
-        self.cryptexfixup_version:       str = "1.0.4"  #      CryptexFixup
+        self.cryptexfixup_version:       str = "1.0.5"  #      CryptexFixup
+
 
         ## Apple
         ## https://www.apple.com
@@ -76,7 +85,7 @@ class Constants:
         self.apple_spi_hid_version: str = "1.0.0"  #  AppleHSSPIHIDDriver (14.4 Beta 1)
         self.kernel_relay_version:  str = "1.0.0"  #  KernelRelayHost (15.0 Beta 3)
 
-        ## Apple - Intsant Modified
+        ## Apple - Hackdoc Modified
         self.bcm570_version:           str = "1.0.2"  # CatalinaBCM5701Ethernet
         self.i210_version:             str = "1.0.0"  # CatalinaIntelI210Ethernet
         self.corecaptureelcap_version: str = "1.0.2"  # corecaptureElCap
@@ -89,8 +98,8 @@ class Constants:
         ## Apple - Jazzzny Modified
         self.aquantia_version: str = "1.1.0"  # AppleEthernetAbuantiaAqtion
 
-        ## Intsant
-        ## https://github.com/intsant
+        ## Hackdoc
+        ## https://github.com/hackdoc
         self.backlight_injector_version:     str = "1.1.0"  # BacklightInjector
         self.backlight_injectorA_version:    str = "1.0.0"  # BacklightInjector (iMac9,1)
         self.smcspoof_version:               str = "1.0.0"  # SMC-Spoof
@@ -105,7 +114,7 @@ class Constants:
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
         ## https://github.com/reenigneorcim/latebloom
-        self.mousse_version:     str = "0.95-Intsant"  # MouSSE
+        self.mousse_version:     str = "0.95-Hackdoc"  # MouSSE
         self.telemetrap_version: str = "1.0.0"  #         telemetrap
 
         ## cdf
@@ -123,7 +132,7 @@ class Constants:
         ## flagersgit
         ## https://github.com/flagersgit/KDKlessWorkaround
         self.kdkless_version: str = "1.0.0"
-
+        
         ## Jazzzny
         self.legacy_keyboard: str = "1.0.0"  # LegacyKeyboardInjector - Jazzzny
 
@@ -135,6 +144,8 @@ class Constants:
 
         # Patcher Settings
         ## Internal settings
+        self.audio_type :  str ="AppleHDA"
+        self.change_control_center:     bool = False
         self.allow_oc_everywhere:       bool = False  # Set whether Patcher can be run on unsupported Macs
         self.gui_mode:                  bool = False  # Determine whether running in a GUI or TUI
         self.cli_mode:                  bool = True  #  Determine if running in CLI mode
@@ -156,12 +167,13 @@ class Constants:
         self.update_stage:               int = 0  #     Determine update stage (see gui_support.py)
         self.log_filepath:              Path = None  #  Path to log file
         self.thread_sleep_interval:    float = 0.01  #  Sleep interval between UI updates (seconds) - balance between UI responsiveness and CPU usage
-
         self.commit_info: tuple = (None, None, None)  # Commit info (Branch, Commit Date, Commit URL)
-
+        self.manually_download_kdk: bool = False
         ## Hardware
         self.computer: device_probe.Computer = None  # type: ignore
         self.custom_model:     Optional[str] = None
+        
+        self.applehda_version:str="15.6"
 
         ## OpenCore Settings
         self.opencore_debug: bool = False # Enable OpenCore debug
@@ -235,12 +247,18 @@ class Constants:
         self.disable_connectdrivers: bool = False  # Disable ConnectDrivers (hibernation)
         self.set_vmm_cpuid:          bool = False  # Set VMM bit inside CPUID
         self.disable_mediaanalysisd: bool = False  # Set mediaanalysisd to spawn
-        self.force_quad_thread:      bool = False #  Force quad thread mode (cpus=4)
-        self.set_alc_usage:          bool = True  #  Set AppleALC usage
-        self.allow_3rd_party_drives: bool = True  #  Allow ThridPartyDrives quirk
-        self.allow_nvme_fixing:      bool = True  #  Allow NVMe Kernel Space Patches
-        self.apfs_trim_timeout:      bool = True  #  Set APFS Trim timeout
-        self.custom_sip_value:        int = None  #  Set custom SIP value
+        self.force_quad_thread:      bool = False  #  Force quad thread mode (cpus=4)
+        self.allow_usb_patch:        bool = True   # Allow USB patch on macOS 26+
+        self.set_alc_usage:          bool = True   #  Set AppleALC usage
+        self.allow_3rd_party_drives: bool = True   #  Allow ThridPartyDrives quirk
+        self.allow_nvme_fixing:      bool = True   #  Allow NVMe Kernel Space Patches
+        self.apfs_trim_timeout:      bool = True   #  Set APFS Trim timeout
+        self.custom_sip_value:        int = None   #  Set custom SIP value
+        self.allow_apfs_aligned_patch:           bool = True
+        
+        
+       
+        
 
         ## Non-Metal OS support
         self.legacy_accel_support = [
@@ -250,7 +268,21 @@ class Constants:
             os_data.os_data.sonoma,
             os_data.os_data.sequoia,
         ]
-
+        ## GitHub mirror:
+        ###https://ghfast.top
+        ###https://gh-proxy.com
+        ###https://github.moeyy.xyz
+        ###https://gitapi.simplehac.top
+        self.github_mirror: str = ""
+        self.api_link()
+    
+    def api_link(self):
+        if self.github_proxy_link!="SimpleHac":
+            self.kdk_api_link="https://dortania.github.io/KdkSupportPkg/manifest.json"
+            self.metallib_api_link="https://dortania.github.io/MetallibSupportPkg/manifest.json"
+        if self.github_proxy_link=="SimpleHac":
+            self.kdk_api_link="https://next.oclpapi.simplehac.cn/KdkSupportPkg/manifest.json"
+            self.metallib_api_link="https://next.oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
     @property
     def special_build(self):
         """
@@ -294,19 +326,19 @@ class Constants:
 
     @property
     def auto_patch_launch_agent_path(self):
-        return self.launch_services_path / Path("com.intsant.oclp-r.auto-patch.plist")
+        return self.launch_services_path / Path("com.hackdoc.oclp-r.auto-patch.plist")
 
     @property
     def rsr_monitor_launch_daemon_path(self):
-        return self.launch_services_path / Path("com.intsant.oclp-r.rsr-monitor.plist")
+        return self.launch_services_path / Path("com.hackdoc.oclp-r.rsr-monitor.plist")
 
     @property
     def update_launch_daemon_path(self):
-        return self.launch_services_path / Path("com.intsant.oclp-r.macos-update.plist")
+        return self.launch_services_path / Path("com.hackdoc.oclp-r.macos-update.plist")
 
     @property
     def kdk_launch_daemon_path(self):
-        return self.launch_services_path / Path("com.intsant.oclp-r.os-caching.plist")
+        return self.launch_services_path / Path("com.hackdoc.oclp-r.os-caching.plist")
 
     # ACPI
     @property
@@ -321,10 +353,11 @@ class Constants:
     def demux_ssdt_path(self):
         return self.payload_path / Path("ACPI/SSDT-DGPU.aml")
 
+    # Drivers
     @property
     def sequoia_apfs_driver_path(self):
         return self.payload_path / Path("Drivers/apfs_aligned.efi")
-    # Drivers
+
     @property
     def nvme_driver_path(self):
         return self.payload_path / Path("Drivers/NvmExpressDxe.efi")
@@ -687,15 +720,19 @@ class Constants:
     @property
     def map_kext_folder(self):
         return self.kexts_path / Path("USB-Map.kext")
+
     @property
     def map_kext_folder_tahoe(self):
         return self.kexts_path / Path("USB-Map-Tahoe.kext")
+
     @property
     def map_contents_folder(self):
         return self.map_kext_folder / Path("Contents")
+
     @property
     def map_contents_folder_tahoe(self):
         return self.map_kext_folder_tahoe / Path("Contents")
+
     @property
     def pp_kext_folder(self):
         return self.kexts_path / Path("CPUFriendDataProvider.kext")
@@ -782,28 +819,57 @@ class Constants:
         return self.icns_resource_path / Path("Generic.icns")
 
     @property
+    def package_icns_path_generic(self):
+        return self.icns_resource_path / Path("Package.icns")
+
+    @property
     def icon_path_macos_big_sur(self):
         return self.icns_resource_path / Path("BigSur.icns")
+
+    @property
+    def package_icns_path_big_sur(self):
+        return self.icns_resource_path / Path("Package11.icns")
 
     @property
     def icon_path_macos_monterey(self):
         return self.icns_resource_path / Path("Monterey.icns")
 
     @property
+    def package_icns_path_monterey(self):
+        return self.icns_resource_path / Path("Package12.icns")
+
+    @property
     def icon_path_macos_ventura(self):
         return self.icns_resource_path / Path("Ventura.icns")
+
+    @property
+    def package_icns_path_ventura(self):
+        return self.icns_resource_path / Path("Package13.icns")
 
     @property
     def icon_path_macos_sonoma(self):
         return self.icns_resource_path / Path("Sonoma.icns")
 
     @property
+    def package_icns_path_sonoma(self):
+        return self.icns_resource_path / Path("Package14.icns")
+
+    @property
     def icon_path_macos_sequoia(self):
         return self.icns_resource_path / Path("Sequoia.icns")
 
     @property
+    def package_icns_path_sequoia(self):
+        return self.icns_resource_path / Path("Package15.icns")
+
+    @property
     def icon_path_macos_tahoe(self):
         return self.icns_resource_path / Path("Tahoe.icns")
+
+    @property
+    def package_icns_path_tahoe(self):
+        return self.icns_resource_path / Path("Package26.icns")
+
     @property
     def gui_path(self):
         return self.payload_path / Path("Icon/Resources.zip")
@@ -839,6 +905,18 @@ class Constants:
             str(self.icon_path_macos_sonoma),
             str(self.icon_path_macos_sequoia),
             str(self.icon_path_macos_tahoe),
+        ]
+
+    @property
+    def package_icns_paths(self):
+        return [
+            str(self.package_icns_path_generic),
+            str(self.package_icns_path_big_sur),
+            str(self.package_icns_path_monterey),
+            str(self.package_icns_path_ventura),
+            str(self.package_icns_path_sonoma),
+            str(self.package_icns_path_sequoia),
+            str(self.package_icns_path_tahoe),
         ]
 
     sbm_values = [

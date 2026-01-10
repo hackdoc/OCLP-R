@@ -21,13 +21,14 @@ from . import (
     network_handler,
     subprocess_wrapper
 )
-
+from ..constants import Constants
+from .translate_language import TranslateLanguage
 KDK_INSTALL_PATH: str  = "/Library/Developer/KDKs"
 KDK_INFO_PLIST:   str  = "KDKInfo.plist"
-KDK_API_LINK:     str  = "https://dortania.github.io/KdkSupportPkg/manifest.json"
+
+
 
 KDK_ASSET_LIST:   list = None
-
 
 class KernelDebugKitObject:
     """
@@ -60,7 +61,7 @@ class KernelDebugKitObject:
         ) -> None:
 
         self.constants: constants.Constants = global_constants
-
+        self.KDK_API_LINK_ORG:     str  = self.constants.kdk_api_link
         self.host_build:   str = host_build    # ex. 20A5384c
         self.host_version: str = host_version  # ex. 11.0.1
 
@@ -75,7 +76,7 @@ class KernelDebugKitObject:
         self.kdk_url:         str = ""
         self.kdk_url_build:   str = ""
         self.kdk_url_version: str = ""
-
+        self.size=0
         self.kdk_url_expected_size: int = 0
 
         self.kdk_url_is_exactly_match: bool = False
@@ -89,7 +90,8 @@ class KernelDebugKitObject:
         self.success: bool = False
 
         self.error_msg: str = ""
-
+        # Initialize translation
+        self.trans = TranslateLanguage(self.constants).kdk_handler()
         self._get_latest_kdk()
 
 
@@ -104,11 +106,12 @@ class KernelDebugKitObject:
 
         global KDK_ASSET_LIST
 
-        logging.info("Pulling KDK list from KdkSupportPkg API")
+        logging.info(self.trans["Pulling KDK list from KdkSupportPkg API"])
         if KDK_ASSET_LIST:
             return KDK_ASSET_LIST
 
         try:
+            KDK_API_LINK=self.KDK_API_LINK_ORG
             results = network_handler.NetworkUtilities().get(
                 KDK_API_LINK,
                 headers={
@@ -117,11 +120,11 @@ class KernelDebugKitObject:
                 timeout=5
             )
         except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
-            logging.info("Could not contact KDK API")
+            logging.info(self.trans["Could not contact KDK API"])
             return None
 
         if results.status_code != 200:
-            logging.info("Could not fetch KDK list")
+            logging.info(self.trans["Could not fetch KDK list"])
             return None
 
         KDK_ASSET_LIST = results.json()
@@ -147,13 +150,13 @@ class KernelDebugKitObject:
         parsed_version = cast(packaging.version.Version, packaging.version.parse(host_version))
 
         if os_data.os_conversion.os_to_kernel(str(parsed_version.major)) < os_data.os_data.ventura:
-            self.error_msg = "KDKs are not required for macOS Monterey or older"
-            logging.warning(f"{self.error_msg}")
+            self.error_msg = self.trans["KDKs are not required for macOS Monterey or older"]
+            logging.warning(self.error_msg)
             return
 
         self.kdk_installed_path = self._local_kdk_installed()
         if self.kdk_installed_path:
-            logging.info(f"KDK already installed ({Path(self.kdk_installed_path).name}), skipping")
+            logging.info(self.trans["KDK already installed ({0}), skipping"].format(Path(self.kdk_installed_path).name))
             self.kdk_already_installed = True
             self.success = True
             return
@@ -161,31 +164,31 @@ class KernelDebugKitObject:
         remote_kdk_version = self._get_remote_kdks()
 
         if remote_kdk_version is None:
-            logging.warning("Failed to fetch KDK list, falling back to local KDK matching")
+            logging.warning(self.trans["Failed to fetch KDK list, falling back to local KDK matching"])
 
             # First check if a KDK matching the current macOS version is installed
             # ex. 13.0.1 vs 13.0
             loose_version = f"{parsed_version.major}.{parsed_version.minor}"
-            logging.info(f"Checking for KDKs loosely matching {loose_version}")
+            logging.info(self.trans["Checking for KDKs loosely matching {0}"].format(loose_version))
             self.kdk_installed_path = self._local_kdk_installed(match=loose_version, check_version=True)
             if self.kdk_installed_path:
-                logging.info(f"Found matching KDK: {Path(self.kdk_installed_path).name}")
+                logging.info(self.trans["Found matching KDK: {0}"].format(Path(self.kdk_installed_path).name))  
                 self.kdk_already_installed = True
                 self.success = True
                 return
 
             older_version = f"{parsed_version.major}.{parsed_version.minor - 1 if parsed_version.minor > 0 else 0}"
-            logging.info(f"Checking for KDKs matching {older_version}")
+            logging.info(self.trans["Checking for KDKs matching {0}"].format(older_version))
             self.kdk_installed_path = self._local_kdk_installed(match=older_version, check_version=True)
             if self.kdk_installed_path:
-                logging.info(f"Found matching KDK: {Path(self.kdk_installed_path).name}")
+                logging.info(self.trans["Found matching KDK: {0}"].format(Path(self.kdk_installed_path).name))
                 self.kdk_already_installed = True
                 self.success = True
                 return
 
-            logging.warning(f"Couldn't find KDK matching {host_version} or {older_version}, please install one manually")
+            logging.warning(self.trans["Couldn't find KDK matching {0} or {1}, please install one manually"].format(host_version,host_build))
 
-            self.error_msg = f"Could not contact KdkSupportPkg API, and no KDK matching {host_version} ({host_build}) or {older_version} was installed.\nPlease ensure you have a network connection or manually install a KDK."
+            self.error_msg = self.trans["Couldn't find KDK matching {0} ({1}) or {2} was installed.\nPlease ensure you have a network connection or manually install a KDK."].format(host_version,host_build,older_version)
 
             return
 
@@ -193,6 +196,12 @@ class KernelDebugKitObject:
         for kdk in remote_kdk_version:
             if (kdk["build"] != host_build):
                 continue
+            if self.constants.github_proxy_link!="SimpleHac" and self.constants.github_proxy_link!="Default":
+                kdk['url']=kdk['url'].replace("https://gitapi.simplehac.top/","")
+            if self.constants.github_proxy_link=="gh-proxy":
+                kdk['url']="https://gh-proxy.com/"+kdk['url']
+            if self.constants.github_proxy_link=="ghfast":
+                kdk['url']="https://ghfast.top/"+kdk['url']
             self.kdk_url = kdk["url"]
             self.kdk_url_build = kdk["build"]
             self.kdk_url_version = kdk["version"]
@@ -202,55 +211,75 @@ class KernelDebugKitObject:
 
         # If no exact match, check for closest match
         if self.kdk_url == "":
-            for kdk in remote_kdk_version:
-                kdk_version = cast(packaging.version.Version, packaging.version.parse(kdk["version"]))
-                if kdk_version > parsed_version:
-                    continue
-                if kdk_version.major != parsed_version.major:
-                    continue
-                if kdk_version.minor not in range(parsed_version.minor - 1, parsed_version.minor + 1):
-                    continue
+                count_kdks=[]
+                for kdk in remote_kdk_version:
+                    kdk_version = cast(packaging.version.Version, packaging.version.parse(kdk["version"]))
+                    if kdk_version > parsed_version:
+                        continue
+                    if kdk_version.major != parsed_version.major:
+                        continue
+                    if kdk_version.minor not in range(parsed_version.minor - 1, parsed_version.minor + 1):
+                        continue
+                    count_kdks.append(kdk)
+                if count_kdks:
+                    count_kdks.sort(key=lambda x: x["build"], reverse=True)
+                    closest = None
+                    for kdk in count_kdks:
+                        if kdk["build"] <= host_build:
+                            closest = kdk
+                            break
+                    if closest is None:
+                        closest = count_kdks[-1]
+                    self.kdk_closest_match_url = closest["url"]
+                    self.kdk_closest_match_url_build = closest["build"]
+                    self.kdk_closest_match_url_version = closest["version"]
+                    self.kdk_closest_match_url_expected_size = closest["fileSize"]
+                    self.kdk_url_is_exactly_match = False
 
-                # The KDK list is already sorted by version then date, so the first match is the closest
-                self.kdk_closest_match_url = kdk["url"]
-                self.kdk_closest_match_url_build = kdk["build"]
-                self.kdk_closest_match_url_version = kdk["version"]
-                self.kdk_closest_match_url_expected_size = kdk["fileSize"]
-                self.kdk_url_is_exactly_match = False
-                break
+                
 
         if self.kdk_url == "":
             if self.kdk_closest_match_url == "":
-                logging.warning(f"No KDKs found for {host_build} ({host_version})")
-                self.error_msg = f"No KDKs found for {host_build} ({host_version})"
+                logging.warning(self.trans["No KDKs found for {0} ({1})"].format(host_build, host_version))
+                self.error_msg = self.trans["No KDKs found for {0} ({1})"].format(host_build, host_version)
                 return
-            logging.info(f"No direct match found for {host_build}, falling back to closest match")
-            logging.info(f"Closest Match: {self.kdk_closest_match_url_build} ({self.kdk_closest_match_url_version})")
+            logging.info(self.trans["No direct match found for {0}, falling back to closest match"].format(host_build))
+            logging.info(self.trans["Closest Match: {0} ({1})"].format(self.kdk_closest_match_url_build, self.kdk_closest_match_url_version))
 
             self.kdk_url = self.kdk_closest_match_url
             self.kdk_url_build = self.kdk_closest_match_url_build
             self.kdk_url_version = self.kdk_closest_match_url_version
             self.kdk_url_expected_size = self.kdk_closest_match_url_expected_size
         else:
-            logging.info(f"Direct match found for {host_build} ({host_version})")
+            logging.info(self.trans["Direct match found for {0} ({1})"].format(host_build, host_version))
 
 
         # Check if this KDK is already installed
         self.kdk_installed_path = self._local_kdk_installed(match=self.kdk_url_build)
         if self.kdk_installed_path:
-            logging.info(f"KDK already installed ({Path(self.kdk_installed_path).name}), skipping")
+            logging.info(self.trans["KDK already installed ({0}), skipping"].format(Path(self.kdk_installed_path).name))
             self.kdk_already_installed = True
             self.success = True
             return
 
-        logging.info("Following KDK is recommended:")
-        logging.info(f"- KDK Build: {self.kdk_url_build}")
-        logging.info(f"- KDK Version: {self.kdk_url_version}")
-        logging.info(f"- KDK URL: {self.kdk_url}")
+        logging.info(self.trans["Following KDK is recommended:"])
+        logging.info(self.trans["- KDK Build: {0}"].format(self.kdk_url_build))
+        logging.info(self.trans["- KDK Version: {0}"].format(self.kdk_url_version))
+        logging.info(self.trans["- KDK URL: {0}"].format(self.kdk_url))
 
         self.success = True
 
+    def convert_size(self, size_str):
+        if isinstance(size_str, float):
+            return float(size_str)
+        if isinstance(size_str, int):
+            return float(size_str)
 
+        units = {'KB': 1024, 'MB': 1024**2, 'GB': 1024**3, 'TB': 1024**4}
+        for unit, factor in units.items():
+            if unit in size_str:
+               return float(size_str.replace(unit, '')) * factor
+        return float(size_str)
     def retrieve_download(self, override_path: str = "") -> network_handler.DownloadObject:
         """
         Returns a DownloadObject for the KDK
@@ -266,16 +295,14 @@ class KernelDebugKitObject:
         self.error_msg = ""
 
         if self.kdk_already_installed:
-            logging.info("No download required, KDK already installed")
+            logging.info(self.trans["No download required, KDK already installed"])
             self.success = True
             return None
-
         if self.kdk_url == "":
-            self.error_msg = "Could not retrieve KDK catalog, no KDK to download"
+            self.error_msg = self.trans["Could not retrieve KDK catalog, no KDK to download"]
             logging.error(self.error_msg)
             return None
-
-        logging.info(f"Returning DownloadObject for KDK: {Path(self.kdk_url).name}")
+        logging.info(self.trans["Returning DownloadObject for KDK: {0}"].format(Path(self.kdk_url).name))
         self.success = True
 
         kdk_download_path = self.constants.kdk_download_path if override_path == "" else Path(override_path)
@@ -304,7 +331,7 @@ class KernelDebugKitObject:
             plist_path.touch()
             plistlib.dump(kdk_dict, plist_path.open("wb"), sort_keys=False)
         except Exception as e:
-            logging.error(f"Failed to generate KDK Info.plist: {e}")
+            logging.error(self.trans["Failed to generate KDK Info.plist: {0}"].format(e))
 
 
     def _local_kdk_valid(self, kdk_path: Path) -> bool:
@@ -324,14 +351,14 @@ class KernelDebugKitObject:
         """
 
         if not Path(f"{kdk_path}/System/Library/CoreServices/SystemVersion.plist").exists():
-            logging.info(f"Corrupted KDK found ({kdk_path.name}), removing due to missing SystemVersion.plist")
+            logging.info(self.trans["Corrupted KDK found ({0}), removing due to missing SystemVersion.plist"].format(kdk_path.name))
             self._remove_kdk(kdk_path)
             return False
 
         # Get build from KDK
         kdk_plist_data = plistlib.load(Path(f"{kdk_path}/System/Library/CoreServices/SystemVersion.plist").open("rb"))
         if "ProductBuildVersion" not in kdk_plist_data:
-            logging.info(f"Corrupted KDK found ({kdk_path.name}), removing due to missing ProductBuildVersion")
+            logging.info(self.trans["Corrupted KDK found ({0}), removing due to missing ProductBuildVersion"].format(kdk_path.name))
             self._remove_kdk(kdk_path)
             return False
 
@@ -341,7 +368,7 @@ class KernelDebugKitObject:
         result = subprocess.run(["/usr/sbin/pkgutil", "--files", f"com.apple.pkg.KDK.{kdk_build}"], capture_output=True)
         if result.returncode != 0:
             # If pkg receipt is missing, we'll fallback to legacy validation
-            logging.info(f"pkg receipt missing for {kdk_path.name}, falling back to legacy validation")
+            logging.info(self.trans["pkg receipt missing for {0}, falling back to legacy validation"].format(kdk_path.name))
             return self._local_kdk_valid_legacy(kdk_path)
 
         # Go through each line of the pkg receipt and ensure it exists
@@ -349,7 +376,7 @@ class KernelDebugKitObject:
             if not line.startswith("System/Library/Extensions"):
                 continue
             if not Path(f"{kdk_path}/{line}").exists():
-                logging.info(f"Corrupted KDK found ({kdk_path.name}), removing due to missing file: {line}")
+                logging.info(self.trans["Corrupted KDK found ({0}), removing due to missing file: {1}"].format(kdk_path.name, line))
                 self._remove_kdk(kdk_path)
                 return False
 
@@ -378,7 +405,7 @@ class KernelDebugKitObject:
 
         for kext in KEXT_CATALOG:
             if not Path(f"{kdk_path}/System/Library/Extensions/{kext}").exists():
-                logging.info(f"Corrupted KDK found, removing due to missing: {kdk_path}/System/Library/Extensions/{kext}")
+                logging.info(self.trans["Corrupted KDK found, removing due to missing: {0}"].format(f"{kdk_path}/System/Library/Extensions/{kext}"))
                 self._remove_kdk(kdk_path)
                 return False
 
@@ -406,7 +433,7 @@ class KernelDebugKitObject:
                 match = self.host_version
             else:
                 match = self.host_build
-
+        
         if not Path(KDK_INSTALL_PATH).exists():
             return None
 
@@ -439,15 +466,15 @@ class KernelDebugKitObject:
                 if not kdk_pkg.name.endswith(f"{match}.pkg"):
                     continue
 
-            logging.info(f"Found KDK backup: {kdk_pkg.name}")
+            logging.info(self.trans["Found KDK backup: {0}"].format(kdk_pkg.name))
             if self.passive is False:
-                logging.info("Attempting KDK restoration")
+                logging.info(self.trans["Attempting KDK restoration"])
                 if KernelDebugKitUtilities().install_kdk_pkg(kdk_pkg):
-                    logging.info("Successfully restored KDK")
+                    logging.info(self.trans["Successfully restored KDK"])   
                     return self._local_kdk_installed(match=match, check_version=check_version)
             else:
                 # When in passive mode, we're just checking if a KDK could be restored
-                logging.info("KDK restoration skipped, running in passive mode")
+                logging.info(self.trans["KDK restoration skipped, running in passive mode"])
                 return kdk_pkg
 
         return None
@@ -465,7 +492,7 @@ class KernelDebugKitObject:
             return
 
         if not Path(kdk_path).exists():
-            logging.warning(f"KDK does not exist: {kdk_path}")
+            logging.warning(self.trans["KDK does not exist: {0}"].format(kdk_path))
             return
 
         rm_args = ["/bin/rm", "-rf" if Path(kdk_path).is_dir() else "-f", kdk_path]
@@ -503,7 +530,7 @@ class KernelDebugKitObject:
         if not Path(KDK_INSTALL_PATH).exists():
             return
 
-        logging.info("Cleaning unused KDKs")
+        logging.info(self.trans["Cleaning unused KDKs"])
         for kdk_folder in Path(KDK_INSTALL_PATH).iterdir():
             if kdk_folder.name.endswith(".kdk") or kdk_folder.name.endswith(".pkg"):
                 should_remove = True
@@ -540,9 +567,9 @@ class KernelDebugKitObject:
         # TODO: should we use the checksum from the API?
         result = subprocess.run(["/usr/bin/hdiutil", "verify", self.constants.kdk_download_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.returncode != 0:
-            logging.info("Error: Kernel Debug Kit checksum verification failed!")
+            logging.info(self.trans["Error: Kernel Debug Kit checksum verification failed!"])       
             subprocess_wrapper.log(result)
-            msg = "Kernel Debug Kit checksum verification failed, please try again.\n\nIf this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)"
+            msg = self.trans["Kernel Debug Kit checksum verification failed, please try again.\n\nIf this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)"]
             logging.info(f"{msg}")
 
             self.error_msg = msg
@@ -550,7 +577,7 @@ class KernelDebugKitObject:
 
         self._remove_unused_kdks()
         self.success = True
-        logging.info("Kernel Debug Kit checksum verified")
+        logging.info(self.trans["Kernel Debug Kit checksum verified"])
         return True
 
 
@@ -561,7 +588,8 @@ class KernelDebugKitUtilities:
     """
 
     def __init__(self) -> None:
-        pass
+        self.constants=constants.Constants()
+        self.trans = TranslateLanguage(self.constants).kdk_handler()
 
 
     def install_kdk_pkg(self, kdk_path: Path) -> bool:
@@ -575,14 +603,14 @@ class KernelDebugKitUtilities:
             bool: True if successful, False if not
         """
 
-        logging.info(f"Installing KDK package: {kdk_path.name}")
-        logging.info(f"- This may take a while...")
+        logging.info(self.trans["Installing KDK package: {0}"].format(kdk_path.name))
+        logging.info(self.trans["- This may take a while..."])
 
         # TODO: Check whether enough disk space is available
 
         result = subprocess_wrapper.run_as_root(["/usr/sbin/installer", "-pkg", kdk_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
-            logging.info("Failed to install KDK:")
+            logging.info(self.trans["Failed to install KDK:"])
             subprocess_wrapper.log(result)
             return False
         return True
@@ -599,17 +627,17 @@ class KernelDebugKitUtilities:
             bool: True if successful, False if not
         """
 
-        logging.info(f"Extracting downloaded KDK disk image")
+        logging.info(self.trans["Extracting downloaded KDK disk image"])
         with tempfile.TemporaryDirectory() as mount_point:
             result = subprocess_wrapper.run_as_root(["/usr/bin/hdiutil", "attach", kdk_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
-                logging.info("Failed to mount KDK:")
+                logging.info(self.trans["Failed to mount KDK:"])
                 subprocess_wrapper.log(result)
                 return False
 
             kdk_pkg_path = Path(f"{mount_point}/KernelDebugKit.pkg")
             if not kdk_pkg_path.exists():
-                logging.warning("Failed to find KDK package in DMG, likely corrupted!!!")
+                logging.warning(self.trans["Failed to find KDK package in DMG, likely corrupted!!!"])
                 self._unmount_disk_image(mount_point)
                 return False
 
@@ -622,7 +650,7 @@ class KernelDebugKitUtilities:
             self._create_backup(kdk_pkg_path, Path(f"{kdk_path.parent}/{KDK_INFO_PLIST}"))
             self._unmount_disk_image(mount_point)
 
-        logging.info("Successfully installed KDK")
+        logging.info(self.trans["Successfully installed KDK"])
         return True
 
     def _unmount_disk_image(self, mount_point) -> None:
@@ -645,16 +673,16 @@ class KernelDebugKitUtilities:
         """
 
         if not kdk_path.exists():
-            logging.warning("KDK does not exist, cannot create backup")
+            logging.warning(self.trans["KDK does not exist, cannot create backup"])
             return
         if not kdk_info_plist.exists():
-            logging.warning("KDK Info.plist does not exist, cannot create backup")
+            logging.warning(self.trans["KDK Info.plist does not exist, cannot create backup"])
             return
 
         kdk_info_dict = plistlib.load(kdk_info_plist.open("rb"))
 
         if 'version' not in kdk_info_dict or 'build' not in kdk_info_dict:
-            logging.warning("Malformed KDK Info.plist provided, cannot create backup")
+            logging.warning(self.trans["Malformed KDK Info.plist provided, cannot create backup"])
             return
 
         if not Path(KDK_INSTALL_PATH).exists():
@@ -663,12 +691,12 @@ class KernelDebugKitUtilities:
         kdk_dst_name = f"KDK_{kdk_info_dict['version']}_{kdk_info_dict['build']}.pkg"
         kdk_dst_path = Path(f"{KDK_INSTALL_PATH}/{kdk_dst_name}")
 
-        logging.info(f"Creating backup: {kdk_dst_name}")
+        logging.info(self.trans["Creating backup: {0}"].format(kdk_dst_name))
         if kdk_dst_path.exists():
-            logging.info("Backup already exists, skipping")
+            logging.info(self.trans["Backup already exists, skipping"])
             return
 
         result = subprocess_wrapper.run_as_root(generate_copy_arguments(kdk_path, kdk_dst_path), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
-            logging.info("Failed to create KDK backup:")
+            logging.info(self.trans["Failed to create KDK backup:"])
             subprocess_wrapper.log(result)

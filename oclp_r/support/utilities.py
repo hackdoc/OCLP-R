@@ -25,6 +25,24 @@ from ..datasets import (
     sip_data
 )
 
+def translations():
+    import time
+    time.sleep(0.6)
+    from .translate_language import TranslateLanguage
+    from ..constants import Constants
+    cons=Constants()
+    trans=TranslateLanguage(cons).utilities()
+    return trans
+
+# 延迟初始化翻译对象以避免循环导入
+transl = None
+
+# 提供一个函数来获取翻译对象
+def trans():
+    global transl
+    if transl is None:
+        transl = translations()
+    return transl
 
 def hexswap(input_hex: str):
     hex_pairs = [input_hex[i : i + 2] for i in range(0, len(input_hex), 2)]
@@ -63,9 +81,9 @@ def seconds_to_readable_time(seconds) -> str:
     time = ""
 
     if 0 <= seconds < 60:
-        return "Less than a minute "
+        return trans()["Less than a minute "]
     if seconds < 0:
-        return "Indeterminate time "
+        return trans()["Indeterminate time "]
 
     years, seconds = divmod(seconds, 31536000)
     days, seconds = divmod(seconds, 86400)
@@ -73,10 +91,10 @@ def seconds_to_readable_time(seconds) -> str:
     minutes, seconds = divmod(seconds, 60)
 
     if years > 0:
-        return "Over a year"
+        return trans()["Over a year"]
     if days > 0:
         if days > 31:
-            return "Over a month"
+            return trans()["Over a month"]
         time += f"{days}d "
     if hours > 0:
         time += f"{hours}h "
@@ -160,7 +178,7 @@ sleep_process = None
 
 def disable_sleep_while_running():
     global sleep_process
-    logging.info("Disabling Idle Sleep")
+    logging.info(trans()["Disabling Idle Sleep"])
     if sleep_process is None:
         # If sleep_process is active, we'll just keep it running
         sleep_process = subprocess.Popen(["/usr/bin/caffeinate", "-d", "-i", "-s"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -170,7 +188,7 @@ def disable_sleep_while_running():
 def enable_sleep_after_running():
     global sleep_process
     if sleep_process:
-        logging.info("Re-enabling Idle Sleep")
+        logging.info(trans()["Re-enabling Idle Sleep"])
         sleep_process.kill()
         sleep_process = None
 

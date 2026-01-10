@@ -12,6 +12,8 @@ from ...shared_patches.monterey_gva    import MontereyGVA
 from ...shared_patches.monterey_opencl import MontereyOpenCL
 from ...shared_patches.amd_opencl      import AMDOpenCL
 
+from ...shared_patches.metal_31001     import LegacyMetal31001
+
 from .....constants  import Constants
 from .....detections import device_probe
 
@@ -46,7 +48,7 @@ class AMDPolaris(BaseHardware):
         """
         Dropped support with macOS 13, Ventura
         """
-        return self._xnu_major < os_data.ventura.value
+        return self._xnu_major < os_data.ventura.value or self._xnu_major >= os_data.tahoe.value
 
 
     def hardware_variant(self) -> HardwareVariant:
@@ -111,7 +113,7 @@ class AMDPolaris(BaseHardware):
                         "AMDRadeonX4000HWServices.kext": "12.5",
                         "AMDRadeonVADriver2.bundle":     "12.5",
                         "AMDRadeonX4000GLDriver.bundle": "12.5",
-                        "AMDMTLBronzeDriver.bundle":     "12.5" if self._xnu_major < os_data.sequoia else "12.5-24",
+                        **({ "AMDMTLBronzeDriver.bundle": f"12.5-{self._xnu_major}" }),
                         "AMDShared.bundle":              "12.5",
                     },
                 },
@@ -131,6 +133,7 @@ class AMDPolaris(BaseHardware):
             return self._model_specific_patches()
 
         _base = {
+            **LegacyMetal31001(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **self._model_specific_patches(),
         }

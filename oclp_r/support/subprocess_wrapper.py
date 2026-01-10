@@ -8,10 +8,13 @@ import logging
 import subprocess
 
 from pathlib import Path
+from ..constants import Constants
+from .translate_language import TranslateLanguage
 
+OCLP_PRIVILEGED_HELPER = "/Library/PrivilegedHelperTools/com.hackdoc.oclp-r.privileged-helper"
 
-OCLP_PRIVILEGED_HELPER = "/Library/PrivilegedHelperTools/com.intsant.oclp-r.privileged-helper"
-
+constants: Constants = Constants()
+trans = TranslateLanguage(constants).subprocess_wrapper()
 
 class PrivilegedHelperErrorCodes(enum.IntEnum):
     """
@@ -31,6 +34,7 @@ class PrivilegedHelperErrorCodes(enum.IntEnum):
     OCLP_PHT_ERROR_COMMAND_MISSING             = 168
     OCLP_PHT_ERROR_COMMAND_FAILED              = 169
     OCLP_PHT_ERROR_CATCH_ALL                   = 170
+    
 
 
 def run(*args, **kwargs) -> subprocess.CompletedProcess:
@@ -49,7 +53,7 @@ def run_as_root(*args, **kwargs) -> subprocess.CompletedProcess:
     """
     # Check if first argument exists
     if not Path(args[0][0]).exists():
-        raise FileNotFoundError(f"File not found: {args[0][0]}")
+        raise FileNotFoundError(trans["file_not_found: {0}"].format(args[0][0]))
 
     return subprocess.run([OCLP_PRIVILEGED_HELPER] + [args[0][0]] + args[0][1:], **kwargs)
 
@@ -63,7 +67,7 @@ def verify(process_result: subprocess.CompletedProcess) -> None:
 
     log(process_result)
 
-    raise Exception(f"Process failed with exit code {process_result.returncode}")
+    raise Exception(trans["process_failed_with_exit_code: {0}"].format(process_result.returncode))
 
 
 def run_and_verify(*args, **kwargs) -> None:
@@ -111,22 +115,22 @@ def generate_log(process: subprocess.CompletedProcess) -> str:
             <standard error line 2>
             ...
     """
-    output = "Subprocess failed.\n"
-    output += f"    Command: {process.args}\n"
-    output += f"    Return Code: {process.returncode}\n"
+    output = trans["Subprocess failed."]+"\n"
+    output += trans["Command: {0}"]+"\n".format(process.args)
+    output += trans["Return Code: {0}"]+"\n".format(process.returncode)
     _returned_error = __resolve_privileged_helper_errors(process.returncode)
     if _returned_error:
-        output += f"        Likely Enum: {_returned_error}\n"
-    output += f"    Standard Output:\n"
+        output += trans["        Likely Enum: {0}"]+"\n".format(_returned_error)
+    output += trans["Standard Output:"]+"\n"
     if process.stdout:
         output += __format_output(process.stdout.decode("utf-8"))
     else:
-        output += "        None\n"
-    output += f"    Standard Error:\n"
+        output += trans["        None"]+"\n"
+    output += trans["Standard Error:"]+"\n"
     if process.stderr:
         output += __format_output(process.stderr.decode("utf-8"))
     else:
-        output += "        None\n"
+        output += trans["        None"]+"\n"
 
     return output
 
@@ -147,7 +151,7 @@ def __format_output(output: str) -> str:
     """
     if not output:
         # Shouldn't happen, but just in case
-        return "        None\n"
+        return trans["        None"]+"\n"
 
     _result = "\n".join([f"        {line}" for line in output.split("\n") if line not in ["", "\n"]])
     if not _result.endswith("\n"):

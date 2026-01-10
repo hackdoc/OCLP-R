@@ -76,7 +76,7 @@ Now that you've loaded OpenCore, "select Install macOS":
 
 You will soon reach the installer screen! If you enabled verbose mode when building OCLP, a lot of text will run across the screen. From there, it's just like any normal macOS install. For an example of how the boot process looks, see the following video:
 
-* [OCLP-R Boot Process](https://www.youtube.com/watch?v=AN3zsbQV_n4)
+* [OpenCore Legacy Patcher Boot Process](https://www.youtube.com/watch?v=AN3zsbQV_n4)
 
 **Important:** If you're using a brand new disk that has not been used before, choose "View -> Show all devices" in Disk Utility and format the entire disk by choosing the topmost option in the sidebar to avoid a missing internal EFI later when trying to boot OpenCore to internal disk.
 
