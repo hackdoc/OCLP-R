@@ -32,7 +32,7 @@ from ..support import (
     network_handler,
     integrity_verification
 )
-
+from ..support.translate_language import TranslateLanguage
 
 class macOSInstallerDownloadFrame(wx.Frame):
     """
@@ -41,8 +41,9 @@ class macOSInstallerDownloadFrame(wx.Frame):
     Note: Flashing installers is passed to gui_macos_installer_flash.py
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-        logging.info("Initializing macOS Installer Download Frame")
         self.constants: constants.Constants = global_constants
+        self.trans = TranslateLanguage(self.constants).gui_macos_installer_download()
+        logging.info(self.trans["Initializing macOS Installer Download Frame"])
         self.title: str = title
         self.parent: wx.Frame = parent
         self.fetched_aes_key = None
@@ -89,26 +90,26 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         frame = self if not frame else frame
 
-        title_label = wx.StaticText(frame, label="Create macOS Installer", pos=(-1,5))
+        title_label = wx.StaticText(frame, label=self.trans["Create macOS Installer"], pos=(-1,5))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
         # Button: Download macOS Installer
-        download_button = wx.Button(frame, label="Download macOS Installer", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 2), size=(200, 30))
+        download_button = wx.Button(frame, label=self.trans["Download macOS Installer"], pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 2), size=(200, 30))
         download_button.Bind(wx.EVT_BUTTON, self.on_download)
         download_button.Centre(wx.HORIZONTAL)
 
         # Button: Use existing macOS Installer
-        existing_button = wx.Button(frame, label="Use existing macOS Installer", pos=(-1, download_button.GetPosition()[1] + download_button.GetSize()[1] +2), size=(200, 30))
+        existing_button = wx.Button(frame, label=self.trans["Use existing macOS Installer"], pos=(-1, download_button.GetPosition()[1] + download_button.GetSize()[1] +2), size=(200, 30))
         existing_button.Bind(wx.EVT_BUTTON, self.on_existing)
         existing_button.Centre(wx.HORIZONTAL)
 
-        dmg_button = wx.Button(frame, label="Download DMGs", pos=(-1, existing_button.GetPosition()[1] + existing_button.GetSize()[1] +2), size=(200, 30))
+        dmg_button = wx.Button(frame, label=self.trans["Download DMGs"], pos=(-1, existing_button.GetPosition()[1] + existing_button.GetSize()[1] +2), size=(200, 30))
         dmg_button.Bind(wx.EVT_BUTTON, self.on_dmg)
         dmg_button.Centre(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
-        return_button = wx.Button(frame, label="Return to Main Menu", pos=(-1, dmg_button.GetPosition()[1] + dmg_button.GetSize()[1] + 12), size=(150, 30))
+        return_button = wx.Button(frame, label=self.trans["Return to Main Menu"], pos=(-1, dmg_button.GetPosition()[1] + dmg_button.GetSize()[1] + 12), size=(150, 30))
         return_button.Bind(wx.EVT_BUTTON, self.on_return)
         return_button.Centre(wx.HORIZONTAL)
 
@@ -125,7 +126,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.Centre()
 
         # Title: Pulling installer catalog
-        title_label = wx.StaticText(self, label="Finding Available Software", pos=(-1,5))
+        title_label = wx.StaticText(self, label=self.trans["Finding Available Software"], pos=(-1,5))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
@@ -142,11 +143,11 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         # Grab installer catalog
         def _fetch_installers():
-            logging.info(f"Fetching installer catalog: {sucatalog.SeedType.DeveloperSeed.name}")
+            logging.info(self.trans["Fetching installer catalog: {seed_type}"].format(sucatalog.SeedType.DeveloperSeed.name))
 
             sucatalog_contents = sucatalog.CatalogURL(seed=sucatalog.SeedType.DeveloperSeed).url_contents
             if sucatalog_contents is None:
-                logging.error("Failed to download Installer Catalog from Apple")
+                logging.error(self.trans["Failed to download Installer Catalog from Apple"])
                 return
 
             self.available_installers        = sucatalog.CatalogProducts(sucatalog_contents).products
@@ -170,7 +171,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.Centre()
 
         # Title: Pulling installer catalog
-        title_label = wx.StaticText(self, label="Finding Available DMG", pos=(-1,5))
+        title_label = wx.StaticText(self, label=self.trans["Finding Available DMG"], pos=(-1,5))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
@@ -206,7 +207,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
                         logging.info(self.fetched_aes_key_status)
                         logging.info(self.fetched_aes_key)
                     else:
-                        logging.error(f"AES Key Fetch Failed,status code: {self.fetched_aes_key_status}")
+                        logging.error(f"{self.trans["AES Key Fetch Failed,status code:"]} {self.fetched_aes_key_status}")
                     dmg_number=[]
                     dmg_build=[]
                     maxnx=[]
@@ -259,18 +260,18 @@ class macOSInstallerDownloadFrame(wx.Frame):
                     model["dmgFiles"]=latest
                     self.latest_dmgs=model
                 else:
-                    logging.error(f"API REQUEST FAILED,status_code: {res.status_code}")
+                    logging.error(f"{self.trans["API REQUEST FAILED,status_code:"]} {res.status_code}")
 
             except requests.exceptions.RequestException as e:
-                logging.info(f"REQUEST ERROR:{e}")
+                logging.info(f"{self.trans["REQUEST ERROR:"]}{e}")
             finally:
                 if dmgdata is not None:
-                    logging.info("DMG data got it!")
+                    logging.info(f"{self.trans["DMG data got it!"]}")
                     self.available_dmgs=self.latest_dmgs
                     self.dmgs_all=dmgdatak
                     logging.info(type(dmgdatak))
                 else:
-                    logging.error("DMG data failed")
+                    logging.error(f"{self.trans["DMG data failed"]}")
 
 
         thread = threading.Thread(target=_fetch_simplehac_dmgs)
@@ -290,7 +291,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         try:
             return plistlib.load(open(file_path, "rb"))["ProductBuildVersion"]
         except Exception as e:
-            raise RuntimeError(f"Failed to detect OS build: {e}")
+            raise RuntimeError(f"{self.trans["Failed to detect OS build:"]} {e}")
     
     def _display_available_dmgs(self, event: wx.Event = None, show_full: bool = False) -> None:
         """
@@ -301,10 +302,10 @@ class macOSInstallerDownloadFrame(wx.Frame):
         bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
 
         self.frame_modal.Destroy()
-        self.frame_modal = wx.Dialog(self, title="Select DMGs from SimpleHac", size=(505, 500))
+        self.frame_modal = wx.Dialog(self, title=f"{self.trans["Select DMGs from SimpleHac"]}", size=(505, 500))
 
         # Title: Select macOS Installer
-        title_label = wx.StaticText(self.frame_modal, label="Select DMGs", pos=(-1,-1))
+        title_label = wx.StaticText(self.frame_modal, label=f"{self.trans["Select DMGs"]}", pos=(-1,-1))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
 
         # macOS Installers list
@@ -325,7 +326,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         if installers:
             locale.setlocale(locale.LC_TIME, '')
-            logging.info(f"Available installers on SimpleHac ({'All entries' if show_full else 'Latest only'}):")
+            logging.info(f"{self.trans["Available installers on SimpleHac"]} ({self.trans["All entries"] if show_full else self.trans["Latest only"]}):")
             for idx,item in enumerate(installers['dmgFiles'], start=1):
                 logging.info(item)
                 if isinstance(item, dict):
@@ -337,12 +338,12 @@ class macOSInstallerDownloadFrame(wx.Frame):
                     self.list.SetItem(index, 3, str(item.get('size', 'Unknown Size')))
                     self.list.SetItem(index, 4, str(item.get('releaseDate', 'Unknown Date')))
             if self.fetched_aes_key_status != 200:
-                logging.info(f"Can't get AES Keys {self.fetched_aes_key_status}")
-                wx.MessageDialog(self.frame_modal, "Failed to download dmgs from SimpleHac", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+                logging.info(f"{self.trans["Can't get AES Keys"]} {self.fetched_aes_key_status}")
+                wx.MessageDialog(self.frame_modal, f"{self.trans["Failed to download dmgs from SimpleHac"]}", f"{self.trans["Error"]}", wx.OK | wx.ICON_ERROR).ShowModal()
                 self.on_return_to_main_menu()
         else:
-            logging.error("No dmgs found on SimpleHac")
-            wx.MessageDialog(self.frame_modal, "Failed to download dmgs from SimpleHac", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+            logging.error(f"{self.trans["No dmgs found on SimpleHac"]}")
+            wx.MessageDialog(self.frame_modal, f"{self.trans["Failed to download dmgs from SimpleHac"]}", f"{self.trans["Error"]}", wx.OK | wx.ICON_ERROR).ShowModal()
             self.on_return_to_main_menu()
         if show_full is False:
             self.list.Select(-1)
@@ -350,26 +351,26 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.list.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.on_select_list)
         self.list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_select_list)
 
-        self.select_button = wx.Button(self.frame_modal, label="Download", pos=(-1, -1), size=(150, -1))
+        self.select_button = wx.Button(self.frame_modal, label=f"{self.trans["Download"]}", pos=(-1, -1), size=(150, -1))
         self.select_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         self.select_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_download_dmg(installers))
-        self.select_button.SetToolTip("Download the selected DMGs.")
+        self.select_button.SetToolTip(f"{self.trans["Download the selected DMGs."]}")
         self.select_button.SetDefault()
         if show_full is True:
             self.select_button.Disable()
 
-        self.copy_button = wx.Button(self.frame_modal, label="Copy Link", pos=(-1, -1), size=(80, -1))
+        self.copy_button = wx.Button(self.frame_modal, label=self.trans["Copy Link"], pos=(-1, -1), size=(80, -1))
         self.copy_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         if show_full is True:
             self.copy_button.Disable()
-        self.copy_button.SetToolTip("Copy the download link of the selected DMG.")
+        self.copy_button.SetToolTip(self.trans["Copy the download link of the selected DMG."])
         self.copy_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_copy_dmg_link(installers))
 
-        return_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, -1), size=(150, -1))
+        return_button = wx.Button(self.frame_modal, label=self.trans["Return to Main Menu"], pos=(-1, -1), size=(150, -1))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
         return_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
 
-        self.showolderversions_checkbox = wx.CheckBox(self.frame_modal, label="Show Older/Beta Versions", pos=(-1, -1))
+        self.showolderversions_checkbox = wx.CheckBox(self.frame_modal, label=self.trans["Show Older/Beta Versions"], pos=(-1, -1))
         if show_full is True:
             self.showolderversions_checkbox.SetValue(True)
         self.showolderversions_checkbox.Bind(wx.EVT_CHECKBOX, lambda event: self._display_available_dmgs(event, self.showolderversions_checkbox.GetValue()))
@@ -409,10 +410,10 @@ class macOSInstallerDownloadFrame(wx.Frame):
         bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
 
         self.frame_modal.Destroy()
-        self.frame_modal = wx.Dialog(self, title="Select macOS Installer", size=(505, 500))
+        self.frame_modal = wx.Dialog(self, title=self.trans["Select macOS Installer"], size=(505, 500))
 
         # Title: Select macOS Installer
-        title_label = wx.StaticText(self.frame_modal, label="Select macOS Installer", pos=(-1,-1))
+        title_label = wx.StaticText(self.frame_modal, label=self.trans["Select macOS Installer"], pos=(-1,-1))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
 
         # macOS Installers list
@@ -433,7 +434,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         if installers:
             locale.setlocale(locale.LC_TIME, '')
-            logging.info(f"Available installers on SUCatalog ({'All entries' if show_full else 'Latest only'}):")
+            logging.info(f"{self.trans['Available installers on SUCatalog']} ({self.trans['All entries'] if show_full else self.trans['Latest only']}):")
             for item in installers:
                 logging.info(f"- {item['Title']} ({item['Version']} - {item['Build']}):\n  - Size: {utilities.human_fmt(item['InstallAssistant']['Size'])}\n  - Link: {item['InstallAssistant']['URL']}\n")
                 index = self.list.InsertItem(self.list.GetItemCount(), f"{item['Title']}")
@@ -443,8 +444,8 @@ class macOSInstallerDownloadFrame(wx.Frame):
                 self.list.SetItem(index, 3, utilities.human_fmt(item['InstallAssistant']['Size']))
                 self.list.SetItem(index, 4, item['PostDate'].strftime("%x"))
         else:
-            logging.error("No installers found on SUCatalog")
-            wx.MessageDialog(self.frame_modal, "Failed to download Installer Catalog from Apple", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+            logging.error(f"{self.trans['No installers found on SUCatalog']}")
+            wx.MessageDialog(self.frame_modal, f"{self.trans['Failed to download Installer Catalog from Apple']}", self.trans["Error"], wx.OK | wx.ICON_ERROR).ShowModal()
 
         if show_full is False:
             self.list.Select(-1)
@@ -452,26 +453,26 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.list.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.on_select_list)
         self.list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_select_list)
 
-        self.select_button = wx.Button(self.frame_modal, label="Download", pos=(-1, -1), size=(150, -1))
+        self.select_button = wx.Button(self.frame_modal, label=self.trans["Download"], pos=(-1, -1), size=(150, -1))
         self.select_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         self.select_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_download_installer(installers))
-        self.select_button.SetToolTip("Download the selected macOS Installer.")
+        self.select_button.SetToolTip(self.trans["Download the selected macOS Installer."])
         self.select_button.SetDefault()
         if show_full is True:
             self.select_button.Disable()
 
-        self.copy_button = wx.Button(self.frame_modal, label="Copy Link", pos=(-1, -1), size=(80, -1))
+        self.copy_button = wx.Button(self.frame_modal, label=self.trans["Copy Link"], pos=(-1, -1), size=(80, -1))
         self.copy_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         if show_full is True:
             self.copy_button.Disable()
-        self.copy_button.SetToolTip("Copy the download link of the selected macOS Installer.")
+        self.copy_button.SetToolTip(self.trans["Copy the download link of the selected macOS Installer."])
         self.copy_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_copy_link(installers))
 
-        return_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, -1), size=(150, -1))
+        return_button = wx.Button(self.frame_modal, label=self.trans["Return to Main Menu"], pos=(-1, -1), size=(150, -1))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
         return_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
 
-        self.showolderversions_checkbox = wx.CheckBox(self.frame_modal, label="Show Older/Beta Versions", pos=(-1, -1))
+        self.showolderversions_checkbox = wx.CheckBox(self.frame_modal, label=self.trans["Show Older/Beta Versions"], pos=(-1, -1))
         if show_full is True:
             self.showolderversions_checkbox.SetValue(True)
         self.showolderversions_checkbox.Bind(wx.EVT_CHECKBOX, lambda event: self._display_available_installers(event, self.showolderversions_checkbox.GetValue()))
@@ -516,12 +517,12 @@ class macOSInstallerDownloadFrame(wx.Frame):
             clipboard.SetData(wx.TextDataObject(installers[selected_item]['InstallAssistant']['URL']))
 
             clipboard.Close()
-            wx.MessageDialog(self.frame_modal, "Download link copied to clipboard", "", wx.OK | wx.ICON_INFORMATION).ShowModal()
+            wx.MessageDialog(self.frame_modal, self.trans["Download link copied to clipboard"], "", wx.OK | wx.ICON_INFORMATION).ShowModal()
     def on_download_dmg(self, installers: dict) -> None:
         selected_item = self.list.GetFirstSelected()
         if selected_item != -1:
             selected_installer = installers['dmgFiles'][selected_item]
-            logging.info(f"Selected macOS DMG {selected_installer['version']} ({selected_installer['build']})")
+            logging.info(f"{self.trans['Selected macOS DMG {version} ({build})']}".format(version=selected_installer['version'], build=selected_installer['build']))
             if isinstance(item,dict):
                 item = installers['dmgFiles'][selected_item]
             self.frame_modal.Close()
@@ -572,7 +573,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
             clipboard.Close()
 
-            wx.MessageDialog(self.frame_modal, "Download link copied to clipboard", "", wx.OK | wx.ICON_INFORMATION).ShowModal()
+            wx.MessageDialog(self.frame_modal, self.trans["Download link copied to clipboard"], "", wx.OK | wx.ICON_INFORMATION).ShowModal()
     def on_select_list(self, event):
         if self.list.GetSelectedItemCount() > 0:
             self.select_button.Enable()
@@ -590,7 +591,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         if selected_item != -1:
             selected_installer = installers[selected_item]
 
-            logging.info(f"Selected macOS {selected_installer['Version']} ({selected_installer['Build']})")
+            logging.info(f"{self.trans["Selected macOS"]} {selected_installer['Version']} ({selected_installer['Build']})")
 
             # Notify user whether their model is compatible with the selected installer
             problems = []
@@ -599,15 +600,15 @@ class macOSInstallerDownloadFrame(wx.Frame):
                 if selected_installer["InstallAssistant"]["XNUMajor"] >= os_data.os_data.ventura:
                     if smbios_data.smbios_dictionary[model]["CPU Generation"] <= cpu_data.CPUGen.penryn or model in ["MacPro4,1", "MacPro5,1", "Xserve3,1"]:
                         if model.startswith("MacBook"):
-                            problems.append("Lack of internal Keyboard/Trackpad in macOS installer.")
+                            problems.append(self.trans["Lack of internal Keyboard/Trackpad in macOS installer."])
                         else:
-                            problems.append("Lack of internal Keyboard/Mouse in macOS installer.")
+                            problems.append(self.trans["Lack of internal Keyboard/Mouse in macOS installer."])
 
             if problems:
                 logging.warning(f"Potential issues with {model} and {selected_installer['Version']} ({selected_installer['Build']}): {problems}")
                 problems = "\n".join(problems)
-                dlg = wx.MessageDialog(self.frame_modal, f"Your model ({model}) may not be fully supported by this installer. You may encounter the following issues:\n\n{problems}\n\nFor more information, see associated page. Otherwise, we recommend using macOS Monterey", "Potential Issues", wx.YES_NO | wx.CANCEL | wx.ICON_WARNING)
-                dlg.SetYesNoCancelLabels("View Github Issue", "Download Anyways", "Cancel")
+                dlg = wx.MessageDialog(self.frame_modal, self.trans["Your model ({model}) may not be fully supported by this installer. You may encounter the following issues:\n\n{problems}\n\nFor more information, see associated page. Otherwise, we recommend using macOS Monterey"].format(model=model, problems=problems), self.trans["Potential Issues"], wx.YES_NO | wx.CANCEL | wx.ICON_WARNING)
+                dlg.SetYesNoCancelLabels(self.trans["View Github Issue"], self.trans["Download Anyways"], self.trans["Cancel"])
                 result = dlg.ShowModal()
                 if result == wx.ID_CANCEL:
                     return

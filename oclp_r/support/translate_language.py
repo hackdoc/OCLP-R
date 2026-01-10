@@ -1290,10 +1290,54 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Failed to extract macOS installer":"Failed to extract macOS installer",
                 "An error occurred while extracting the macOS installer. Could be due to a corrupted installer":"An error occurred while extracting the macOS installer. Could be due to a corrupted installer",
                 "Finished extracting the installer, would you like to continue and create a macOS installer?":"Finished extracting the installer, would you like to continue and create a macOS installer?",
-                "Create macOS Installer?":"Create macOS Installer?"
+                "Create macOS Installer?":"Create macOS Installer?",
+                "Initializing macOS Installer Download Frame":"Initializing macOS Installer Download Frame",
+                "AES Key Fetch Failed,status code:":"AES Key Fetch Failed,status code:",
+                "API REQUEST FAILED,status_code:":"API REQUEST FAILED,status_code:",
+                "DMG data got it!":"DMG data got it!",
+                "DMG data failed":"DMG data failed",
+                "REQUEST ERROR:":"REQUEST ERROR:",
+                "Failed to detect OS build:":"Failed to detect OS build:",
+                "All entries":"All entries",
+                "Latest only":"Latest only",
+                "Can't get AES Keys":"Can't get AES Keys",
+                "Error":"Error",
+                "No dmgs found on SimpleHac":"No dmgs found on SimpleHac",
+                "Download the selected DMGs.":"Download the selected DMGs.",
+                "Available installers on SUCatalog":"Available installers on SUCatalog",
+                "No installers found on SUCatalog":"No installers found on SUCatalog",
+                "Download the selected macOS Installer.":"Download the selected macOS Installer.",
+                "Copy the download link of the selected macOS Installer.":"Copy the download link of the selected macOS Installer.",
+                "Selected macOS":"Selected macOS",
+                "Lack of internal Keyboard/Trackpad in macOS installer.":"Lack of internal Keyboard/Trackpad in macOS installer.",
+                "Lack of internal Keyboard/Mouse in macOS installer.":"Lack of internal Keyboard/Mouse in macOS installer.",
+                "Potential Issues":"Potential Issues",
+                "Your model ({model}) may not be fully supported by this installer. You may encounter the following issues:\n\n{problems}\n\nFor more information, see associated page. Otherwise, we recommend using macOS Monterey":"Your model ({model}) may not be fully supported by this installer. You may encounter the following issues:\n\n{problems}\n\nFor more information, see associated page. Otherwise, we recommend using macOS Monterey",
             }
         elif self.language_point=="简体中文":
             trans={
+                "Potential Issues":"潜在问题",
+                "Your model ({model}) may not be fully supported by this installer. You may encounter the following issues:\n\n{problems}\n\nFor more information, see associated page. Otherwise, we recommend using macOS Monterey":"您的模型 ({model}) 可能不被此安装程序完全支持。您可能会遇到以下问题：\n\n{problems}\n\n有关更多信息，请参阅关联页面。否则，我们建议使用 macOS Monterey",
+                "Lack of internal Keyboard/Mouse in macOS installer.":"macOS 安装程序中缺少内部键盘/鼠标。",
+                "Lack of internal Keyboard/Trackpad in macOS installer.":"macOS 安装程序中缺少内部键盘/触控板。",
+                "Selected macOS":"选中的 macOS",
+                "Download the selected macOS Installer.":"下载选中的 macOS 安装程序。",
+                "Copy the download link of the selected macOS Installer.":"复制选中的 macOS 安装程序的下载链接。",
+                "No installers found on SUCatalog":"SUCatalog 上未找到安装程序",
+                "Available installers on SUCatalog":"SUCatalog 上可用的安装程序",
+                "Download the selected DMGs.":"下载选中的 DMG 文件。",
+                "No dmgs found on SimpleHac":"SimpleHac 上未找到 dmgs",
+                "Error":"错误",
+                "Can't get AES Keys":"无法获取 AES 密钥",
+                "All entries":"所有条目",
+                "Latest only":"最新版本",
+                "Failed to detect OS build:":"无法检测操作系统版本:",
+                "REQUEST ERROR:":"请求错误:",
+                "DMG data failed":"DMG 数据获取失败",
+                "DMG data got it!":"已获取 DMG 数据！",
+                "API REQUEST FAILED,status_code:":"API 请求失败，状态码:",
+                "AES Key Fetch Failed,status code:":"AES 密钥获取失败，状态码:",
+                "Initializing macOS Installer Download Frame":"初始化 macOS 安装程序下载框架",
                 "Create macOS Installer":"创建 macOS 安装程序",
                 "Download macOS Installer":"下载 macOS 安装程序",
                 "Use existing macOS Installer":"使用现有 macOS 安装程序",
@@ -1481,6 +1525,7 @@ Please check the Github page for more information about this release.""":"""
     def gui_metallib_download(self):
         if self.language_point=="English":
             trans={
+                "Cannot find any installers":"Cannot find any installers",
                 "Updating OpenCore and root volume patches...":"更新 OpenCore 和根卷补丁...",
                 "Fetching Metallibs":"Fetching Metallibs",
                 "Choose Metallib Version":"Choose Metallib Version",
@@ -1494,10 +1539,21 @@ Please check the Github page for more information about this release.""":"""
                 "Show Older/Beta Version":"Show Older/Beta Version",
                 "Download link copied to clipboard":"Download link copied to clipboard",
                 "Fetch Metal Libraries Error: {e}":"Fetch Metal Libraries Error: {e}",
-                "Error":"Error"
+                "Error":"Error",
+                "Initializing NewMetallibDownloadFrame":"Initializing NewMetallibDownloadFrame",
+                "Failed to detect OS build: {e}":"Failed to detect OS build: {e}",
+                "Available installers on Github":"Available installers on Github",
+                "All entries":"All entries",
+                "Latest only":"Latest only",
             }
         elif self.language_point=="简体中文":
             trans={
+                "Cannot find any installers":"无法找到任何安装程序",
+                "All entries":"所有条目",
+                "Latest only":"仅最新版本",
+                "Available installers on Github":"在 Github 上可用的安装程序",
+                "Failed to detect OS build: {e}":"无法检测操作系统构建: {e}",
+                "Initializing NewMetallibDownloadFrame":"初始化新的 Metallib 下载框架",
                 "Fetching Metallibs":"正在获取 Metallib",
                 "Choose Metallib Version":"选择 Metallib 版本",
                 "Choose Metallib":"选择 Metallib",
@@ -2205,7 +2261,8 @@ Hardware Information:
                 "Internal Error occurred!":"Internal Error occurred!",
                 "Reboot to apply?":"Reboot to apply?",
                 "Reboot":"Reboot",
-                "Ignore":"Ignore"
+                "Ignore":"Ignore",
+                "Error while trying to reboot:":"Error while trying to reboot:"
             }
         elif self.language_point=="简体中文":
             trans={
@@ -2215,7 +2272,8 @@ Hardware Information:
                 "Internal Error occurred!":"发生内部错误！",
                 "Reboot to apply?":"是否重启应用？",
                 "Reboot":"重启",
-                "Ignore":"忽略"
+                "Ignore":"忽略",
+                "Error while trying to reboot:":"重启时出错："
             }
         return trans
     

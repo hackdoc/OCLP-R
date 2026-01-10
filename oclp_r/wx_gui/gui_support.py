@@ -25,7 +25,7 @@ from ..datasets import (
     os_data,
     smbios_data
 )
-
+from ..support.translate_language import TranslateLanguage
 
 def get_font_face():
     if not get_font_face.font_face:
@@ -62,15 +62,16 @@ class GenerateMenubar:
     def __init__(self, frame: wx.Frame, global_constants: constants.Constants) -> None:
         self.frame: wx.Frame = frame
         self.constants: constants.Constants = global_constants
+        self.trans=TranslateLanguage(self.constants).gui_support()
 
 
     def generate(self) -> wx.MenuBar:
         menubar = wx.MenuBar()
         fileMenu = wx.Menu()
 
-        aboutItem = fileMenu.Append(wx.ID_ABOUT, "&About OCLP-R")
+        aboutItem = fileMenu.Append(wx.ID_ABOUT, self.trans["&About OCLP-R"])
         fileMenu.AppendSeparator()
-        revealLogItem = fileMenu.Append(wx.ID_ANY, "&Reveal Log File")
+        revealLogItem = fileMenu.Append(wx.ID_ANY, self.trans["&Reveal Log File"])
 
         menubar.Append(fileMenu, "&File")
         self.frame.SetMenuBar(menubar)
@@ -238,6 +239,7 @@ class PayloadMount:
 
     def __init__(self, global_constants: constants.Constants, frame: wx.Frame) -> None:
         self.constants: constants.Constants = global_constants
+        self.trans=TranslateLanguage(self.constants).gui_support()
         self.frame: wx.Frame = frame
 
 
@@ -251,8 +253,8 @@ class PayloadMount:
         # Raise error to end program
         popup = wx.MessageDialog(
             self.frame,
-            f"During unpacking of our internal files, we seemed to have encountered an error.\n\nIf you keep seeing this error, please try rebooting and redownloading the application.",
-            "Internal Error occurred!",
+            self.trans["During unpacking of our internal files, we seemed to have encountered an error.\n\nIf you keep seeing this error, please try rebooting and redownloading the application."],
+            self.trans["Internal Error occurred!"],
             style=wx.OK | wx.ICON_EXCLAMATION
         )
         popup.ShowModal()
@@ -294,16 +296,18 @@ class RestartHost:
 
     def __init__(self, frame: wx.Frame) -> None:
         self.frame: wx.Frame = frame
+        self.constants=constants.Constants()
+        self.trans=TranslateLanguage(self.constants).gui_support()
 
 
     def restart(self, event: wx.Event = None, message: str = ""):
         self.popup = wx.MessageDialog(
             self.frame,
             message,
-            "Reboot to apply?",
+            self.trans["Reboot to apply?"],
             wx.YES_NO | wx.YES_DEFAULT | wx.ICON_INFORMATION
         )
-        self.popup.SetYesNoLabels("Reboot", "Ignore")
+        self.popup.SetYesNoLabels(self.trans["Reboot"], self.trans["Ignore"])
         answer = self.popup.ShowModal()
         if answer == wx.ID_YES:
             # Reboots with Count Down prompt (user can still dismiss if needed)
@@ -312,5 +316,5 @@ class RestartHost:
             try:
                 applescript.AppleScript('tell app "loginwindow" to «event aevtrrst»').run()
             except applescript.ScriptError as e:
-                logging.error(f"Error while trying to reboot: {e}")
+                logging.error(f"{self.trans['Error while trying to reboot:']} {e}")
             sys.exit(0)
