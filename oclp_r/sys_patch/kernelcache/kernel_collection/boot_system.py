@@ -8,14 +8,20 @@ import subprocess
 from ..base.cache import BaseKernelCache
 from ....support  import subprocess_wrapper
 from ....datasets import os_data
+from ....support import translate_language
 
 
 class BootSystemKernelCollections(BaseKernelCache):
 
-    def __init__(self, mount_location: str, detected_os: int, auxiliary_kc: bool) -> None:
+    def __init__(self, mount_location: str, detected_os: int, auxiliary_kc: bool, global_constants=None) -> None:
         self.mount_location = mount_location
         self.detected_os  = detected_os
         self.auxiliary_kc = auxiliary_kc
+        self.global_constants = global_constants
+        if global_constants:
+            self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).kernalcache()
+        else:
+            self.trans = None
 
 
     def _kmutil_arguments(self) -> list[str]:

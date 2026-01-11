@@ -8581,6 +8581,41 @@
 						<integer>16</integer>
 					</dict>
 				</dict>
+				<key>iMacPro1,1</key>
+				<dict>
+					<key>Vendor1002Device6860</key>
+					<dict>
+						<key>AGDCEnabled</key>
+						<integer>1</integer>
+						<key>Heuristic</key>
+						<dict>
+							<key>ID</key>
+							<integer>-1</integer>
+						</dict>
+						<key>control-id</key>
+						<integer>17</integer>
+						<key>max-power-state</key>
+						<integer>15</integer>
+						<key>min-power-state</key>
+						<integer>0</integer>
+					</dict>
+					<key>Vendor1002Device6867</key>
+					<dict>
+						<key>AGDCEnabled</key>
+						<integer>1</integer>
+						<key>Heuristic</key>
+						<dict>
+							<key>ID</key>
+							<integer>-1</integer>
+						</dict>
+						<key>control-id</key>
+						<integer>17</integer>
+						<key>max-power-state</key>
+						<integer>15</integer>
+						<key>min-power-state</key>
+						<integer>0</integer>
+					</dict>
+				</dict>
 				<key>iMac9,1</key>
 				<dict>
 					<key>IGPU</key>

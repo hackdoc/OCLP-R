@@ -4,6 +4,7 @@ rebuild.py: Manage kernel cache rebuilding regardless of macOS version
 
 from .base.cache import BaseKernelCache
 from ...datasets import os_data
+from ...support import translate_language
 
 
 class RebuildKernelCache:
@@ -16,11 +17,16 @@ class RebuildKernelCache:
     - auxiliary_cache: Whether to create auxiliary kernel cache (Big Sur and later)
     - auxiliary_cache_only: Whether to only create auxiliary kernel cache (Ventura and later)
     """
-    def __init__(self, os_version: os_data.os_data, mount_location: str, auxiliary_cache: bool, auxiliary_cache_only: bool) -> None:
+    def __init__(self, os_version: os_data.os_data, mount_location: str, auxiliary_cache: bool, auxiliary_cache_only: bool, global_constants=None) -> None:
         self.os_version = os_version
         self.mount_location = mount_location
         self.auxiliary_cache = auxiliary_cache
         self.auxiliary_cache_only = auxiliary_cache_only
+        self.global_constants = global_constants
+        if global_constants:
+            self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).kernalcache()
+        else:
+            self.trans = None
 
 
     def _rebuild_method(self) -> BaseKernelCache:
@@ -31,17 +37,17 @@ class RebuildKernelCache:
             if self.os_version >= os_data.os_data.ventura:
                 if self.auxiliary_cache_only:
                     from .kernel_collection.auxiliary import AuxiliaryKernelCollection
-                    return AuxiliaryKernelCollection(self.mount_location)
+                    return AuxiliaryKernelCollection(self.mount_location, self.global_constants)
 
             from .kernel_collection.boot_system import BootSystemKernelCollections
-            return BootSystemKernelCollections(self.mount_location, self.os_version, self.auxiliary_cache)
+            return BootSystemKernelCollections(self.mount_location, self.os_version, self.auxiliary_cache, self.global_constants)
 
         if os_data.os_data.catalina >= self.os_version >= os_data.os_data.lion:
             from .prelinked.prelinked import PrelinkedKernel
-            return PrelinkedKernel(self.mount_location)
+            return PrelinkedKernel(self.mount_location, self.global_constants)
 
         from .mkext.mkext import MKext
-        return MKext(self.mount_location)
+        return MKext(self.mount_location, self.global_constants)
 
 
     def rebuild(self) -> bool:

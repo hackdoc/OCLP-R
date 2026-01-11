@@ -26,6 +26,7 @@ from ...support import (
     updates,
     global_settings,
     network_handler,
+    translate_language
 )
 from ..patchsets import (
     HardwarePatchsetDetection,
@@ -40,6 +41,7 @@ class StartAutomaticPatching:
 
     def __init__(self, global_constants: constants.Constants):
         self.constants: constants.Constants = global_constants
+        self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).auto_patcher()
 
 
     def start_auto_patch(self):
@@ -59,15 +61,15 @@ class StartAutomaticPatching:
 
         """
 
-        logging.info("- Starting Automatic Patching")
+        logging.info(self.trans["- Starting Automatic Patching"])
         if self.constants.wxpython_variant is False:
-            logging.info("- Auto Patch option is not supported on TUI, please use GUI")
+            logging.info(self.trans["- Auto Patch option is not supported on TUI, please use GUI"])
             return
 
         dict = updates.CheckBinaryUpdates(self.constants).check_binary_updates()
         if dict:
             version = dict["Version"]
-            logging.info(f"- Found new version: {version}")
+            logging.info(self.trans["- Found new version: {version}"].format(version=version))
 
             app = wx.App()
             mainframe = wx.Frame(None, -1, "OCLP-R")
@@ -92,8 +94,8 @@ Please check the Github page for more information about this release."""
             panel = wx.Panel(frame)
             sizer = wx.BoxSizer(wx.VERTICAL)
             sizer.AddSpacer(10)
-            self.title_text = wx.StaticText(panel, label="A new version of OCLP-R is available!")
-            self.description = wx.StaticText(panel, label=f"OCLP-R {version} is now available - You have {self.constants.patcher_version}. Would you like to update?")
+            self.title_text = wx.StaticText(panel, label=self.trans["A new version of OCLP-R is available!"])
+            self.description = wx.StaticText(panel, label=self.trans["OCLP-R {version} is now available - You have {current_version}. Would you like to update?"].format(version=version, current_version=self.constants.patcher_version))
             self.title_text.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
             self.description.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
             self.web_view = wx.html2.WebView.New(panel, style=wx.BORDER_SUNKEN)
@@ -112,11 +114,11 @@ Please check the Github page for more information about this release."""
             self.web_view.SetPage(html_code, "")
             self.web_view.Bind(wx.html2.EVT_WEBVIEW_NEWWINDOW, self._onWebviewNav)
             self.web_view.EnableContextMenu(False)
-            self.close_button = wx.Button(panel, label="Ignore")
+            self.close_button = wx.Button(panel, label=self.trans["Ignore"])
             self.close_button.Bind(wx.EVT_BUTTON, lambda event: frame.EndModal(wx.ID_CANCEL))
-            self.view_button = wx.Button(panel, ID_GITHUB, label="View on GitHub")
+            self.view_button = wx.Button(panel, ID_GITHUB, label=self.trans["View on GitHub"])
             self.view_button.Bind(wx.EVT_BUTTON, lambda event: frame.EndModal(ID_GITHUB))
-            self.install_button = wx.Button(panel, label="Download and Install")
+            self.install_button = wx.Button(panel, label=self.trans["Download and Install"])
             self.install_button.Bind(wx.EVT_BUTTON, lambda event: frame.EndModal(ID_UPDATE))
             self.install_button.SetDefault()
 
@@ -144,32 +146,32 @@ Please check the Github page for more information about this release."""
             return
 
         if utilities.check_seal() is True:
-            logging.info("- Detected Snapshot seal intact, detecting patches")
+            logging.info(self.trans["- Detected Snapshot seal intact, detecting patches"])
             patches = HardwarePatchsetDetection(self.constants).device_properties
             if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
                 patches = {}
             if patches:
-                logging.info("- Detected applicable patches, determining whether possible to patch")
+                logging.info(self.trans["- Detected applicable patches, determining whether possible to patch"])
                 if patches[HardwarePatchsetValidation.PATCHING_NOT_POSSIBLE] is True:
-                    logging.info("- Cannot run patching")
+                    logging.info(self.trans["- Cannot run patching"])
                     return
 
-                logging.info("- Determined patching is possible, checking for OCLP updates")
+                logging.info(self.trans["- Determined patching is possible, checking for OCLP updates"])
                 patch_string = ""
                 for patch in patches:
                     if patches[patch] is True and not patch.startswith("Settings") and not patch.startswith("Validation"):
                         patch_string += f"- {patch}\n"
 
-                logging.info("- No new binaries found on Github, proceeding with patching")
+                logging.info(self.trans["- No new binaries found on Github, proceeding with patching"])
 
                 warning_str = ""
                 if network_handler.NetworkUtilities("https://api.github.com/repos/hackdoc/OCLP-R/releases/latest").verify_network_connection() is False:
-                    warning_str = f"""\n\nWARNING: We're unable to verify whether there are any new releases of OCLP-R on Github. Be aware that you may be using an outdated version for this OS. If you're unsure, verify on Github that OCLP-R {self.constants.patcher_version} is the latest official release"""
+                    warning_str = self.trans["WARNING: We're unable to verify whether there are any new releases of OCLP-R on Github. Be aware that you may be using an outdated version for this OS. If you're unsure, verify on Github that OCLP-R {version} is the latest official release"].format(version=self.constants.patcher_version)
 
                 args = [
                     "/usr/bin/osascript",
                     "-e",
-                    f"""display dialog "OCLP-R has detected you're running without Root Patches, and would like to install them.\n\nmacOS wipes all root patches during OS installs and updates, so they need to be reinstalled.\n\nFollowing Patches have been detected for your system: \n{patch_string}\nWould you like to apply these patches?{warning_str}" """
+                    f"""display dialog "{self.trans['OCLP-R has detected you\'re running without Root Patches, and would like to install them.\n\nmacOS wipes all root patches during OS installs and updates, so they need to be reinstalled.\n\nFollowing Patches have been detected for your system: \n{patch_string}\nWould you like to apply these patches?{warning_str}']}" """
                     f'with icon POSIX file "{self.constants.app_icon_path}"',
                 ]
                 output = subprocess.run(
@@ -182,9 +184,9 @@ Please check the Github page for more information about this release."""
                 return
 
             else:
-                logging.info("- No patches detected")
+                logging.info(self.trans["- No patches detected"])
         else:
-            logging.info("- Detected Snapshot seal not intact, skipping")
+            logging.info(self.trans["- Detected Snapshot seal not intact, skipping"])
 
         if self._determine_if_versions_match():
             self._determine_if_boot_matches()
@@ -205,30 +207,36 @@ Please check the Github page for more information about this release."""
             bool: True if versions match, False if not
         """
 
-        logging.info("- Checking booted vs installed OCLP Build")
+        logging.info(self.trans["- Checking booted vs installed OCLP Build"])
         if self.constants.computer.oclp_version is None:
-            logging.info("- Booted version not found")
+            logging.info(self.trans["- Booted version not found"])
             return True
 
         if self.constants.computer.oclp_version == self.constants.patcher_version:
-            logging.info("- Versions match")
+            logging.info(self.trans["- Versions match"])
             return True
 
         if self.constants.special_build is True:
             # Version doesn't match and we're on a special build
             # Special builds don't have good ways to compare versions
-            logging.info("- Special build detected, assuming installed is older")
+            logging.info(self.trans["- Special build detected, assuming installed is older"])
             return False
 
         # Check if installed version is newer than booted version
         if updates.CheckBinaryUpdates(self.constants).check_if_newer(self.constants.computer.oclp_version):
-            logging.info("- Installed version is newer than booted version")
+            logging.info(self.trans["- Installed version is newer than booted version"])
             return True
 
+        build_type = self.trans["a different"] if self.constants.special_build else self.trans["an outdated"]
+        dialog_text = self.trans["OCLP-R has detected that you are booting {build_type} OpenCore build\n- Booted: {booted_version}\n- Installed: {installed_version}\n\nWould you like to update the OpenCore bootloader?"].format(
+            build_type=build_type,
+            booted_version=self.constants.computer.oclp_version,
+            installed_version=self.constants.patcher_version
+        )
         args = [
             "/usr/bin/osascript",
             "-e",
-            f"""display dialog "OCLP-R has detected that you are booting {'a different' if self.constants.special_build else 'an outdated'} OpenCore build\n- Booted: {self.constants.computer.oclp_version}\n- Installed: {self.constants.patcher_version}\n\nWould you like to update the OpenCore bootloader?" """
+            f"""display dialog "{dialog_text}" """
             f'with icon POSIX file "{self.constants.app_icon_path}"',
         ]
         output = subprocess.run(
@@ -257,32 +265,34 @@ Please check the Github page for more information about this release."""
         and ask if they want to install to install to disk.
         """
 
-        logging.info("- Determining if macOS drive matches boot drive")
+        logging.info(self.trans["- Determining if macOS drive matches boot drive"])
 
         should_notify = global_settings.GlobalEnviromentSettings().read_property("AutoPatch_Notify_Mismatched_Disks")
         if should_notify is False:
-            logging.info("- Skipping due to user preference")
+            logging.info(self.trans["- Skipping due to user preference"])
             return
         if self.constants.host_is_hackintosh is True:
-            logging.info("- Skipping due to hackintosh")
+            logging.info(self.trans["- Skipping due to hackintosh"])
             return
         if not self.constants.booted_oc_disk:
-            logging.info("- Failed to find disk OpenCore launched from")
+            logging.info(self.trans["- Failed to find disk OpenCore launched from"])
             return
 
         root_disk = self.constants.booted_oc_disk.strip("disk")
         root_disk = "disk" + root_disk.split("s")[0]
 
-        logging.info(f"  - Boot Drive: {self.constants.booted_oc_disk} ({root_disk})")
+        logging.info(self.trans["  - Boot Drive: {boot_disk} ({root_disk})"].format(
+            boot_disk=self.constants.booted_oc_disk, root_disk=root_disk
+        ))
         macOS_disk = utilities.get_disk_path()
-        logging.info(f"  - macOS Drive: {macOS_disk}")
+        logging.info(self.trans["  - macOS Drive: {macos_disk}"].format(macos_disk=macOS_disk))
         physical_stores = utilities.find_apfs_physical_volume(macOS_disk)
-        logging.info(f"  - APFS Physical Stores: {physical_stores}")
+        logging.info(self.trans["  - APFS Physical Stores: {physical_stores}"].format(physical_stores=physical_stores))
 
         disk_match = False
         for disk in physical_stores:
             if root_disk in disk:
-                logging.info(f"- Boot drive matches macOS drive ({disk})")
+                logging.info(self.trans["- Boot drive matches macOS drive ({disk})"].format(disk=disk))
                 disk_match = True
                 break
 
@@ -290,20 +300,21 @@ Please check the Github page for more information about this release."""
             return
 
         # Check if OpenCore is on a USB drive
-        logging.info("- Boot Drive does not match macOS drive, checking if OpenCore is on a USB drive")
+        logging.info(self.trans["- Boot Drive does not match macOS drive, checking if OpenCore is on a USB drive"])
 
         disk_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", root_disk], stdout=subprocess.PIPE).stdout)
         try:
             if disk_info["Ejectable"] is False:
-                logging.info("- Boot Disk is not removable, skipping prompt")
+                logging.info(self.trans["- Boot Disk is not removable, skipping prompt"])
                 return
 
-            logging.info("- Boot Disk is ejectable, prompting user to install to internal")
+            logging.info(self.trans["- Boot Disk is ejectable, prompting user to install to internal"])
 
+            dialog_text = self.trans["OCLP-R has detected that you are booting OpenCore from an USB or External drive.\n\nIf you would like to boot your Mac normally without a USB drive plugged in, you can install OpenCore to the internal hard drive.\n\nWould you like to launch OCLP-R and install to disk?"]
             args = [
                 "/usr/bin/osascript",
                 "-e",
-                f"""display dialog "OCLP-R has detected that you are booting OpenCore from an USB or External drive.\n\nIf you would like to boot your Mac normally without a USB drive plugged in, you can install OpenCore to the internal hard drive.\n\nWould you like to launch OCLP-R and install to disk?" """
+                f"""display dialog "{dialog_text}" """
                 f'with icon POSIX file "{self.constants.app_icon_path}"',
             ]
             output = subprocess.run(
@@ -312,9 +323,9 @@ Please check the Github page for more information about this release."""
                 stderr=subprocess.STDOUT
             )
             if output.returncode == 0:
-                logging.info("- Launching GUI's Build/Install menu")
+                logging.info(self.trans["- Launching GUI's Build/Install menu"])
                 self.constants.start_build_install = True
                 gui_entry.EntryPoint(self.constants).start(entry=gui_entry.SupportedEntryPoints.BUILD_OC)
 
         except KeyError:
-            logging.info("- Unable to determine if boot disk is removable, skipping prompt")
+            logging.info(self.trans["- Unable to determine if boot disk is removable, skipping prompt"])
