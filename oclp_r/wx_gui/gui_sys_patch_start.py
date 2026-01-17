@@ -233,11 +233,11 @@ class SysPatchStartFrame(wx.Frame):
         return True
 
 
-    def _generate_modal(self, patches: dict = {}, variant: str = "Root Patching"):
+    def _generate_modal(self, patches: dict = {}, variant: str = None):
         """
         Create UI for root patching/unpatching
         """
-        supported_variants = ["Root Patching", "Revert Root Patches"]
+        supported_variants = [self.trans["Root Patching"], self.trans["Revert Root Patches"]]
         if variant not in supported_variants:
             logging.error(f"{self.trans["Unsupported variant:"]} {variant}")
             return
