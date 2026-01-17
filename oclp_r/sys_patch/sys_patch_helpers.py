@@ -18,7 +18,8 @@ from ..volume   import generate_copy_arguments
 
 from ..support import (
     generate_smbios,
-    subprocess_wrapper
+    subprocess_wrapper,
+    translate_language
 )
 
 
@@ -29,6 +30,9 @@ class SysPatchHelpers:
 
     def __init__(self, global_constants: constants.Constants):
         self.constants: constants.Constants = global_constants
+        
+        # Initialize translation
+        self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).sys_patch_helpers()
 
 
     def snb_board_id_patch(self, source_files_path: str):
@@ -50,10 +54,10 @@ class SysPatchHelpers:
         if self.constants.computer.reported_board_id in self.constants.sandy_board_id_stock:
             return
 
-        logging.info(f"Found unsupported Board ID {self.constants.computer.reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching")
+        logging.info(self.trans["Found unsupported Board ID {reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching"].format(reported_board_id=self.constants.computer.reported_board_id))
 
         board_to_patch = generate_smbios.determine_best_board_id_for_sandy(self.constants.computer.reported_board_id, self.constants.computer.gpus)
-        logging.info(f"Replacing {board_to_patch} with {self.constants.computer.reported_board_id}")
+        logging.info(self.trans["Replacing {board_to_patch} with {reported_board_id}"].format(board_to_patch=board_to_patch, reported_board_id=self.constants.computer.reported_board_id))
 
         board_to_patch_hex = bytes.fromhex(board_to_patch.encode('utf-8').hex())
         reported_board_hex = bytes.fromhex(self.constants.computer.reported_board_id.encode('utf-8').hex())
@@ -62,13 +66,13 @@ class SysPatchHelpers:
             # Pad the reported Board ID with zeros to match the length of the board to patch
             reported_board_hex = reported_board_hex + bytes(len(board_to_patch_hex) - len(reported_board_hex))
         elif len(board_to_patch_hex) < len(reported_board_hex):
-            logging.info(f"Error: Board ID {self.constants.computer.reported_board_id} is longer than {board_to_patch}")
-            raise Exception("Host's Board ID is longer than the kext's Board ID, cannot patch!!!")
+            logging.info(self.trans["Error: Board ID {reported_board_id} is longer than {board_to_patch}"].format(reported_board_id=self.constants.computer.reported_board_id, board_to_patch=board_to_patch))
+            raise Exception(self.trans["Host's Board ID is longer than the kext's Board ID, cannot patch!!!"])
 
         path = source_files_path + "/10.13.6/System/Library/Extensions/AppleIntelSNBGraphicsFB.kext/Contents/MacOS/AppleIntelSNBGraphicsFB"
         if not Path(path).exists():
-            logging.info(f"Error: Could not find {path}")
-            raise Exception("Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!")
+            logging.info(self.trans["Error: Could not find {path}"].format(path=path))
+            raise Exception(self.trans["Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!"])
 
         with open(path, 'rb') as f:
             data = f.read()
@@ -141,7 +145,7 @@ class SysPatchHelpers:
         if self.constants.detected_os < os_data.os_data.ventura:
             return
 
-        logging.info("Disabling WindowServer Caching")
+        logging.info(self.trans["Disabling WindowServer Caching"])
         # Invoke via 'bash -c' to resolve pathing
         subprocess_wrapper.run_as_root(["/bin/bash", "-c", "/bin/rm -rf /private/var/folders/*/*/*/WindowServer/com.apple.WindowServer"])
         # Disable writing to WindowServer folder
@@ -173,10 +177,10 @@ class SysPatchHelpers:
         if self.constants.detected_os < os_data.os_data.big_sur:
             return
 
-        logging.info("Installing Kernel Collection syncing utility")
+        logging.info(self.trans["Installing Kernel Collection syncing utility"])
         result = subprocess_wrapper.run_as_root([self.constants.rsrrepair_userspace_path, "--install"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
-            logging.info("- Failed to install RSRRepair")
+            logging.info(self.trans["- Failed to install RSRRepair"])
             subprocess_wrapper.log(result)
 
 
@@ -226,7 +230,7 @@ class SysPatchHelpers:
         DEST_DIR = f"{LIBRARY_DIR}/{GPU_VERSION}"
 
         if not Path(DEST_DIR).exists():
-            raise Exception(f"Failed to find GPUCompiler libraries at {DEST_DIR}")
+            raise Exception(self.trans["Failed to find GPUCompiler libraries at {dest_dir}"].format(dest_dir=DEST_DIR))
 
         for file in Path(LIBRARY_DIR).iterdir():
             if file.is_file():
@@ -238,7 +242,7 @@ class SysPatchHelpers:
             if not file.name.startswith(f"{BASE_VERSION}."):
                 continue
 
-            logging.info(f"Merging GPUCompiler.framework libraries to match binary")
+            logging.info(self.trans["Merging GPUCompiler.framework libraries to match binary"])
 
             src_dir = f"{LIBRARY_DIR}/{file.name}"
             if not Path(f"{DEST_DIR}/lib").exists():

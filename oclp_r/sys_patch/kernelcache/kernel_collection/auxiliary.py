@@ -7,12 +7,18 @@ import subprocess
 
 from ..base.cache import BaseKernelCache
 from ....support  import subprocess_wrapper
+from ....support import translate_language
 
 
 class AuxiliaryKernelCollection(BaseKernelCache):
 
-    def __init__(self, mount_location: str) -> None:
+    def __init__(self, mount_location: str, global_constants=None) -> None:
         self.mount_location = mount_location
+        self.global_constants = global_constants
+        if global_constants:
+            self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).kernelcache()
+        else:
+            self.trans = None
 
 
     def _kmutil_arguments(self) -> list[str]:
@@ -40,17 +46,26 @@ class AuxiliaryKernelCollection(BaseKernelCache):
         collection to be used.
         """
 
-        logging.info("- Forcing Auxiliary Kernel Collection usage")
+        if self.trans:
+            logging.info(self.trans["- Forcing Auxiliary Kernel Collection usage"])
+        else:
+            logging.info("- Forcing Auxiliary Kernel Collection usage")
         result = subprocess_wrapper.run_as_root(["/usr/bin/killall", "syspolicyd", "kernelmanagerd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
-            logging.info("- Unable to kill syspolicyd and kernelmanagerd")
+            if self.trans:
+                logging.info(self.trans["- Unable to kill syspolicyd and kernelmanagerd"])
+            else:
+                logging.info("- Unable to kill syspolicyd and kernelmanagerd")
             subprocess_wrapper.log(result)
             return False
 
         for file in ["KextPolicy", "KextPolicy-shm", "KextPolicy-wal"]:
             result = subprocess_wrapper.run_as_root(["/bin/rm", f"/private/var/db/SystemPolicyConfiguration/{file}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
-                logging.info(f"- Unable to remove {file}")
+                if self.trans:
+                    logging.info(self.trans["- Unable to remove {file}"].format(file=file))
+                else:
+                    logging.info(f"- Unable to remove {file}")
                 subprocess_wrapper.log(result)
                 return False
 
@@ -58,10 +73,16 @@ class AuxiliaryKernelCollection(BaseKernelCache):
 
 
     def rebuild(self) -> None:
-        logging.info("- Building new Auxiliary Kernel Collection")
+        if self.trans:
+            logging.info(self.trans["- Building new Auxiliary Kernel Collection"])
+        else:
+            logging.info("- Building new Auxiliary Kernel Collection")
         result = subprocess_wrapper.run_as_root(self._kmutil_arguments(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
-            logging.info("- Unable to build Auxiliary Kernel Collection")
+            if self.trans:
+                logging.info(self.trans["- Unable to build Auxiliary Kernel Collection"])
+            else:
+                logging.info("- Unable to build Auxiliary Kernel Collection")
             subprocess_wrapper.log(result)
             return False
 

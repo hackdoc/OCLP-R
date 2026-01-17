@@ -22,7 +22,7 @@ class Constants:
         # Patcher Versioning
         self.patcher_version:                 str = "3.0.1"  # OCLP-R
         self.patcher_support_pkg_version:     str = "1.11.0"  # PatcherSupportPkg
-        self.copyright_date:                  str = "Copyright © 2020-2025 Dortania and Hackdoc"
+        self.copyright_date:                  str = "Copyright © 2020-2026 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
         
         # URLs

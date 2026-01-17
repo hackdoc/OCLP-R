@@ -1,20 +1,24 @@
 """
-prelinked.py: Prelinked Kernel cache management
+prelinked.py: Prelinked Kernel management
 """
 
 import logging
 import subprocess
 
-from pathlib import Path
-
 from ..base.cache import BaseKernelCache
-from ....support import subprocess_wrapper
+from ....support  import subprocess_wrapper
+from ....support import translate_language
 
 
 class PrelinkedKernel(BaseKernelCache):
 
-    def __init__(self, mount_location: str) -> None:
+    def __init__(self, mount_location: str, global_constants=None) -> None:
         self.mount_location = mount_location
+        self.global_constants = global_constants
+        if global_constants:
+            self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).kernelcache()
+        else:
+            self.trans = None
 
 
     def _kextcache_arguments(self) -> list[str]:
@@ -28,12 +32,18 @@ class PrelinkedKernel(BaseKernelCache):
         if not Path("/usr/sbin/kcditto").exists():
             return
 
-        logging.info("- Syncing Kernel Cache to Preboot")
+        if self.trans:
+            logging.info(self.trans["- Syncing Kernel Cache to Preboot"])
+        else:
+            logging.info("- Syncing Kernel Cache to Preboot")
         subprocess_wrapper.run_as_root_and_verify(["/usr/sbin/kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def rebuild(self) -> None:
-        logging.info("- Rebuilding Prelinked Kernel")
+        if self.trans:
+            logging.info(self.trans["- Rebuilding Prelinked Kernel"])
+        else:
+            logging.info("- Rebuilding Prelinked Kernel")
         result = subprocess_wrapper.run_as_root(self._kextcache_arguments(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         # kextcache notes:

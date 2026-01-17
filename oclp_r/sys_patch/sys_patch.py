@@ -63,7 +63,8 @@ from ..datasets import (
 from ..support import (
     utilities,
     subprocess_wrapper,
-    metallib_handler
+    metallib_handler,
+    translate_language
 )
 from .patchsets import (
     HardwarePatchsetDetection,
@@ -79,7 +80,7 @@ from .auto_patcher import InstallAutomaticPatchingServices
 
 
 class PatchSysVolume:
-    def __init__(self, model: str, global_constants: constants.Constants, hardware_details: list = None) -> None:
+    def __init__(self, model: str, global_constants: constants.Constants, hardware_details: dict | None = None) -> None:
         self.model = model
         self.constants: constants.Constants = global_constants
         self.computer = self.constants.computer
@@ -96,14 +97,22 @@ class PatchSysVolume:
         if hardware_details is None:
             hardware_details = HardwarePatchsetDetection(self.constants).device_properties
         self.hardware_details = hardware_details
+        
+        # Initialize translation
+        self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).sys_patch()
+        
         self._init_pathing()
 
-        self.skip_root_kmutil_requirement = not self.hardware_details[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED] if self.constants.detected_os >= os_data.os_data.ventura else False
+        if self.hardware_details is not None:
+            self.skip_root_kmutil_requirement = not self.hardware_details[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED] if self.constants.detected_os >= os_data.os_data.ventura else False
+            self.requires_kdk_caching      = self.hardware_details[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED] and self.constants.detected_os >= os_data.os_data.ventura
+            self.requires_metallib_caching = self.hardware_details[HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_REQUIRED] and self.constants.detected_os >= os_data.os_data.sequoia
+        else:
+            self.skip_root_kmutil_requirement = False
+            self.requires_kdk_caching = False
+            self.requires_metallib_caching = False
 
-        self.requires_kdk_caching      = self.hardware_details[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED] and self.constants.detected_os >= os_data.os_data.ventura
-        self.requires_metallib_caching = self.hardware_details[HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_REQUIRED] and self.constants.detected_os >= os_data.os_data.sequoia
-
-        self.mount_obj = RootVolumeMount(self.constants.detected_os)
+        self.mount_obj = RootVolumeMount(self.constants.detected_os, self.constants)
 
 
     def _init_pathing(self) -> None:
@@ -134,7 +143,7 @@ class PatchSysVolume:
         """
         Unmount root volume
         """
-        logging.info("- Unmounting root volume")
+        logging.info(self.trans["- Unmounting root volume"])
         self.mount_obj.unmount(ignore_errors=True)
 
 
@@ -142,12 +151,12 @@ class PatchSysVolume:
         """
         Run sanity check before continuing patching
         """
-        logging.info("- Running sanity checks before patching")
+        logging.info(self.trans["- Running sanity checks before patching"])
 
         mounted_system_version = Path(self.mount_location) / "System/Library/CoreServices/SystemVersion.plist"
 
         if not mounted_system_version.exists():
-            logging.error("- Failed to find SystemVersion.plist on mounted root volume")
+            logging.error(self.trans["- Failed to find SystemVersion.plist on mounted root volume"])
             return False
 
         try:
@@ -156,10 +165,10 @@ class PatchSysVolume:
                 logging.error(
                     f"- SystemVersion.plist build version mismatch: found {mounted_data['ProductVersion']} ({mounted_data['ProductBuildVersion']}), expected {self.constants.detected_os_version} ({self.constants.detected_os_build})"
                     )
-                logging.error("An update is in progress on your machine and patching cannot continue until it is cancelled or finished")
+                logging.error(self.trans["An update is in progress on your machine and patching cannot continue until it is cancelled or finished"])
                 return False
         except:
-            logging.error("- Failed to parse SystemVersion.plist")
+            logging.error(self.trans["- Failed to parse SystemVersion.plist"])
             return False
 
         return True
@@ -180,7 +189,7 @@ class PatchSysVolume:
             self.skip_root_kmutil_requirement
         ).merge(save_hid_cs)
     def clean_launchpad(self) -> None:
-        logging.info("- Cleaning LaunchPad Settings")
+        logging.info(self.trans["- Cleaning LaunchPad Settings"])
         subprocess.run("mkdir -p /Library/Preferences/FeatureFlags/Domain",capture_output=True,text=True,shell=True)
         subprocess.run("defaults write /Library/Preferences/FeatureFlags/Domain/SpotlightUI.plist SpotlightPlus -dict Enabled -bool true",capture_output=True,text=True,shell=True)
     def _unpatch_root_vol(self):
@@ -201,8 +210,8 @@ class PatchSysVolume:
         ).clean_auxiliary_kc()
 
         self.constants.root_patcher_succeeded = True
-        logging.info("- Unpatching complete")
-        logging.info("\nPlease reboot the machine for patches to take effect")
+        logging.info(self.trans["- Unpatching complete"])
+        logging.info(self.trans["\nPlease reboot the machine for patches to take effect"])
 
 
     def _rebuild_root_volume(self) -> bool:
@@ -226,11 +235,10 @@ class PatchSysVolume:
             return False
         self._unmount_root_vol()
 
-        logging.info("- Patching complete")
-        logging.info("\nPlease reboot the machine for patches to take effect")
-
-        if self.needs_kmutil_exemptions is True:
-            logging.info("Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded")
+        logging.info(self.trans["- Patching complete"])
+        logging.info(self.trans["\nPlease reboot the machine for patches to take effect"])
+        if self.constants.needs_to_open_preferences:
+            logging.info(self.trans["Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded"])
 
         self.constants.root_patcher_succeeded = True
 
@@ -246,7 +254,8 @@ class PatchSysVolume:
             os_version=self.constants.detected_os,
             mount_location=self.mount_location,
             auxiliary_cache=self.needs_kmutil_exemptions,
-            auxiliary_cache_only=self.skip_root_kmutil_requirement
+            auxiliary_cache_only=self.skip_root_kmutil_requirement,
+            global_constants=self.constants
         ).rebuild()
 
         if result is False:
@@ -276,7 +285,7 @@ class PatchSysVolume:
 
         if self.constants.detected_os > os_data.os_data.catalina:
             return
-        logging.info("- Rebuilding dyld shared cache")
+        logging.info(self.trans["- Rebuilding dyld shared cache"])
         subprocess_wrapper.run_as_root_and_verify(["/usr/bin/update_dyld_shared_cache", "-root", f"{self.mount_location}/"])
 
 
@@ -287,7 +296,7 @@ class PatchSysVolume:
         """
 
         if self.constants.detected_os == os_data.os_data.catalina:
-            logging.info("- Rebuilding preboot kernel cache")
+            logging.info(self.trans["- Rebuilding preboot kernel cache"])
             subprocess_wrapper.run_as_root_and_verify(["/usr/sbin/kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
@@ -297,11 +306,11 @@ class PatchSysVolume:
         """
 
         if (Path(self.mount_application_support) / Path("SkyLightPlugins/")).exists():
-            logging.info("- Found SkylightPlugins folder, removing old plugins")
+            logging.info(self.trans["- Found SkylightPlugins folder, removing old plugins"])
             subprocess_wrapper.run_as_root_and_verify(["/bin/rm", "-Rf", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             subprocess_wrapper.run_as_root_and_verify(["/bin/mkdir", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         else:
-            logging.info("- Creating SkylightPlugins folder")
+            logging.info(self.trans["- Creating SkylightPlugins folder"])
             subprocess_wrapper.run_as_root_and_verify(["/bin/mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     def _delete_nonmetal_enforcement(self) -> None:
         """
@@ -312,7 +321,7 @@ class PatchSysVolume:
         for arg in ["useMetal", "useIOP"]:
             result = subprocess.run(["/usr/bin/defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", arg], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.decode("utf-8").strip()
             if result in ["0", "false", "1", "true"]:
-                logging.info(f"- Removing non-Metal Enforcement Preference: {arg}")
+                logging.info(self.trans["- Removing non-Metal Enforcement Preference: {arg}"].format(arg=arg))
                 subprocess_wrapper.run_as_root(["/usr/bin/defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", arg])
 
 
@@ -328,7 +337,7 @@ class PatchSysVolume:
         file_name = "OCLP-R.plist"
         destination_path_file = f"{destination_path}/{file_name}"
         if sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, file_name, self.kdk_path, self.metallib_path):
-            logging.info("- Writing patchset information to Root Volume")
+            logging.info(self.trans["- Writing patchset information to Root Volume"])
             if Path(destination_path_file).exists():
                 subprocess_wrapper.run_as_root_and_verify(["/bin/rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             subprocess_wrapper.run_as_root_and_verify(generate_copy_arguments(f"{self.constants.payload_path}/{file_name}", destination_path), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -339,7 +348,7 @@ class PatchSysVolume:
         Patch root volume
         """
 
-        logging.info(f"- Running patches for {self.model}")
+        logging.info(self.trans["- Running patches for {model}"].format(model=self.model))
         if self.patch_set_dictionary != {}:
             self._execute_patchset(self.patch_set_dictionary)
         else:
@@ -372,11 +381,11 @@ class PatchSysVolume:
         source_files_path = str(self.constants.payload_local_binaries_root_path)
         required_patches = self._preflight_checks(required_patches, source_files_path)
         for patch in required_patches:
-            logging.info("- Installing Patchset: " + patch)
+            logging.info(self.trans["- Installing Patchset: {patch}"].format(patch=patch))
             for method_remove in [PatchType.REMOVE_SYSTEM_VOLUME, PatchType.REMOVE_DATA_VOLUME]:
                 if method_remove in required_patches[patch]:
                     for remove_patch_directory in required_patches[patch][method_remove]:
-                        logging.info("- Remove Files at: " + remove_patch_directory)
+                        logging.info(self.trans["- Remove Files at: {remove_patch_directory}"].format(remove_patch_directory=remove_patch_directory))
                         for remove_patch_file in required_patches[patch][method_remove][remove_patch_directory]:
                             if method_remove == PatchType.REMOVE_SYSTEM_VOLUME:
                                 destination_folder_path = str(self.mount_location) + remove_patch_directory
@@ -390,7 +399,7 @@ class PatchSysVolume:
                     continue
 
                 for install_patch_directory in list(required_patches[patch][method_install]):
-                    logging.info(f"- Handling Installs in: {install_patch_directory}")
+                    logging.info(self.trans["- Handling Installs in: {install_patch_directory}"].format(install_patch_directory=install_patch_directory))
                     for install_file in list(required_patches[patch][method_install][install_patch_directory]):
                         source_folder_path = required_patches[patch][method_install][install_patch_directory][install_file] + install_patch_directory
                         # Check whether to source from root
@@ -428,10 +437,10 @@ class PatchSysVolume:
                     # Some processes need sudo, however we cannot directly call sudo in some scenarios
                     # Instead, call elevated funtion if string's boolean is True
                     if required_patches[patch][PatchType.EXECUTE][process] is True:
-                        logging.info(f"- Running Process as Root:\n{process}")
+                        logging.info(self.trans["- Running Process as Root:\n{process}"].format(process=process))
                         subprocess_wrapper.run_as_root_and_verify(process.split(" "), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                     else:
-                        logging.info(f"- Running Process:\n{process}")
+                        logging.info(self.trans["- Running Process:\n{process}"].format(process=process))
                         subprocess_wrapper.run_and_verify(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
 
         if any(x in required_patches for x in ["AMD Legacy GCN", "AMD Legacy Polaris", "AMD Legacy Vega"]):
@@ -448,24 +457,24 @@ class PatchSysVolume:
         """
         metallib_obj = metallib_handler.MetalLibraryObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
         if metallib_obj.success is False:
-            logging.error(f"Failed to find MetalLibSupportPkg: {metallib_obj.error_msg}")
+            logging.error(self.trans["Failed to find MetalLibSupportPkg: {error_msg}"].format(error_msg=metallib_obj.error_msg))
             raise Exception(f"Failed to find MetalLibSupportPkg: {metallib_obj.error_msg}")
 
         metallib_download_obj = metallib_obj.retrieve_download()
         if not metallib_download_obj:
             # Already downloaded, return path
-            logging.info(f"Using MetalLibSupportPkg: {metallib_obj.metallib_installed_path}")
+            logging.info(self.trans["Using MetalLibSupportPkg: {metallib_installed_path}"].format(metallib_installed_path=metallib_obj.metallib_installed_path))
             self.metallib_path = metallib_obj.metallib_installed_path
             return str(metallib_obj.metallib_installed_path)
 
         metallib_download_obj.download(spawn_thread=False)
         if metallib_download_obj.download_complete is False:
             error_msg = metallib_download_obj.error_msg
-            logging.error(f"Could not download MetalLibSupportPkg: {error_msg}")
+            logging.error(self.trans["Could not download MetalLibSupportPkg: {error_msg}"].format(error_msg=error_msg))
             raise Exception(f"Could not download MetalLibSupportPkg: {error_msg}")
 
         if metallib_obj.install_metallib() is False:
-            logging.error("Failed to install MetalLibSupportPkg")
+            logging.error(self.trans["Failed to install MetalLibSupportPkg"])
             raise Exception("Failed to install MetalLibSupportPkg")
 
         # After install, check if it's present
@@ -494,7 +503,7 @@ class PatchSysVolume:
             dict: Updated patchset dictionary
         """
 
-        logging.info("- Running Preflight Checks before patching")
+        logging.info(self.trans["- Running Preflight Checks before patching"])
 
         for patch in required_patches:
             # Check if all files are present
@@ -537,7 +546,7 @@ class PatchSysVolume:
         # Ensure KDK is properly installed
         self._merge_kdk_with_root(save_hid_cs=True if "Legacy USB 1.1" in required_patches else False)
 
-        logging.info("- Finished Preflight, starting patching")
+        logging.info(self.trans["- Finished Preflight, starting patching"])
 
         return required_patches
 
@@ -548,34 +557,34 @@ class PatchSysVolume:
         Entry function for the patching process
         """
 
-        logging.info("- Starting Patch Process")
-        logging.info(f"- Determining Required Patch set for Darwin {self.constants.detected_os}")
+        logging.info(self.trans["- Starting Patch Process"])
+        logging.info(self.trans["- Determining Required Patch set for Darwin {detected_os}"].format(detected_os=self.constants.detected_os))
         patchset_obj = HardwarePatchsetDetection(self.constants)
         self.patch_set_dictionary = patchset_obj.patches
 
         if self.patch_set_dictionary == {}:
-            logging.info("- No Root Patches required for your machine!")
+            logging.info(self.trans["- No Root Patches required for your machine!"])
             return
         
-        logging.info("- Verifying whether Root Patching possible")
+        logging.info(self.trans["- Verifying whether Root Patching possible"])
         if patchset_obj.can_patch is False:
-            logging.error("- Cannot continue with patching!!!")
+            logging.error(self.trans["- Cannot continue with patching!!!"])
             patchset_obj.detailed_errors()
             return
 
-        logging.info("- Patcher is capable of patching")
+        logging.info(self.trans["- Patcher is capable of patching"])
         if PatcherSupportPkgMount(self.constants).mount() is False:
-            logging.error("- Critical resources missing, cannot continue with patching!!!")
+            logging.error(self.trans["- Critical resources missing, cannot continue with patching!!!"])
             return
 
         if self._mount_root_vol() is False:
-            logging.error("- Failed to mount root volume, cannot continue with patching!!!")
+            logging.error(self.trans["- Failed to mount root volume, cannot continue with patching!!!"])
             return
 
         if self._run_sanity_checks() is False:
             self._unmount_root_vol()
-            logging.error("- Failed sanity checks, cannot continue with patching!!!")
-            logging.error("- Please ensure that you do not have any updates pending")
+            logging.error(self.trans["- Failed sanity checks, cannot continue with patching!!!"])
+            logging.error(self.trans["- Please ensure that you do not have any updates pending"])
             return
 
         self._patch_root_vol()
@@ -585,15 +594,15 @@ class PatchSysVolume:
         Entry function for unpatching the root volume
         """
 
-        logging.info("- Starting Unpatch Process")
+        logging.info(self.trans["- Starting Unpatch Process"])
         patchset_obj = HardwarePatchsetDetection(self.constants)
         if patchset_obj.can_unpatch is False:
-            logging.error("- Cannot continue with unpatching!!!")
+            logging.error(self.trans["- Cannot continue with unpatching!!!"])
             patchset_obj.detailed_errors()
             return
 
         if self._mount_root_vol() is False:
-            logging.error("- Failed to mount root volume, cannot continue with unpatching!!!")
+            logging.error(self.trans["- Failed to mount root volume, cannot continue with unpatching!!!"])
             return
 
         self._unpatch_root_vol()

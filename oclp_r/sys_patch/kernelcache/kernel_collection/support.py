@@ -12,14 +12,19 @@ from ...patchsets import PatchType
 
 from ....datasets import os_data
 from ....support  import subprocess_wrapper
+from ....support import translate_language
 
 
 class KernelCacheSupport:
 
-    def __init__(self, mount_location_data: str, detected_os: int, skip_root_kmutil_requirement: bool) -> None:
+    def __init__(self, mount_location_data: str, detected_os: int, skip_root_kmutil_requirement: bool, global_constants=None) -> None:
         self.mount_location_data = mount_location_data
         self.detected_os = detected_os
         self.skip_root_kmutil_requirement = skip_root_kmutil_requirement
+        if global_constants:
+            self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).kernelcache()
+        else:
+            self.trans = None
 
 
     def check_kexts_needs_authentication(self, kext_name: str) -> bool:
@@ -49,7 +54,10 @@ class KernelCacheSupport:
         except PermissionError:
             pass
 
-        logging.info(f"  - {kext_name} requires authentication in System Preferences")
+        if self.trans:
+            logging.info(self.trans["  - {kext_name} requires authentication in System Preferences"].format(kext_name=kext_name))
+        else:
+            logging.info(f"  - {kext_name} requires authentication in System Preferences")
 
         return True
 
@@ -90,7 +98,10 @@ class KernelCacheSupport:
 
         updated_install_location = str(self.mount_location_data) + "/Library/Extensions"
 
-        logging.info(f"  - Adding AuxKC support to {install_file}")
+        if self.trans:
+            logging.info(self.trans["  - Adding AuxKC support to {install_file}"].format(install_file=install_file))
+        else:
+            logging.info(f"  - Adding AuxKC support to {install_file}")
         plist_path = Path(Path(source_folder_path) / Path(install_file) / Path("Contents/Info.plist"))
         plist_data = plistlib.load((plist_path).open("rb"))
 
@@ -121,7 +132,10 @@ class KernelCacheSupport:
         if self.detected_os < os_data.os_data.big_sur:
             return
 
-        logging.info("- Cleaning Auxiliary Kernel Collection")
+        if self.trans:
+            logging.info(self.trans["- Cleaning Auxiliary Kernel Collection"])
+        else:
+            logging.info("- Cleaning Auxiliary Kernel Collection")
         oclp_path = "/System/Library/CoreServices/OCLP-R.plist"
         if Path(oclp_path).exists():
             oclp_plist_data = plistlib.load(Path(oclp_path).open("rb"))
@@ -139,7 +153,10 @@ class KernelCacheSupport:
                                 continue
                             if not Path(f"/Library/Extensions/{file}").exists():
                                 continue
-                            logging.info(f"  - Removing {file}")
+                            if self.trans:
+                                logging.info(self.trans["  - Removing {file}"].format(file=file))
+                            else:
+                                logging.info(f"  - Removing {file}")
                             subprocess_wrapper.run_as_root(["/bin/rm", "-Rf", f"/Library/Extensions/{file}"])
 
         # Handle situations where users migrated from older OSes with a lot of garbage in /L*/E*
@@ -155,7 +172,10 @@ class KernelCacheSupport:
         for file in Path("/Library/Extensions").glob("*.kext"):
             try:
                 if datetime.fromtimestamp(file.stat().st_mtime) < datetime(2021, 10, 1):
-                    logging.info(f"  - Relocating {file.name} kext to {relocation_path}")
+                    if self.trans:
+                        logging.info(self.trans["  - Relocating {file_name} kext to {relocation_path}"].format(file_name=file.name, relocation_path=relocation_path))
+                    else:
+                        logging.info(f"  - Relocating {file.name} kext to {relocation_path}")
                     if Path(relocation_path) / Path(file.name).exists():
                         subprocess_wrapper.run_as_root(["/bin/rm", "-Rf", relocation_path / Path(file.name)])
                     subprocess_wrapper.run_as_root(["/bin/mv", file, relocation_path])

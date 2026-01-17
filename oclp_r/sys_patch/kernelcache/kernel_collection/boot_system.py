@@ -19,7 +19,7 @@ class BootSystemKernelCollections(BaseKernelCache):
         self.auxiliary_kc = auxiliary_kc
         self.global_constants = global_constants
         if global_constants:
-            self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).kernalcache()
+            self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).kernelcache()
         else:
             self.trans = None
 
@@ -56,9 +56,17 @@ class BootSystemKernelCollections(BaseKernelCache):
 
 
     def rebuild(self) -> bool:
-        logging.info(f"- Rebuilding {'Boot and System' if self.auxiliary_kc is False else 'Boot, System and Auxiliary'} Kernel Collections")
-        if self.auxiliary_kc is True:
-            logging.info("  (You will get a prompt by System Preferences, ignore for now)")
+        if self.trans:
+            if self.auxiliary_kc is False:
+                logging.info(self.trans["- Rebuilding Boot and System Kernel Collections"])
+            else:
+                logging.info(self.trans["- Rebuilding Boot, System and Auxiliary Kernel Collections"])
+            if self.auxiliary_kc is True:
+                logging.info(self.trans["  (You will get a prompt by System Preferences, ignore for now)"])
+        else:
+            logging.info(f"- Rebuilding {'Boot and System' if self.auxiliary_kc is False else 'Boot, System and Auxiliary'} Kernel Collections")
+            if self.auxiliary_kc is True:
+                logging.info("  (You will get a prompt by System Preferences, ignore for now)")
 
         result = subprocess_wrapper.run_as_root(self._kmutil_arguments(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:

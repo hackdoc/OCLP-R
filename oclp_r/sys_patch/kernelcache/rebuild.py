@@ -24,7 +24,7 @@ class RebuildKernelCache:
         self.auxiliary_cache_only = auxiliary_cache_only
         self.global_constants = global_constants
         if global_constants:
-            self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).kernalcache()
+            self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).kernelcache()
         else:
             self.trans = None
 

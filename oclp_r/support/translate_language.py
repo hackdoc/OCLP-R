@@ -2799,6 +2799,163 @@ class TranslateLanguage_sys_patch:
             }
         return trans
 
+    def mount(self):
+        if self.language_point=="English":
+            trans={
+                "Failed to parse diskutil output.":"Failed to parse diskutil output.",
+                "Failed to mount root volume":"Failed to mount root volume",
+                "{root_volume_identifier} has already been unmounted.":"{root_volume_identifier} has already been unmounted.",
+                "Attempted to mount root volume, but failed: {result}":"Attempted to mount root volume, but failed: {result}",
+                "Failed to unmount root volume":"Failed to unmount root volume",
+                "Failed to create APFS snapshot":"Failed to create APFS snapshot",
+                "- This is an APFS bug with Monterey and newer! Perform a clean installation to ensure your APFS volume is built correctly":"- This is an APFS bug with Monterey and newer! Perform a clean installation to ensure your APFS volume is built correctly",
+                "Failed to revert APFS snapshot":"Failed to revert APFS snapshot"
+            }
+        elif self.language_point=="简体中文":
+            trans={
+                "Failed to parse diskutil output.":"解析diskutil输出失败",
+                "Failed to mount root volume":"挂载根卷失败",
+                "{root_volume_identifier} has already been unmounted.":"{root_volume_identifier} 已经卸载",
+                "Attempted to mount root volume, but failed: {result}":"尝试挂载根卷失败: {result}",
+                "Failed to unmount root volume":"卸载根卷失败",
+                "Failed to create APFS snapshot":"创建APFS快照失败",
+                "- This is an APFS bug with Monterey and newer! Perform a clean installation to ensure your APFS volume is built correctly":"- 这是Monterey及更新版本的APFS错误！请执行干净安装以确保您的APFS卷正确构建",
+                "Failed to revert APFS snapshot":"恢复APFS快照失败"
+            }
+        return trans
+
+    def sys_patch(self):
+        if self.language_point=="English":
+            trans={
+                "- Unmounting root volume":"- Unmounting root volume",
+                "- Running sanity checks before patching":"- Running sanity checks before patching",
+                "- Failed to find SystemVersion.plist on mounted root volume":"- Failed to find SystemVersion.plist on mounted root volume",
+                "An update is in progress on your machine and patching cannot continue until it is cancelled or finished":"An update is in progress on your machine and patching cannot continue until it is cancelled or finished",
+                "- Failed to parse SystemVersion.plist":"- Failed to parse SystemVersion.plist",
+                "- Cleaning LaunchPad Settings":"- Cleaning LaunchPad Settings",
+                "- Unpatching complete":"- Unpatching complete",
+                "\nPlease reboot the machine for patches to take effect":"\nPlease reboot the machine for patches to take effect",
+                "- Patching complete":"- Patching complete",
+                "Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded":"Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded",
+                "- Rebuilding dyld shared cache":"- Rebuilding dyld shared cache",
+                "- Rebuilding preboot kernel cache":"- Rebuilding preboot kernel cache",
+                "- Found SkylightPlugins folder, removing old plugins":"- Found SkylightPlugins folder, removing old plugins",
+                "- Creating SkylightPlugins folder":"- Creating SkylightPlugins folder",
+                "- Removing non-Metal Enforcement Preference: {arg}":"- Removing non-Metal Enforcement Preference: {arg}",
+                "- Writing patchset information to Root Volume":"- Writing patchset information to Root Volume",
+                "- Running patches for {model}":"- Running patches for {model}",
+                "- Installing Patchset: {patch}":"- Installing Patchset: {patch}",
+                "- Remove Files at: {remove_patch_directory}":"- Remove Files at: {remove_patch_directory}",
+                "- Handling Installs in: {install_patch_directory}":"- Handling Installs in: {install_patch_directory}",
+                "- Running Process as Root:\n{process}":"- Running Process as Root:\n{process}",
+                "- Running Process:\n{process}":"- Running Process:\n{process}",
+                "Failed to find MetalLibSupportPkg: {error_msg}":"Failed to find MetalLibSupportPkg: {error_msg}",
+                "Using MetalLibSupportPkg: {metallib_installed_path}":"Using MetalLibSupportPkg: {metallib_installed_path}",
+                "Could not download MetalLibSupportPkg: {error_msg}":"Could not download MetalLibSupportPkg: {error_msg}",
+                "Failed to install MetalLibSupportPkg":"Failed to install MetalLibSupportPkg",
+                "- Running Preflight Checks before patching":"- Running Preflight Checks before patching",
+                "- Finished Preflight, starting patching":"- Finished Preflight, starting patching",
+                "- Starting Patch Process":"- Starting Patch Process",
+                "- Determining Required Patch set for Darwin {detected_os}":"- Determining Required Patch set for Darwin {detected_os}",
+                "- No Root Patches required for your machine!":"- No Root Patches required for your machine!",
+                "- Verifying whether Root Patching possible":"- Verifying whether Root Patching possible",
+                "- Cannot continue with patching!!!":"- Cannot continue with patching!!!",
+                "- Patcher is capable of patching":"- Patcher is capable of patching",
+                "- Critical resources missing, cannot continue with patching!!!":"- Critical resources missing, cannot continue with patching!!!",
+                "- Failed to mount root volume, cannot continue with patching!!!":"- Failed to mount root volume, cannot continue with patching!!!",
+                "- Failed sanity checks, cannot continue with patching!!!":"- Failed sanity checks, cannot continue with patching!!!",
+                "- Please ensure that you do not have any updates pending":"- Please ensure that you do not have any updates pending",
+                "- Starting Unpatch Process":"- Starting Unpatch Process",
+                "- Cannot continue with unpatching!!!":"- Cannot continue with unpatching!!!",
+                "- Failed to mount root volume, cannot continue with unpatching!!!":"- Failed to mount root volume, cannot continue with unpatching!!!",
+                "Failed to find {source_file}":"Failed to find {source_file}",
+                "Failed to find MetalLibSupportPkg: {error_msg}":"Failed to find MetalLibSupportPkg: {error_msg}",
+                "Could not download MetalLibSupportPkg: {error_msg}":"Could not download MetalLibSupportPkg: {error_msg}",
+                "Failed to install MetalLibSupportPkg":"Failed to install MetalLibSupportPkg",
+                "Unknown Dynamic Patchset: {variant}":"Unknown Dynamic Patchset: {variant}"
+            }
+        elif self.language_point=="简体中文":
+            trans={
+                "- Unmounting root volume":"- 正在卸载根卷",
+                "- Running sanity checks before patching":"- 正在运行修补前的完整性检查",
+                "- Failed to find SystemVersion.plist on mounted root volume":"- 在挂载的根卷上找不到 SystemVersion.plist",
+                "An update is in progress on your machine and patching cannot continue until it is cancelled or finished":"您的机器正在进行更新，修补无法继续，直到更新被取消或完成",
+                "- Failed to parse SystemVersion.plist":"- 解析 SystemVersion.plist 失败",
+                "- Cleaning LaunchPad Settings":"- 正在清理 LaunchPad 设置",
+                "- Unpatching complete":"- 取消修补完成",
+                "\nPlease reboot the machine for patches to take effect":"\n请重启机器以使补丁生效",
+                "- Patching complete":"- 修补完成",
+                "Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded":"注意：Apple 将要求您打开系统偏好设置 -> 安全以允许加载新的内核扩展",
+                "- Rebuilding dyld shared cache":"- 正在重建 dyld 共享缓存",
+                "- Rebuilding preboot kernel cache":"- 正在重建预启动内核缓存",
+                "- Found SkylightPlugins folder, removing old plugins":"- 找到 SkylightPlugins 文件夹，正在删除旧插件",
+                "- Creating SkylightPlugins folder":"- 正在创建 SkylightPlugins 文件夹",
+                "- Removing non-Metal Enforcement Preference: {arg}":"- 正在删除非 Metal 强制偏好设置: {arg}",
+                "- Writing patchset information to Root Volume":"- 正在将补丁集信息写入根卷",
+                "- Running patches for {model}":"- 正在为 {model} 运行补丁",
+                "- Installing Patchset: {patch}":"- 正在安装补丁集: {patch}",
+                "- Remove Files at: {remove_patch_directory}":"- 正在删除文件位置: {remove_patch_directory}",
+                "- Handling Installs in: {install_patch_directory}":"- 正在处理安装位置: {install_patch_directory}",
+                "- Running Process as Root:\n{process}":"- 正在以 Root 身份运行进程:\n{process}",
+                "- Running Process:\n{process}":"- 正在运行进程:\n{process}",
+                "Failed to find MetalLibSupportPkg: {error_msg}":"找不到 MetalLibSupportPkg: {error_msg}",
+                "Using MetalLibSupportPkg: {metallib_installed_path}":"正在使用 MetalLibSupportPkg: {metallib_installed_path}",
+                "Could not download MetalLibSupportPkg: {error_msg}":"无法下载 MetalLibSupportPkg: {error_msg}",
+                "Failed to install MetalLibSupportPkg":"安装 MetalLibSupportPkg 失败",
+                "- Running Preflight Checks before patching":"- 正在运行修补前的预检检查",
+                "- Finished Preflight, starting patching":"- 预检完成，开始修补",
+                "- Starting Patch Process":"- 开始修补过程",
+                "- Determining Required Patch set for Darwin {detected_os}":"- 正在确定 Darwin {detected_os} 所需的补丁集",
+                "- No Root Patches required for your machine!":"- 您的机器不需要根补丁！",
+                "- Verifying whether Root Patching possible":"- 正在验证根修补是否可能",
+                "- Cannot continue with patching!!!":"- 无法继续修补！！！",
+                "- Patcher is capable of patching":"- 修补程序能够进行修补",
+                "- Critical resources missing, cannot continue with patching!!!":"- 关键资源缺失，无法继续修补！！！",
+                "- Failed to mount root volume, cannot continue with patching!!!":"- 挂载根卷失败，无法继续修补！！！",
+                "- Failed sanity checks, cannot continue with patching!!!":"- 完整性检查失败，无法继续修补！！！",
+                "- Please ensure that you do not have any updates pending":"- 请确保您没有任何待处理的更新",
+                "- Starting Unpatch Process":"- 开始取消修补过程",
+                "- Cannot continue with unpatching!!!":"- 无法继续取消修补！！！",
+                "- Failed to mount root volume, cannot continue with unpatching!!!":"- 挂载根卷失败，无法继续取消修补！！！",
+                "Failed to find {source_file}":"找不到 {source_file}",
+                "Failed to find MetalLibSupportPkg: {error_msg}":"找不到 MetalLibSupportPkg: {error_msg}",
+                "Could not download MetalLibSupportPkg: {error_msg}":"无法下载 MetalLibSupportPkg: {error_msg}",
+                "Failed to install MetalLibSupportPkg":"安装 MetalLibSupportPkg 失败",
+                "Unknown Dynamic Patchset: {variant}":"未知的动态补丁集: {variant}"
+        }
+        return trans
+
+    def sys_patch_helpers(self):
+        if self.language_point=="English":
+            trans={
+                "Found unsupported Board ID {reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching":"Found unsupported Board ID {reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching",
+                "Replacing {board_to_patch} with {reported_board_id}":"Replacing {board_to_patch} with {reported_board_id}",
+                "Error: Board ID {reported_board_id} is longer than {board_to_patch}":"Error: Board ID {reported_board_id} is longer than {board_to_patch}",
+                "Error: Could not find {path}":"Error: Could not find {path}",
+                "Disabling WindowServer Caching":"Disabling WindowServer Caching",
+                "Installing Kernel Collection syncing utility":"Installing Kernel Collection syncing utility",
+                "- Failed to install RSRRepair":"- Failed to install RSRRepair",
+                "Merging GPUCompiler.framework libraries to match binary":"Merging GPUCompiler.framework libraries to match binary",
+                "Host's Board ID is longer than the kext's Board ID, cannot patch!!!":"Host's Board ID is longer than the kext's Board ID, cannot patch!!!",
+                "Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!":"Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!",
+                "Failed to find GPUCompiler libraries at {dest_dir}":"Failed to find GPUCompiler libraries at {dest_dir}"
+            }
+        elif self.language_point=="简体中文":
+            trans={
+                "Found unsupported Board ID {reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching":"发现不支持的 Board ID {reported_board_id}，正在执行 AppleIntelSNBGraphicsFB 二进制修补",
+                "Replacing {board_to_patch} with {reported_board_id}":"正在将 {board_to_patch} 替换为 {reported_board_id}",
+                "Error: Board ID {reported_board_id} is longer than {board_to_patch}":"错误：Board ID {reported_board_id} 比 {board_to_patch} 长",
+                "Error: Could not find {path}":"错误：找不到 {path}",
+                "Disabling WindowServer Caching":"正在禁用 WindowServer 缓存",
+                "Installing Kernel Collection syncing utility":"正在安装内核集合同步工具",
+                "- Failed to install RSRRepair":"- 安装 RSRRepair 失败",
+                "Merging GPUCompiler.framework libraries to match binary":"正在合并 GPUCompiler.framework 库以匹配二进制文件",
+                "Host's Board ID is longer than the kext's Board ID, cannot patch!!!":"主机的 Board ID 比 kext 的 Board ID 长，无法修补！！！",
+                "Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!":"找不到 AppleIntelSNBGraphicsFB.kext，无法修补！！！",
+                "Failed to find GPUCompiler libraries at {dest_dir}":"在 {dest_dir} 找不到 GPUCompiler 库"
+            }
+        return trans
+
 class TranslateLanguage_efi_builder:
     def __init__(self, global_constants: Constants) -> None:
         self.file_name:              str = ".com.hackdoc.oclp-r.plist"

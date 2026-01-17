@@ -13,6 +13,7 @@ from ....datasets.os_data       import os_data
 from ....datasets.sip_data      import system_integrity_protection
 from ....detections.amfi_detect import AmfiConfigDetectLevel
 from ....detections             import device_probe
+from oclp_r import constants
 
 
 class HardwareVariant(StrEnum):
