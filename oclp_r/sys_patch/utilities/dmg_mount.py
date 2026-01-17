@@ -10,7 +10,7 @@ from pathlib import Path
 
 from ... import constants
 
-from ...support import subprocess_wrapper
+from ...support import subprocess_wrapper, translate_language
 
 
 class PatcherSupportPkgMount:
@@ -18,6 +18,9 @@ class PatcherSupportPkgMount:
     def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
         self.icon_path = str(self.constants.app_icon_path).replace("/", ":")[1:]
+        
+        # Initialize translation
+        self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).utilities()
 
 
     def _mount_universal_binaries_dmg(self) -> bool:
@@ -25,7 +28,7 @@ class PatcherSupportPkgMount:
         Mount PatcherSupportPkg's Universal-Binaries.dmg
         """
         if not Path(self.constants.payload_local_binaries_root_path_dmg).exists():
-            logging.info("- PatcherSupportPkg resources missing, Patcher likely corrupted!!!")
+            logging.info(self.trans["- PatcherSupportPkg resources missing, Patcher likely corrupted!!!"])
             return False
 
         output = subprocess.run(
@@ -39,11 +42,11 @@ class PatcherSupportPkgMount:
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT
         )
         if output.returncode != 0:
-            logging.info("- Failed to mount Universal-Binaries.dmg")
+            logging.info(self.trans["- Failed to mount Universal-Binaries.dmg"])
             subprocess_wrapper.log(output)
             return False
 
-        logging.info("- Mounted Universal-Binaries.dmg")
+        logging.info(self.trans["- Mounted Universal-Binaries.dmg"])
         return True
 
 
@@ -58,7 +61,7 @@ class PatcherSupportPkgMount:
         if self.constants.cli_mode is True:
             return True
 
-        logging.info("- Found HackdocInternal resources, mounting...")
+        logging.info(self.trans["- Found HackdocInternal resources, mounting..."])
 
         for i in range(3):
             key = self._request_decryption_key(i)
@@ -72,7 +75,7 @@ class PatcherSupportPkgMount:
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT
             )
             if output.returncode != 0:
-                logging.info("- Failed to mount HackdocInternal resources")
+                logging.info(self.trans["- Failed to mount HackdocInternal resources"])
                 subprocess_wrapper.log(output)
 
                 if "Authentication error" not in output.stdout.decode():
@@ -84,7 +87,7 @@ class PatcherSupportPkgMount:
                 continue
             break
 
-        logging.info("- Mounted HackdocInternal resources")
+        logging.info(self.trans["- Mounted HackdocInternal resources"])
         return self._merge_hackdoc_internal_resources()
 
 
@@ -99,7 +102,7 @@ class PatcherSupportPkgMount:
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT
         )
         if result.returncode != 0:
-            logging.info("- Failed to merge HackdocInternal resources")
+            logging.info(self.trans["- Failed to merge HackdocInternal resources"])
             subprocess_wrapper.log(result)
             return False
 
@@ -171,7 +174,7 @@ class PatcherSupportPkgMount:
         """
         # If already mounted, skip
         if Path(self.constants.payload_local_binaries_root_path).exists():
-            logging.info("- Local PatcherSupportPkg resources available, continuing...")
+            logging.info(self.trans["- Local PatcherSupportPkg resources available, continuing..."])
             return True
 
         if self._mount_universal_binaries_dmg() is False:

@@ -141,7 +141,7 @@ class SysPatchDisplayFrame(wx.Frame):
                 anchor.Centre(wx.HORIZONTAL)
                 anchor.Hide()
 
-                logging.info("Available patches:")
+                logging.info(self.trans["Available patches:"])
                 for patch in patches:
                     if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
                         i = i + 20

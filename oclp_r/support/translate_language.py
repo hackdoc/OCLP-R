@@ -710,7 +710,40 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Less than a minute ":"Less than a minute ", 
                 "Disabling Idle Sleep":"Disabling Idle Sleep",
                 "Re-enabling Idle Sleep":"Re-enabling Idle Sleep",
-                "Killing Process: {0} - {1}":"Killing Process: {0} - {1}"
+                "Killing Process: {0} - {1}":"Killing Process: {0} - {1}",
+                # dmg_mount.py
+                "- PatcherSupportPkg resources missing, Patcher likely corrupted!!!":"- PatcherSupportPkg resources missing, Patcher likely corrupted!!!",
+                "- Failed to mount Universal-Binaries.dmg":"- Failed to mount Universal-Binaries.dmg",
+                "- Mounted Universal-Binaries.dmg":"- Mounted Universal-Binaries.dmg",
+                "- Found HackdocInternal resources, mounting...":"- Found HackdocInternal resources, mounting...",
+                "- Failed to mount HackdocInternal resources":"- Failed to mount HackdocInternal resources",
+                "- Mounted HackdocInternal resources":"- Mounted HackdocInternal resources",
+                "- Failed to merge HackdocInternal resources":"- Failed to merge HackdocInternal resources",
+                "- Local PatcherSupportPkg resources available, continuing...":"- Local PatcherSupportPkg resources available, continuing...",
+                
+                # files.py
+                "  - Skipping {file_name}, cannot locate {source_folder}":"  - Skipping {file_name}, cannot locate {source_folder}",
+                "  - Installing: {file_name}":"  - Installing: {file_name}",
+                "  - Found existing {file_name}, overwriting...":"  - Found existing {file_name}, overwriting...",
+                "  - Removing: {file_name}":"  - Removing: {file_name}",
+                
+                # kdk_merge.py
+                "- Matching KDK determined to already be merged, skipping":"- Matching KDK determined to already be merged, skipping",
+                "- Backing up IOHIDEventDriver CodeSignature":"- Backing up IOHIDEventDriver CodeSignature",
+                "- Restoring IOHIDEventDriver CodeSignature":"- Restoring IOHIDEventDriver CodeSignature",
+                "  - CodeSignature folder missing, creating":"  - CodeSignature folder missing, creating",
+                "- Merging KDK with Root Volume: {kdk_name}":"- Merging KDK with Root Volume: {kdk_name}",
+                "- Failed to merge KDK with Root Volume":"- Failed to merge KDK with Root Volume",
+                "- Successfully merged KDK with Root Volume":"- Successfully merged KDK with Root Volume",
+                "Failed to install KDK":"Failed to install KDK",
+                "Unable to get KDK info: {error_msg}":"Unable to get KDK info: {error_msg}",
+                "Could not retrieve KDK: {error_msg}":"Could not retrieve KDK: {error_msg}",
+                "Could not download KDK: {error_msg}":"Could not download KDK: {error_msg}",
+                "KDK checksum validation failed: {error_msg}":"KDK checksum validation failed: {error_msg}",
+                "KDK was not installed, but should have been: {error_msg}":"KDK was not installed, but should have been: {error_msg}",
+                "Unable to find Kernel Debug Kit":"Unable to find Kernel Debug Kit",
+                "- Unable to find Kernel Debug Kit":"- Unable to find Kernel Debug Kit",
+                "- Found KDK at: {kdk_path}":"- Found KDK at: {kdk_path}"
             }
         elif self.language_point=="简体中文":
             trans={
@@ -721,7 +754,40 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Less than a minute ":"不到一分钟 ", 
                 "Disabling Idle Sleep":"正在禁用休眠",
                 "Re-enabling Idle Sleep":"正在重新启用休眠",
-                "Killing Process: {0} - {1}":"正在终止进程: {0} - {1}"
+                "Killing Process: {0} - {1}":"正在终止进程: {0} - {1}",
+                # dmg_mount.py
+                "- PatcherSupportPkg resources missing, Patcher likely corrupted!!!":"- PatcherSupportPkg 资源缺失，修补程序可能已损坏！！！",
+                "- Failed to mount Universal-Binaries.dmg":"- 挂载 Universal-Binaries.dmg 失败",
+                "- Mounted Universal-Binaries.dmg":"- 已挂载 Universal-Binaries.dmg",
+                "- Found HackdocInternal resources, mounting...":"- 找到 HackdocInternal 资源，正在挂载...",
+                "- Failed to mount HackdocInternal resources":"- 挂载 HackdocInternal 资源失败",
+                "- Mounted HackdocInternal resources":"- 已挂载 HackdocInternal 资源",
+                "- Failed to merge HackdocInternal resources":"- 合并 HackdocInternal 资源失败",
+                "- Local PatcherSupportPkg resources available, continuing...":"- 本地 PatcherSupportPkg 资源可用，继续...",
+                
+                # files.py
+                "  - Skipping {file_name}, cannot locate {source_folder}":"  - 跳过 {file_name}，无法定位 {source_folder}",
+                "  - Installing: {file_name}":"  - 正在安装: {file_name}",
+                "  - Found existing {file_name}, overwriting...":"  - 找到现有 {file_name}，正在覆盖...",
+                "  - Removing: {file_name}":"  - 正在删除: {file_name}",
+                
+                # kdk_merge.py
+                "- Matching KDK determined to already be merged, skipping":"- 匹配的 KDK 已确定已合并，跳过",
+                "- Backing up IOHIDEventDriver CodeSignature":"- 正在备份 IOHIDEventDriver 代码签名",
+                "- Restoring IOHIDEventDriver CodeSignature":"- 正在恢复 IOHIDEventDriver 代码签名",
+                "  - CodeSignature folder missing, creating":"  - 代码签名文件夹缺失，正在创建",
+                "- Merging KDK with Root Volume: {kdk_name}":"- 正在将 KDK 与根卷合并: {kdk_name}",
+                "- Failed to merge KDK with Root Volume":"- 将 KDK 与根卷合并失败",
+                "- Successfully merged KDK with Root Volume":"- 成功将 KDK 与根卷合并",
+                "Failed to install KDK":"安装 KDK 失败",
+                "Unable to get KDK info: {error_msg}":"无法获取 KDK 信息: {error_msg}",
+                "Could not retrieve KDK: {error_msg}":"无法检索 KDK: {error_msg}",
+                "Could not download KDK: {error_msg}":"无法下载 KDK: {error_msg}",
+                "KDK checksum validation failed: {error_msg}":"KDK 校验和验证失败: {error_msg}",
+                "KDK was not installed, but should have been: {error_msg}":"KDK 未安装，但应该已安装: {error_msg}",
+                "Unable to find Kernel Debug Kit":"无法找到内核调试工具包",
+                "- Unable to find Kernel Debug Kit":"- 无法找到内核调试工具包",
+                "- Found KDK at: {kdk_path}":"- 在 {kdk_path} 找到 KDK"
             }
         return trans
     
@@ -2953,6 +3019,79 @@ class TranslateLanguage_sys_patch:
                 "Host's Board ID is longer than the kext's Board ID, cannot patch!!!":"主机的 Board ID 比 kext 的 Board ID 长，无法修补！！！",
                 "Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!":"找不到 AppleIntelSNBGraphicsFB.kext，无法修补！！！",
                 "Failed to find GPUCompiler libraries at {dest_dir}":"在 {dest_dir} 找不到 GPUCompiler 库"
+            }
+        return trans
+
+    def utilities(self):
+        if self.language_point=="English":
+            trans={
+                # dmg_mount.py
+                "- PatcherSupportPkg resources missing, Patcher likely corrupted!!!":"- PatcherSupportPkg resources missing, Patcher likely corrupted!!!",
+                "- Failed to mount Universal-Binaries.dmg":"- Failed to mount Universal-Binaries.dmg",
+                "- Mounted Universal-Binaries.dmg":"- Mounted Universal-Binaries.dmg",
+                "- Found HackdocInternal resources, mounting...":"- Found HackdocInternal resources, mounting...",
+                "- Failed to mount HackdocInternal resources":"- Failed to mount HackdocInternal resources",
+                "- Mounted HackdocInternal resources":"- Mounted HackdocInternal resources",
+                "- Failed to merge HackdocInternal resources":"- Failed to merge HackdocInternal resources",
+                "- Local PatcherSupportPkg resources available, continuing...":"- Local PatcherSupportPkg resources available, continuing...",
+                
+                # files.py
+                "  - Skipping {file_name}, cannot locate {source_folder}":"  - Skipping {file_name}, cannot locate {source_folder}",
+                "  - Installing: {file_name}":"  - Installing: {file_name}",
+                "  - Found existing {file_name}, overwriting...":"  - Found existing {file_name}, overwriting...",
+                "  - Removing: {file_name}":"  - Removing: {file_name}",
+                
+                # kdk_merge.py
+                "- Matching KDK determined to already be merged, skipping":"- Matching KDK determined to already be merged, skipping",
+                "- Backing up IOHIDEventDriver CodeSignature":"- Backing up IOHIDEventDriver CodeSignature",
+                "- Restoring IOHIDEventDriver CodeSignature":"- Restoring IOHIDEventDriver CodeSignature",
+                "  - CodeSignature folder missing, creating":"  - CodeSignature folder missing, creating",
+                "- Merging KDK with Root Volume: {kdk_name}":"- Merging KDK with Root Volume: {kdk_name}",
+                "- Failed to merge KDK with Root Volume":"- Failed to merge KDK with Root Volume",
+                "- Successfully merged KDK with Root Volume":"- Successfully merged KDK with Root Volume",
+                "Failed to install KDK":"Failed to install KDK",
+                "Unable to get KDK info: {error_msg}":"Unable to get KDK info: {error_msg}",
+                "Could not retrieve KDK: {error_msg}":"Could not retrieve KDK: {error_msg}",
+                "Could not download KDK: {error_msg}":"Could not download KDK: {error_msg}",
+                "KDK checksum validation failed: {error_msg}":"KDK checksum validation failed: {error_msg}",
+                "KDK was not installed, but should have been: {error_msg}":"KDK was not installed, but should have been: {error_msg}",
+                "- Unable to find Kernel Debug Kit":"- Unable to find Kernel Debug Kit",
+                "- Found KDK at: {kdk_path}":"- Found KDK at: {kdk_path}"
+            }
+        elif self.language_point=="简体中文":
+            trans={
+                # dmg_mount.py
+                "- PatcherSupportPkg resources missing, Patcher likely corrupted!!!":"- PatcherSupportPkg 资源缺失，修补程序可能已损坏！！！",
+                "- Failed to mount Universal-Binaries.dmg":"- 挂载 Universal-Binaries.dmg 失败",
+                "- Mounted Universal-Binaries.dmg":"- 已挂载 Universal-Binaries.dmg",
+                "- Found HackdocInternal resources, mounting...":"- 找到 HackdocInternal 资源，正在挂载...",
+                "- Failed to mount HackdocInternal resources":"- 挂载 HackdocInternal 资源失败",
+                "- Mounted HackdocInternal resources":"- 已挂载 HackdocInternal 资源",
+                "- Failed to merge HackdocInternal resources":"- 合并 HackdocInternal 资源失败",
+                "- Local PatcherSupportPkg resources available, continuing...":"- 本地 PatcherSupportPkg 资源可用，继续...",
+                
+                # files.py
+                "  - Skipping {file_name}, cannot locate {source_folder}":"  - 跳过 {file_name}，无法定位 {source_folder}",
+                "  - Installing: {file_name}":"  - 正在安装: {file_name}",
+                "  - Found existing {file_name}, overwriting...":"  - 找到现有 {file_name}，正在覆盖...",
+                "  - Removing: {file_name}":"  - 正在删除: {file_name}",
+                
+                # kdk_merge.py
+                "- Matching KDK determined to already be merged, skipping":"- 匹配的 KDK 已确定已合并，跳过",
+                "- Backing up IOHIDEventDriver CodeSignature":"- 正在备份 IOHIDEventDriver 代码签名",
+                "- Restoring IOHIDEventDriver CodeSignature":"- 正在恢复 IOHIDEventDriver 代码签名",
+                "  - CodeSignature folder missing, creating":"  - 代码签名文件夹缺失，正在创建",
+                "- Merging KDK with Root Volume: {kdk_name}":"- 正在将 KDK 与根卷合并: {kdk_name}",
+                "- Failed to merge KDK with Root Volume":"- 将 KDK 与根卷合并失败",
+                "- Successfully merged KDK with Root Volume":"- 成功将 KDK 与根卷合并",
+                "Failed to install KDK":"安装 KDK 失败",
+                "Unable to get KDK info: {error_msg}":"无法获取 KDK 信息: {error_msg}",
+                "Could not retrieve KDK: {error_msg}":"无法检索 KDK: {error_msg}",
+                "Could not download KDK: {error_msg}":"无法下载 KDK: {error_msg}",
+                "KDK checksum validation failed: {error_msg}":"KDK 校验和验证失败: {error_msg}",
+                "KDK was not installed, but should have been: {error_msg}":"KDK 未安装，但应该已安装: {error_msg}",
+                "- Unable to find Kernel Debug Kit":"- 无法找到内核调试工具包",
+                "- Found KDK at: {kdk_path}":"- 在 {kdk_path} 找到 KDK"
             }
         return trans
 
