@@ -22,7 +22,9 @@ jobs:
     name: Build Release
     runs-on: macos-26
     if: github.repository_owner == 'hackdoc'
-
+    permissions:
+      contents: write
+      
     env:
       # GitHub Information
       branch: ${{ github.ref }}
@@ -31,7 +33,7 @@ jobs:
       des: ${{ inputs.desciption }}
       commiturl: ${{ github.event.head_commit.url }}${{ github.event.release.html_url }}
       commitdate: ${{ github.event.head_commit.timestamp }}${{ github.event.release.published_at }}
-
+    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
