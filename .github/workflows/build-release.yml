@@ -1,8 +1,5 @@
 name: CI - Build Release
 on:
-  push:
-    paths-ignore:
-      - 'docs/**'
   workflow_dispatch:
     inputs:
         tag_version:
@@ -29,9 +26,9 @@ jobs:
     env:
       # GitHub Information
       branch: ${{ github.ref }}
-      pre: ${{inputs.pre_release}}
-      tag: ${{inputs.tag_version}}
-      des: ${{inputs.desciption}}
+      pre: ${{ inputs.pre_release }}
+      tag: ${{ inputs.tag_version }}
+      des: ${{ inputs.desciption }}
       commiturl: ${{ github.event.head_commit.url }}${{ github.event.release.html_url }}
       commitdate: ${{ github.event.head_commit.timestamp }}${{ github.event.release.published_at }}
 
