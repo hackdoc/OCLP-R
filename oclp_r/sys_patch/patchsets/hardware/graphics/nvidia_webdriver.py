@@ -29,7 +29,7 @@ class NvidiaWebDriver(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Nvidia Web Drivers"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Nvidia Web Drivers', 'Nvidia Web Drivers')}"
 
 
     def present(self) -> bool:

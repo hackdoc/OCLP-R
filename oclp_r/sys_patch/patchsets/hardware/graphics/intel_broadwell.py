@@ -27,7 +27,7 @@ class IntelBroadwell(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Intel Broadwell"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Intel Broadwell', 'Intel Broadwell')}"
 
 
     def present(self) -> bool:

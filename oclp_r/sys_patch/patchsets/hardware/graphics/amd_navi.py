@@ -26,7 +26,7 @@ class AMDNavi(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: AMD Navi"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('AMD Navi', 'AMD Navi')}"
 
 
     def present(self) -> bool:

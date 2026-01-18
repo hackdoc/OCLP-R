@@ -21,7 +21,7 @@ class DisplayBacklight(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Legacy Backlight Control"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Legacy Backlight Control', 'Legacy Backlight Control')}"
 
 
     def present(self) -> bool:

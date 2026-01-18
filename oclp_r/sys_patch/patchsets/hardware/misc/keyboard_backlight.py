@@ -22,7 +22,7 @@ class KeyboardBacklight(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Legacy Keyboard Backlight"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Legacy Keyboard Backlight', 'Legacy Keyboard Backlight')}"
 
 
     def present(self) -> bool:

@@ -28,7 +28,7 @@ class APFSP(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: FileVault Patch for Non-T2"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('FileVault Patch for Non-T2', 'FileVault Patch for Non-T2')}"
 
 
     def present(self) -> bool:

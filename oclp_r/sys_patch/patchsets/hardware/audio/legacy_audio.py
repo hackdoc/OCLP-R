@@ -22,7 +22,7 @@ class LegacyAudio(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Legacy Audio"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Legacy Audio', 'Legacy Audio')}"
 
 
     def present(self) -> bool:

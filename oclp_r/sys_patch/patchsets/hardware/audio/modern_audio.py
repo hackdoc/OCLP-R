@@ -29,7 +29,7 @@ class ModernAudio(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Modern Audio"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Modern Audio', 'Modern Audio')}"
 
     def present(self) -> bool:
         """

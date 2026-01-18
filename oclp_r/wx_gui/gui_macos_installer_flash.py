@@ -100,7 +100,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         # List of installers
         if self.available_installers_local:
-            logging.info("Installer(s) found:")
+            logging.info(self.trans["Installer(s) found:"])
             spacer = 10
             entries = len(self.available_installers_local)
             for app in self.available_installers_local:

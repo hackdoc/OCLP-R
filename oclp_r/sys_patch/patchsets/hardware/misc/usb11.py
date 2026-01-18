@@ -25,7 +25,7 @@ class USB11Controller(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Legacy USB 1.1"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Legacy USB 1.1', 'Legacy USB 1.1')}"
 
 
     def present(self) -> bool:

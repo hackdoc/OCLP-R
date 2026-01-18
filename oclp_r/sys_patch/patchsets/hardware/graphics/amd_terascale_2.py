@@ -27,7 +27,7 @@ class AMDTeraScale2(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: AMD TeraScale 2"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('AMD TeraScale 2', 'AMD TeraScale 2')}"
 
 
     def present(self) -> bool:

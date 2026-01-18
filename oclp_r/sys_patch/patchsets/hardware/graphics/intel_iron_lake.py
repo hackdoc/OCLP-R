@@ -25,7 +25,7 @@ class IntelIronLake(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Intel Iron Lake"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Intel Iron Lake', 'Intel Iron Lake')}"
 
 
     def present(self) -> bool:

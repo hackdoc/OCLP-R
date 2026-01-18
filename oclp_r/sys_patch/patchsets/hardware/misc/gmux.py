@@ -22,7 +22,7 @@ class GraphicsMultiplexer(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Legacy GMUX"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Legacy GMUX', 'Legacy GMUX')}"
 
 
     def _check_dgpu_status(self) -> bool:

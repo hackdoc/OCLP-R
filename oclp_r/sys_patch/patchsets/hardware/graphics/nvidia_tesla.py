@@ -25,7 +25,7 @@ class NvidiaTesla(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Nvidia Tesla"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Nvidia Tesla', 'Nvidia Tesla')}"
 
 
     def present(self) -> bool:

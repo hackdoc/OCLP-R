@@ -301,11 +301,13 @@ class SysPatchDisplayFrame(wx.Frame):
         """
 
         logging.info(self.trans["Checking if new patches are needed"])
+        if self.constants.commit_info[0] in ["Running from source", "Built from source"] or self.constants.commit_info[2] is None or self.constants.commit_info[2] == "":
+            return True
 
         if self.constants.computer.oclp_sys_url != self.constants.commit_info[2]:
             # If commits are different, assume patches are as well
             print(self.trans["- Commit URLs differ"])
-            print(f"- Commit URLs: {self.constants.commit_info[2]}")
+            print(f"{self.trans['- Commit URLs:']} {self.constants.commit_info[2]}")
             logging.info(self.trans["- Commit URLs differ"])
             logging.info(f"{self.trans['- Commit URLs:']} {self.constants.commit_info[2]}")
             return True
@@ -317,14 +319,15 @@ class SysPatchDisplayFrame(wx.Frame):
             return True
 
         oclp_plist_data = plistlib.load(open(oclp_plist, "rb"))
+        trans_patches = dict(zip(translate_language.TranslateLanguage_sys_patch(self.constants).hardware().values(), translate_language.TranslateLanguage_sys_patch(self.constants).hardware().keys()))
         for patch in patches:
             if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
                 # Patches should share the same name as the plist key
                 # See sys_patch/patchsets/base.py for more info
-                if patch.split(": ")[1] not in oclp_plist_data:
+                if trans_patches[patch.split(": ")[1].strip()] not in oclp_plist_data:
                     print(f"{self.trans['- Patch']} {patch} {self.trans['not installed']}")
                     logging.info(f"{self.trans['- Patch']} {patch} {self.trans['not installed']}")
                     return True
-
+                    
         logging.info(self.trans["No new patches detected for system"])
         return False

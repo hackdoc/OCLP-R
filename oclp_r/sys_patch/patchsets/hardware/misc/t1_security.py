@@ -21,7 +21,7 @@ class T1SecurityChip(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: T1 Security Chip"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('T1 Security Chip', 'T1 Security Chip')}"
 
 
     def present(self) -> bool:

@@ -17,6 +17,7 @@ class AmfiConfigDetectLevel(enum.IntEnum):
     LIBRARY_VALIDATION:         int = 1  # For Ventura, use LIBRARY_VALIDATION_AND_SIG
     LIBRARY_VALIDATION_AND_SIG: int = 2
     ALLOW_ALL:                  int = 3
+    DISABLE_FORCE:              int = 4
 
 
 class AmfiConfigurationDetection:

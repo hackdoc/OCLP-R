@@ -26,7 +26,7 @@ class AMDLegacyGCN(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: AMD Legacy GCN"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('AMD Legacy GCN', 'AMD Legacy GCN')}"
 
 
     def present(self) -> bool:

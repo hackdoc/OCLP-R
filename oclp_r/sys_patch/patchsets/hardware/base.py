@@ -13,6 +13,7 @@ from ....datasets.os_data       import os_data
 from ....datasets.sip_data      import system_integrity_protection
 from ....detections.amfi_detect import AmfiConfigDetectLevel
 from ....detections             import device_probe
+from ....support                import translate_language
 from oclp_r import constants
 
 
@@ -49,6 +50,9 @@ class BaseHardware(BasePatchset):
         self._computer  = global_constants.computer
 
         self._xnu_float = float(f"{self._xnu_major}.{self._xnu_minor}")
+        
+        # Initialize translation
+        self._trans = translate_language.TranslateLanguage_sys_patch(global_constants).hardware()
 
 
     def name(self) -> str:

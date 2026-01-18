@@ -33,7 +33,7 @@ from ..wx_gui import (
 
 from ..sys_patch.patchsets import HardwarePatchsetDetection, HardwarePatchsetSettings
 
-from ..support.translate_language import TranslateLanguage
+from ..support.translate_language import TranslateLanguage, TranslateLanguage_sys_patch
 
 class SysPatchStartFrame(wx.Frame):
     """
@@ -459,6 +459,7 @@ class SysPatchStartFrame(wx.Frame):
             return True
 
         oclp_plist_data = plistlib.load(open(oclp_plist, "rb"))
+        
         for patch in patches:
             if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
                 # Patches should share the same name as the plist key

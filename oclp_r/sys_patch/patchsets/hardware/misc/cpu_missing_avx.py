@@ -30,7 +30,7 @@ class CPUMissingAVX(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Legacy CPUs (Lacking AVX)"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Legacy CPUs (Lacking AVX)', 'Legacy CPUs (Lacking AVX)')}"
 
 
     def present(self) -> bool:

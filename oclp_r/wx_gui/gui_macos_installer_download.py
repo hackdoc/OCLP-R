@@ -658,7 +658,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
             version = item.get('version', '')
             build = item.get('build', '')
             size = item.get('size', '')
-            dir_dialog = wx.DirDialog(self, "Select Path", "", wx.DD_DIR_MUST_EXIST)
+            dir_dialog = wx.DirDialog(self, self.trans["Select Path"], "", wx.DD_DIR_MUST_EXIST)
             while True:
                 if dir_dialog.ShowModal() == wx.ID_OK:
                     save_path = dir_dialog.GetPath()
@@ -668,12 +668,12 @@ class macOSInstallerDownloadFrame(wx.Frame):
                         return os.access(dirpath, os.W_OK | os.X_OK)
                     if not is_dir_writable(save_path):
                         wx.MessageBox(
-                            "Cannot write to the selected directory.", 
-                            "Read-only Directory", 
+                            self.trans["Cannot write to the selected directory."], 
+                            self.trans["Read-only Directory"], 
                             wx.OK | wx.ICON_WARNING
                         )  
                         continue
-                    logging.info(f"选择了目录: {save_path}")
+                    logging.info(self.trans["Selected directory: {save_path}"].format(save_path=save_path))
                     dir_dialog.Destroy()
                     break
                 else:

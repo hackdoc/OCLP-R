@@ -29,7 +29,7 @@ class LegacyUSBHost(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Modern USB"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Modern USB', 'Modern USB')}"
 
     def requires_kernel_debug_kit(self) -> bool:
         """

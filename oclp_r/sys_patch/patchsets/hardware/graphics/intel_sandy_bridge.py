@@ -26,7 +26,7 @@ class IntelSandyBridge(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Intel Sandy Bridge"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Intel Sandy Bridge', 'Intel Sandy Bridge')}"
 
 
     def present(self) -> bool:

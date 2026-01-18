@@ -3,23 +3,25 @@ base.py: Base class for all patch sets
 """
 
 from enum import StrEnum
+from ...support.translate_language import TranslateLanguage_sys_patch
 
+trans=TranslateLanguage_sys_patch(global_constants=None).base()
 
 class PatchType(StrEnum):
     """
     Type of patch
     """
-    OVERWRITE_SYSTEM_VOLUME = "Overwrite System Volume"
-    OVERWRITE_DATA_VOLUME   = "Overwrite Data Volume"
-    MERGE_SYSTEM_VOLUME     = "Merge System Volume"
-    MERGE_DATA_VOLUME       = "Merge Data Volume"
-    REMOVE_SYSTEM_VOLUME    = "Remove System Volume"
-    REMOVE_DATA_VOLUME      = "Remove Data Volume"
-    EXECUTE                 = "Execute"
+    OVERWRITE_SYSTEM_VOLUME = trans["Overwrite System Volume"]
+    OVERWRITE_DATA_VOLUME   = trans["Overwrite Data Volume"]
+    MERGE_SYSTEM_VOLUME     = trans["Merge System Volume"]
+    MERGE_DATA_VOLUME       = trans["Merge Data Volume"]
+    REMOVE_SYSTEM_VOLUME    = trans["Remove System Volume"]
+    REMOVE_DATA_VOLUME      = trans["Remove Data Volume"]
+    EXECUTE                 = trans["Execute"]
 
 
 class DynamicPatchset(StrEnum):
-    MetallibSupportPkg = "MetallibSupportPkg"
+    MetallibSupportPkg = trans["MetallibSupportPkg"]
 
 
 class BasePatchset:

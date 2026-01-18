@@ -4,7 +4,7 @@ from pathlib import Path
 import logging
 
 class TranslateLanguage:
-    def __init__(self, global_constants: Constants) -> None:
+    def __init__(self, global_constants: Constants = None) -> None:
         self.file_name:              str = ".com.hackdoc.oclp-r.plist"
         self.global_settings_folder: str = "/Users/Shared"
         self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"
@@ -1386,6 +1386,11 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Copy the download link of the selected DMG.":"Copy the download link of the selected DMG.",
                 "Create macOS Installer":"Create macOS Installer",
                 "Your model ({model}) may not be fully supported by this installer. You may encounter the following issues:\n\n{problems}\n\nFor more information, see associated page. Otherwise, we recommend using macOS Monterey":"Your model ({model}) may not be fully supported by this installer. You may encounter the following issues:\n\n{problems}\n\nFor more information, see associated page. Otherwise, we recommend using macOS Monterey",
+                "Selected macOS DMG {version} ({build})":"Selected macOS DMG {version} ({build})",
+                "Select Path":"Select Path",
+                "Cannot write to the selected directory.":"Cannot write to the selected directory.",
+                "Read-only Directory":"Read-only Directory",
+                "Selected directory: {save_path}":"Selected directory: {save_path}",
             }
         elif self.language_point=="简体中文":
             trans={
@@ -1452,7 +1457,12 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Finished extracting the installer, would you like to continue and create a macOS installer?":"安装程序提取完成，是否要继续创建 macOS 安装程序？",
                 "Create macOS Installer?":"创建 macOS 安装程序？",
                 "Create macOS Installer":"创建 macOS 安装程序",
-                "Available installers on SimpleHac":"SimpleHac 上可用的安装程序"
+                "Available installers on SimpleHac":"SimpleHac 上可用的安装程序",
+                "Selected macOS DMG {version} ({build})":"已选择 macOS DMG {version} ({build})",
+                "Select Path":"选择路径",
+                "Cannot write to the selected directory.":"无法写入选择的目录。",
+                "Read-only Directory":"只读目录",
+                "Selected directory: {save_path}":"已选择目录: {save_path}",
             }
         return trans
     
@@ -1524,7 +1534,8 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Installer created successfully, would you like to continue and Install OpenCore to this disk?":"Installer created successfully, would you like to continue and Install OpenCore to this disk?",
                 "Installer created successfully! If you want to install OpenCore to this USB, you will need to change the Target Model in settings":"Installer created successfully! If you want to install OpenCore to this USB, you will need to change the Target Model in settings",
                 "If you want to install OpenCore to this USB, you will need to change the Target Model in settings":"If you want to install OpenCore to this USB, you will need to change the Target Model in settings",
-                "Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}":"Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}"
+                "Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}":"Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}",
+                "Installer(s) found:":"Installer(s) found:",
             }
         elif self.language_point=="简体中文":
             trans={
@@ -1593,7 +1604,8 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Successfully created macOS installer":"成功创建 macOS 安装程序",
                 "Installer created successfully, would you like to continue and Install OpenCore to this disk?":"安装程序创建成功，是否继续将 OpenCore 安装到此磁盘？",
                 "If you want to install OpenCore to this USB, you will need to change the Target Model in settings":"如果您想将 OpenCore 安装到此 USB，您需要在设置中更改目标机型",
-                "Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}":"创建 macOS 安装程序失败\n\n输出: {output}\n\n错误: {error}"
+                "Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}":"创建 macOS 安装程序失败\n\n输出: {output}\n\n错误: {error}",
+                "Installer(s) found:":"找到安装程序:",
             }
         return trans
     
@@ -2068,12 +2080,16 @@ Booted Information:
                 "Updating Local Setting: {variable} = {value}":"Updating Local Setting: {variable} = {value}",
                 "Updating Global Setting: {variable} = {value}":"Updating Global Setting: {variable} = {value}",
                 "Initializing Settings Frame":"Initializing Settings Frame",
+                "Choose Your Language":"Choose Your Language",
+                "Provide English & Chinese Simplified.":"Provide English & Chinese Simplified.",
                 "Updating System Defaults: {variable} = {value} ({value_type})":"Updating System Defaults: {variable} = {value} ({value_type})",
                 "Updating System Defaults (root): {variable} = {value} ({value_type})":"Updating System Defaults (root): {variable} = {value} ({value_type})",
             }
         elif self.language_point=="简体中文":
             trans={
                 "Initializing Settings Frame":"初始化设置框架",
+                "Choose Your Language":"选择您的语言",
+                "Provide English & Chinese Simplified.":"提供英文和简体中文",
                 "Updating System Defaults (root): {variable} = {value} ({value_type})":"更新系统默认值（root）：{variable} = {value} ({value_type})",
                 "Updating System Defaults: {variable} = {value} ({value_type})":"更新系统默认值：{variable} = {value} ({value_type})",
                 "Updating Global Setting: {variable} = {value}":"更新全局设置：{variable} = {value}",
@@ -2347,13 +2363,13 @@ Hardware Information:
                 "menu bar colour will dynamically":"菜单栏颜色将动态变化",
                 "Beta Blur":"测试版模糊",
                 "Control window blur behaviour.":"控制窗口模糊行为。",
-                "Beach Ball Cursor Workaround":"沙滩球光标解决方法",
-                "Control beach ball cursor behaviour.":"控制沙滩球光标行为。",
+                "Beach Ball Cursor Workaround":"彩虹球球光标解决方法",
+                "Control beach ball cursor behaviour.":"控制彩虹球光标行为。\n注意这会占用更多CPU资源",
                 "Beta Menu Bar":"测试版菜单栏",
                 "Supports dynamic colour changes.":"支持动态颜色变化。",
                 "Disable Beta Rim":"禁用测试版边框",
                 "Control Window Rim rendering.":"控制窗口边框渲染。",
-                "Disable Color Widgets Enforcement":"禁用颜色小组件强制",
+                "Disable Color Widgets Enforcement":"禁用颜色小组件强制执行",
                 "Control Color Desktop Widgets Enforcement.":"控制彩色桌面小组件强制。",
                 "App":"应用",
                 "General":"常规",
@@ -2652,7 +2668,7 @@ Hardware Information:
             }
         return trans
 class TranslateLanguage_sys_patch:
-    def __init__(self, global_constants: Constants) -> None:
+    def __init__(self, global_constants: Constants = None) -> None:
         self.file_name:              str = ".com.hackdoc.oclp-r.plist"
         self.global_settings_folder: str = "/Users/Shared"
         self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"
@@ -3095,8 +3111,132 @@ class TranslateLanguage_sys_patch:
             }
         return trans
 
+    def hardware(self):
+        if self.language_point=="English":
+            trans={
+                # Hardware Variants
+                "Graphics":"Graphics",
+                "Networking":"Networking",
+                "Audio":"Audio",
+                "Miscellaneous":"Miscellaneous",
+                "USB":"USB",
+                
+                # Audio
+                "Legacy Audio":"Legacy Audio",
+                "Modern Audio":"Modern Audio",
+                "Voodoo Audio":"Voodoo Audio",
+                
+                # Graphics
+                "AMD Legacy GCN":"AMD Legacy GCN",
+                "AMD Navi":"AMD Navi",
+                "AMD Polaris":"AMD Polaris",
+                "AMD TeraScale 1":"AMD TeraScale 1",
+                "AMD TeraScale 2":"AMD TeraScale 2",
+                "AMD Vega":"AMD Vega",
+                "Intel Broadwell":"Intel Broadwell",
+                "Intel Haswell":"Intel Haswell",
+                "Intel Iron Lake":"Intel Iron Lake",
+                "Intel Ivy Bridge":"Intel Ivy Bridge",
+                "Intel Sandy Bridge":"Intel Sandy Bridge",
+                "Intel Skylake":"Intel Skylake",
+                "Nvidia Kepler":"Nvidia Kepler",
+                "Nvidia Tesla":"Nvidia Tesla",
+                "Nvidia Web Drivers":"Nvidia Web Drivers",
+                
+                # Miscellaneous
+                "FileVault Patch for Non-T2":"FileVault Patch for Non-T2",
+                "Legacy CPUs (Lacking AVX)":"Legacy CPUs (Lacking AVX)",
+                "Legacy GMUX":"Legacy GMUX",
+                "Legacy Keyboard Backlight":"Legacy Keyboard Backlight",
+                "PCIe FaceTime Camera":"PCIe FaceTime Camera",
+                "T1 Security Chip":"T1 Security Chip",
+                "Legacy Backlight Control":"Legacy Backlight Control",
+                
+                # Networking
+                "Legacy Wireless":"Legacy Wireless",
+                "Modern Wireless":"Modern Wireless",
+                
+                # USB
+                "Modern USB":"Modern USB",
+                "Legacy USB 1.1":"Legacy USB 1.1",
+            }
+        elif self.language_point=="简体中文":
+            trans={
+                # Hardware Variants
+                "Graphics":"图形",
+                "Networking":"网络",
+                "Audio":"音频",
+                "Miscellaneous":"杂项",
+                "USB":"USB",
+                
+                # Audio
+                "Legacy Audio":"传统音频补丁",
+                "Modern Audio":"现代音频补丁",
+                "Voodoo Audio":"Voodoo 音频补丁",
+                
+                # Graphics
+                "AMD Legacy GCN":"AMD 传统 GCN",
+                "AMD Navi":"AMD Navi",
+                "AMD Polaris":"AMD Polaris",
+                "AMD TeraScale 1":"AMD TeraScale 1",
+                "AMD TeraScale 2":"AMD TeraScale 2",
+                "AMD Vega":"AMD Vega",
+                "Intel Broadwell":"Intel Broadwell (iGPU,5th)",
+                "Intel Haswell":"Intel Haswell (iGPU,4th)",
+                "Intel Iron Lake":"Intel Iron Lake",
+                "Intel Ivy Bridge":"Intel Ivy Bridge (iGPU,3rd)",
+                "Intel Sandy Bridge":"Intel Sandy Bridge (iGPU,2nd)",
+                "Intel Skylake":"Intel Skylake (iGPU,6th)",
+                "Nvidia Kepler":"Nvidia Kepler",
+                "Nvidia Tesla":"Nvidia Tesla",
+                "Nvidia Web Drivers":"Nvidia Web 驱动程序",
+                
+                # Miscellaneous
+                "FileVault Patch for Non-T2":"非 T2 芯片 的 FileVault 补丁",
+                "Legacy CPUs (Lacking AVX)":"传统 CPU（缺少 AVX）的补丁",
+                "Legacy GMUX":"传统 GMUX 补丁",
+                "Legacy Keyboard Backlight":"传统键盘背光补丁",
+                "PCIe FaceTime Camera":"PCIe FaceTime 摄像头补丁",
+                "T1 Security Chip":"T1 安全芯片补丁",
+                "Legacy Backlight Control":"传统背光控制补丁",
+                
+                # Networking
+                "Legacy Wireless":"传统无线补丁",
+                "Modern Wireless":"现代无线补丁",
+                
+                # USB
+                "Modern USB":"现代 USB 补丁",
+                "Legacy USB 1.1":"传统 USB 1.1补丁",
+            }
+        return trans
+
+    def base(self):
+        if self.language_point=="English":
+            trans={
+                "Overwrite System Volume":"Overwrite System Volume",
+                "Overwrite Data Volume":"Overwrite Data Volume",
+                "Merge System Volume":"Merge System Volume",
+                "Merge Data Volume":"Merge Data Volume",
+                "Remove System Volume":"Remove System Volume",
+                "Remove Data Volume":"Remove Data Volume",
+                "Execute":"Execute",
+                "MetallibSupportPkg":"MetallibSupportPkg",
+            }
+        elif self.language_point=="简体中文":
+            trans={
+                "Overwrite System Volume":"覆盖系统卷",
+                "Overwrite Data Volume":"覆盖数据卷",
+                "Merge System Volume":"合并系统卷",
+                "Merge Data Volume":"合并数据卷",
+                "Remove System Volume":"删除系统卷",
+                "Remove Data Volume":"删除数据卷",
+                "Execute":"执行",
+                "MetallibSupportPkg":"MetallibSupportPkg",
+            }
+        return trans
+
 class TranslateLanguage_efi_builder:
-    def __init__(self, global_constants: Constants) -> None:
+    def __init__(self, global_constants: Constants = None) -> None:
         self.file_name:              str = ".com.hackdoc.oclp-r.plist"
         self.global_settings_folder: str = "/Users/Shared"
         self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"

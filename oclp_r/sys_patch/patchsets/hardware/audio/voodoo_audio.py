@@ -17,7 +17,7 @@ class VoodooAudio(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: Voodoo Audio"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('Voodoo Audio', 'Voodoo Audio')}"
 
     def required_amfi_level(self) -> AmfiConfigDetectLevel:
         """

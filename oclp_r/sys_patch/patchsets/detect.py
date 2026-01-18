@@ -231,7 +231,7 @@ class HardwarePatchsetDetection:
 
 
 
-        wireless_keys = {"Legacy Wireless", "Modern Wireless", "Modern Wireless Common", "Modern Wireless Extended"}
+        wireless_keys = {"Legacy Wireless", "Modern Wireless", "Modern Wireless Common", "Modern Wireless Extended","传统无线补丁","现代无线补丁"}
 
         # Keep in sync with generate_patchset_plist
         metadata_keys = {
@@ -360,7 +360,7 @@ class HardwarePatchsetDetection:
             oclp_plist = plistlib.load(open(oclp_patch_path, "rb"))
         except Exception as e:
             return False
-        if "Legacy Wireless" in oclp_plist or "Modern Wireless" in oclp_plist:
+        if "Legacy Wireless" in oclp_plist or "Modern Wireless" in oclp_plist or "传统无线补丁" in oclp_plist or "现代无线补丁" in oclp_plist:
             return True
         return False
 
@@ -435,20 +435,20 @@ class HardwarePatchsetDetection:
         metal_gpu_present = metal_31001_gpu_present or metal_3802_gpu_present
 
         if metal_gpu_present and non_metal_gpu_present:
-            logging.error("Cannot mix Metal and Non-Metal GPUs")
-            logging.error("Stripping out Non-Metal GPUs")
+            logging.error(self.trans["Cannot mix Metal and Non-Metal GPUs"])
+            logging.error(self.trans["Stripping out Non-Metal GPUs"])
             for hardware in list(present_hardware):
                 if hardware.hardware_variant_graphics_subclass() == HardwareVariantGraphicsSubclass.NON_METAL_GRAPHICS:
-                    logging.info(f"  Stripping out {hardware.name()}")
+                    logging.info(self.trans["  Stripping out {hardware_name}"].format(hardware_name=hardware.name()))
                     present_hardware.remove(hardware)
 
         if metal_3802_gpu_present and metal_31001_gpu_present and self._xnu_major >= os_data.sequoia.value:
             if metal_31001_name != "Graphics: AMD Legacy GCN":
-                logging.error("Cannot mix Metal 3802 and Metal 31001 GPUs on macOS Sequoia or newer")
-                logging.error("Stripping out Metal 3802 GPUs")
+                logging.error(self.trans["Cannot mix Metal 3802 and Metal 31001 GPUs on macOS Sequoia or newer"])
+                logging.error(self.trans["Stripping out Metal 3802 GPUs"])
                 for hardware in list(present_hardware):
                     if hardware.hardware_variant_graphics_subclass() == HardwareVariantGraphicsSubclass.METAL_3802_GRAPHICS:
-                        logging.error(f"  Stripping out {hardware.name()}")
+                        logging.error(self.trans["  Stripping out {hardware_name}"].format(hardware_name=hardware.name()))
                         present_hardware.remove(hardware)
 
         return present_hardware
@@ -460,16 +460,16 @@ class HardwarePatchsetDetection:
         """
         if self._can_patch(requirements, ignore_keys=[HardwarePatchsetValidation.MISSING_NETWORK_CONNECTION]) is False:
             return requirements, device_properties
-        logging.info("Network connection missing, checking whether network patches are applicable")
+        logging.info(self.trans["Network connection missing, checking whether network patches are applicable"])
         if self._already_has_networking_patches() is True:
-            logging.info("Network patches are already applied, requiring network connection")
+            logging.info(self.trans["Network patches are already applied, requiring network connection"])
             return requirements, device_properties
 
         if not any([key.startswith("Networking:") for key in device_properties.keys()]):
-            logging.info("Network patches are not applicable, requiring network connection")
+            logging.info(self.trans["Network patches are not applicable, requiring network connection"])
             return requirements, device_properties
 
-        logging.info("Network patches are applicable, removing other patches")
+        logging.info(self.trans["Network patches are applicable, removing other patches"])
         for key in list(device_properties.keys()):
             if key.startswith("Networking:"):
                 continue
@@ -612,7 +612,7 @@ class HardwarePatchsetDetection:
         """
         Print out detailed errors
         """
-        logging.error("- Breakdown:")
+        logging.error(self.trans["- Breakdown:"])
         for key, value in self.device_properties.items():
             if not key.startswith("Validation:"):
                 continue
@@ -620,4 +620,4 @@ class HardwarePatchsetDetection:
                 continue
             if value is False:
                 continue
-            logging.error(f"  - {key.replace('Validation: ', '')}")
+            logging.error(self.trans["  - {validation_key}"].format(validation_key=key.replace('Validation: ', '')))

@@ -953,20 +953,18 @@ class SettingsFrame(wx.Frame):
                     "variable": "manually_download_kdk",
                     "constants_variable": "manually_download_kdk",
                     "description": [
-                        "",
-                        #self.trans[""],
                         self.trans["When enabled, patcher will allow"],
                         self.trans["you download KDKs and metallibs manually."],
                     ],
                 },
-                "Choose Your Language":{
+                self.trans["Choose Your Language"]:{
                     "type": "choice",
                     "choices": self.constants.language_key,
                     "value": self.constants.language_option,
                     "variable": "language_option",
                     "constants_variable": "language_option",
                     "description": [
-                        "Provide English & Chinese Simplified."
+                        self.trans["Provide English & Chinese Simplified."],
                     ],
                     #"override_function": self.close,
                 },

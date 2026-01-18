@@ -21,7 +21,7 @@ class PCIeFaceTimeCamera(BaseHardware):
         """
         Display name for end users
         """
-        return f"{self.hardware_variant()}: PCIe FaceTime Camera"
+        return f"{self._trans.get(self.hardware_variant(), self.hardware_variant())}: {self._trans.get('PCIe FaceTime Camera', 'PCIe FaceTime Camera')}"
 
 
     def present(self) -> bool:
