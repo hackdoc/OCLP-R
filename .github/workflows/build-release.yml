@@ -16,7 +16,11 @@ on:
             description: 'desciption'
             required: true
             type: string
-            default: ""
+            default: |
+             Releases notes:
+              - 1.
+              - 2.
+              - 3.
 jobs:
   build:
     name: Build Release
