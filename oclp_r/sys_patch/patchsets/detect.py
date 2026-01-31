@@ -219,6 +219,9 @@ class HardwarePatchsetDetection:
         """
         Determine if repatching is not allowed
         """
+        if self._constants.commit_info[0] in ["Running from source", "Built from source"] or self._constants.commit_info[2] is None or self._constants.commit_info[2] == "":
+            #return False
+            ...
         oclp_patch_path = "/System/Library/CoreServices/oclp-r.plist"
         if not Path(oclp_patch_path).exists():
             return self._is_root_volume_dirty()
