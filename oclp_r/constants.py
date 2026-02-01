@@ -12,15 +12,15 @@ from .detections import device_probe
 import getpass
 class Constants:
     def __init__(self) -> None:
-        self.language_key:                     list = ["简体中文","English"]
+        self.language_key:                    list = ["简体中文","English"]
         
-        self.language_option:                str    = "English" #en:English zh:中文
+        self.language_option:                 str = "English" 
         #API Link
         self.kdk_api_link:                    str = ""
         self.metallib_api_link:               str = ""
 
         # Patcher Versioning
-        self.patcher_version:                 str = "3.0.1"  # OCLP-R
+        self.patcher_version:                 str = "3.0.2"  # OCLP-R
         self.patcher_support_pkg_version:     str = "1.11.0"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2026 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
