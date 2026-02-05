@@ -46,7 +46,7 @@
   - Disabled server side for years, removing client side
 - `OpenCore-Patcher-GUI.app.zip` removed from release
   - Deprecated in 1.5.0, use `OpenCore-Patcher.pkg` for installation
-- Sync copyright label to 2025
+- Sync copyright label to 
 - Resolve MetallibSupportPkg failing to be cached on units without Kernel Debug Kit requirements
 - Resolve Broadwell widget rendering on macOS Sequoia
 - Resolve non-Metal crashing on macOS Big Sur and Sequoia (15.4)

@@ -203,6 +203,7 @@ class KernelDebugKitObject:
             if self.constants.github_proxy_link=="ghfast":
                 kdk['url']="https://ghfast.top/"+kdk['url']
             self.kdk_url = kdk["url"]
+            logging.info(f"KDK URL:{self.kdk_url}")
             self.kdk_url_build = kdk["build"]
             self.kdk_url_version = kdk["version"]
             self.kdk_url_expected_size = kdk["fileSize"]
@@ -225,7 +226,7 @@ class KernelDebugKitObject:
                     count_kdks.sort(key=lambda x: x["build"], reverse=True)
                     closest = None
                     for kdk in count_kdks:
-                        if kdk["build"] <= host_build:
+                        if kdk["build"][2] <= host_build[2]:
                             closest = kdk
                             break
                     if closest is None:
