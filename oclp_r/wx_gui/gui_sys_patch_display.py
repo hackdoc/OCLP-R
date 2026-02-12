@@ -302,6 +302,8 @@ class SysPatchDisplayFrame(wx.Frame):
 
         logging.info(self.trans["Checking if new patches are needed"])
         if self.constants.commit_info[0] in ["Running from source", "Built from source"] or self.constants.commit_info[2] is None or self.constants.commit_info[2] == "":
+            print(self.trans["Built from source, running from socure"])
+            logging.info(self.trans["Built from source, running from socure"])
             return True
 
         if self.constants.computer.oclp_sys_url != self.constants.commit_info[2]:

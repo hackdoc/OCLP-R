@@ -226,6 +226,8 @@ class KernelDebugKitObject:
                     count_kdks.sort(key=lambda x: x["build"], reverse=True)
                     closest = None
                     for kdk in count_kdks:
+                        if kdk["build"][-1]>="a" and kdk["build"][-1]<="z":
+                            logging.info(self.trans["This is macOS beta's KDK"])
                         if kdk["build"][2] <= host_build[2]:
                             closest = kdk
                             break

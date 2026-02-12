@@ -308,6 +308,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
     def kdk_handler(self):
         if self.language_point=="English":
             trans={
+                "This is macOS beta's KDK":"This is macOS beta's KDK",
                 "Could not contact KDK API":"Could not contact KDK API",
                 "Could not fetch KDK list":"Could not fetch KDK list",
                 "Pulling KDK list from KdkSupportPkg API":"Pulling KDK list from KdkSupportPkg API",
@@ -361,6 +362,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         elif self.language_point=="简体中文":
             trans={
+                "This is macOS beta's KDK":"这是macOS beta的KDK",
                 "Could not contact KDK API":"无法联系 KDK API",
                 "Pulling KDK list from KdkSupportPkg API":"从 KdkSupportPkg API 获取 KDK 列表",
                 "Could not fetch KDK list":"无法获取 KDK 列表",
@@ -657,7 +659,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Creating payloads directory":"正在创建 payloads 目录",
                 "Mounted payloads.dmg":"已挂载 payloads.dmg",
                 "Failed to mount payloads.dmg":"无法挂载 payloads.dmg",
-                "Unmounting personal {0}":"正在卸载个人 {0}",
+                "Unmounting personal {0}":"正在卸载 {0}",
                 "Unmounting {0} at: {1}":"正在卸载 {0} 于: {1}"
             }
         return trans
@@ -2462,6 +2464,7 @@ Hardware Information:
     def gui_sys_patch_display(self):
         if self.language_point=="English":
             trans={
+                "Built from source, running from socure":"Built from source, running from socure",
                 "Checking if new patches are needed":"Checking if new patches are needed",
                 "No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?":"No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?",
                 "Post-Install Menu":"Post-Install Menu",
@@ -2488,6 +2491,7 @@ Hardware Information:
             }
         elif self.language_point=="简体中文":
             trans={
+                "Built from source, running from socure":"以源代码运行",
                 "Checking if new patches are needed":"检查是否需要新的补丁",
                 "Initializing Root Patch Display Frame":"初始化根卷补丁显示框架",
                 "No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?":"没有需要根卷补丁的更新!\n\n是否重启以应用新的 OpenCore 构建？",
@@ -2548,6 +2552,7 @@ Hardware Information:
                 "Open System Preferences":"Open System Preferences",
                 "Ignore":"Ignore",
                 "Error":"Error",
+                "Reverting root patches":"Reverting root patches",
                 "KDK download complete, validating with hdiutil":"KDK download complete, validating with hdiutil",
                 "KDK download complete":"KDK download complete",
                 "Metallib Build ":"Metallib Build ",
@@ -2557,9 +2562,11 @@ Hardware Information:
                 "Checking if new patches are needed":"Checking if new patches are needed",
                 "No new patches detected for system":"No new patches detected for system",
                 "- Patch {patch} not installed":"- Patch {patch} not installed",
+                "Built from source, running from socure":"Built from source, running from socure",
             }
         elif self.language_point=="简体中文":
             trans={
+                "Built from source, running from socure":"以源代码运行",
                 "- Patch {patch} not installed":"- 补丁 {patch} 未安装",
                 "No new patches detected for system":"没有新的系统补丁",
                 "Checking if new patches are needed":"检查是否有新的补丁需要应用",
@@ -2589,6 +2596,7 @@ Hardware Information:
                 "Installing MetallibSupportPkg PKG...":"正在安装 MetallibSupportPkg 包...",
                 "Metallib installation failed: ":"Metallib 安装失败: ",
                 "Root Patching":"根卷补丁",
+                "Reverting root patches":"还原根补丁",
                 "Revert Root Patches":"还原根卷补丁",
                 "Root Patching will patch the following:":"根卷补丁将修补以下内容: ",
                 "No patches to apply":"没有补丁可应用",

@@ -446,10 +446,16 @@ class SysPatchStartFrame(wx.Frame):
         logging.info(self.trans["Checking if new patches are needed"])
 
         if self.constants.commit_info[0] in ["Running from source", "Built from source"]:
+            print(self.trans["Built from source, running from socure"])
+            logging.info(self.trans["Built from source, running from socure"])
             return True
 
         if self.constants.computer.oclp_sys_url != self.constants.commit_info[2]:
             # If commits are different, assume patches are as well
+            print(self.trans["- Commit URLs differ"])
+            print(f"{self.trans['- Commit URLs:']} {self.constants.commit_info[2]}")
+            logging.info(self.trans["- Commit URLs differ"])
+            logging.info(f"{self.trans['- Commit URLs:']} {self.constants.commit_info[2]}")
             return True
 
         oclp_plist = "/System/Library/CoreServices/OCLP-R.plist"

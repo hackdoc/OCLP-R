@@ -85,7 +85,7 @@ class RoutePayloadDiskImage:
                         # Check that only our personal payloads.dmg is unmounted
                         if "shadow-path" in image:
                             if self.temp_dir.name in image["shadow-path"]:
-                                logging.info(f"Unmounting personal {variant}")
+                                logging.info(self.trans["Unmounting personal {0}"].format(variant))
                                 subprocess.run(
                                     ["/usr/bin/hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
                                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT
