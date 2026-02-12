@@ -116,17 +116,17 @@ def generate_log(process: subprocess.CompletedProcess) -> str:
             ...
     """
     output = trans["Subprocess failed."]+"\n"
-    output += trans["Command: {0}"].format(process.args)+"\n"
-    output += trans["Return Code: {0}"].format(process.returncode)+"\n"
+    output += trans["    Command: {0}"].format(process.args)+"\n"
+    output += trans["    Return Code: {0}"].format(process.returncode)+"\n"
     _returned_error = __resolve_privileged_helper_errors(process.returncode)
     if _returned_error:
         output += trans["        Likely Enum: {0}"].format(_returned_error)+"\n"
-    output += trans["Standard Output:"]+"\n"
+    output += trans["    Standard Output:"]+"\n"
     if process.stdout:
         output += __format_output(process.stdout.decode("utf-8"))
     else:
         output += trans["        None"]+"\n"
-    output += trans["Standard Error:"]+"\n"
+    output += trans["    Standard Error:"]+"\n"
     if process.stderr:
         output += __format_output(process.stderr.decode("utf-8"))
     else:
