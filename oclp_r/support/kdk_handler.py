@@ -226,10 +226,17 @@ class KernelDebugKitObject:
                     count_kdks.sort(key=lambda x: x["build"], reverse=True)
                     closest = None
                     for kdk in count_kdks:
-                        if kdk["build"][-1]>="a" and kdk["build"][-1]<="z":
-                            logging.info(self.trans["This is macOS beta's KDK"])
-                        if kdk["build"][2] <= host_build[2]:
-                            closest = kdk
+                        # Need same version (example: 26.3==26.3 -> 26D==26D)
+                        if kdk["build"][0:3] == host_build[0:3]:
+                            # We need to check beta versions
+                            if kdk["build"][-1]>="a" and kdk["build"][-1]<="z":
+                                # example: 25D5087f -> macOS 26.3 Beta
+                                # earlier than 25D125
+                                logging.info(self.trans["This is macOS beta's KDK"])
+                                closest=kdk
+                                break
+                        elif kdk["build"][0:2] == host_build[0:2] and ord(kdk["build"][2])-1==ord(host_build[2]):
+                            closest=kdk
                             break
                     if closest is None:
                         closest = count_kdks[-1]
