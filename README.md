@@ -8,7 +8,7 @@ Our project's main goal is to breathe new life into Macs no longer supported by 
 
 ----------
 
-![GitHub all releases](https://img.shields.io/github/downloads/dortania/OpenCore-Legacy-Patcher/total?color=white&style=plastic) ![GitHub top language](https://img.shields.io/github/languages/top/dortania/OpenCore-Legacy-Patcher?color=4B8BBE&style=plastic) ![Discord](https://img.shields.io/discord/417165963327176704?color=7289da&label=discord&style=plastic)
+![GitHub all releases](https://img.shields.io/github/downloads/hackdoc/OCLP-R/total?color=white&style=plastic) ![GitHub top language](https://img.shields.io/github/languages/top/hackdoc/OCLP-R?color=4B8BBE&style=plastic)
 
 ----------
 
