@@ -277,7 +277,7 @@ class Constants:
         self.github_mirror: str = ""
         self.api_link()
 
-    @property
+
     def api_link(self):
         if self.github_proxy_link!="SimpleHac":
 
