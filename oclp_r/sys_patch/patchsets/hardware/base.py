@@ -16,7 +16,7 @@ from ....detections             import device_probe
 from ....support                import translate_language
 from oclp_r import constants
 
-trans=translate_language.TranslateLanguage_sys_patch.hardware(None)
+trans=translate_language.TranslateLanguage_sys_patch.hardware(Constants())
 class HardwareVariant(StrEnum):
     """
     Hardware variant for patch set
