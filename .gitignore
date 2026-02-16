@@ -15,6 +15,7 @@ __pycache__/
 *.kext
 *.py[cod]
 *$py.class
+.history
 /docs/.vuepress/dist
 /docs/.vuepress/.config.js.swp
 /docs/yarn-error.log
