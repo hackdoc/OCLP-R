@@ -11,9 +11,10 @@ from ..patchsets.base import PatchType
 
 from ...volume  import generate_copy_arguments
 from ...support import subprocess_wrapper
+from ...support.translate_language import TranslateLanguage_sys_patch
+trans=TranslateLanguage_sys_patch().utilities()
 
-
-def install_new_file(source_folder: Path, destination_folder: Path, file_name: str, method: PatchType, trans: dict = None) -> None:
+def install_new_file(source_folder: Path, destination_folder: Path, file_name: str, method: PatchType) -> None:
     """
     Installs a new file to the destination folder
 
@@ -30,48 +31,36 @@ def install_new_file(source_folder: Path, destination_folder: Path, file_name: s
     file_name_str = str(file_name)
 
     if not Path(destination_folder).exists():
-        if trans:
-            logging.info(trans["  - Skipping {file_name}, cannot locate {source_folder}"].format(file_name=file_name, source_folder=source_folder))
-        else:
-            logging.info(f"  - Skipping {file_name}, cannot locate {source_folder}")
+        
+        logging.info(trans["  - Skipping {file_name}, cannot locate {source_folder}"].format(file_name=file_name, source_folder=source_folder))
         return
 
     if method in [PatchType.MERGE_SYSTEM_VOLUME, PatchType.MERGE_DATA_VOLUME]:
         # merge with rsync
-        if trans:
-            logging.info(trans["  - Installing: {file_name}"].format(file_name=file_name))
-        else:
-            logging.info(f"  - Installing: {file_name}")
+        
+        logging.info(trans["  - Installing: {file_name}"].format(file_name=file_name))
         subprocess_wrapper.run_as_root(["/usr/bin/rsync", "-r", "-i", "-a", f"{source_folder}/{file_name}", f"{destination_folder}/"], stdout=subprocess.PIPE)
         fix_permissions(destination_folder + "/" + file_name)
     elif Path(source_folder + "/" + file_name_str).is_dir():
         # Applicable for .kext, .app, .plugin, .bundle, all of which are directories
         if Path(destination_folder + "/" + file_name).exists():
-            if trans:
-                logging.info(trans["  - Found existing {file_name}, overwriting..."].format(file_name=file_name))
-            else:
-                logging.info(f"  - Found existing {file_name}, overwriting...")
+           
+            logging.info(trans["  - Found existing {file_name}, overwriting..."].format(file_name=file_name))
+            
             subprocess_wrapper.run_as_root_and_verify(["/bin/rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         else:
-            if trans:
-                logging.info(trans["  - Installing: {file_name}"].format(file_name=file_name))
-            else:
-                logging.info(f"  - Installing: {file_name}")
+            
+            logging.info(trans["  - Installing: {file_name}"].format(file_name=file_name))
+            
         subprocess_wrapper.run_as_root_and_verify(generate_copy_arguments(f"{source_folder}/{file_name}", destination_folder), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         fix_permissions(destination_folder + "/" + file_name)
     else:
         # Assume it's an individual file, replace as normal
         if Path(destination_folder + "/" + file_name).exists():
-            if trans:
-                logging.info(trans["  - Found existing {file_name}, overwriting..."].format(file_name=file_name))
-            else:
-                logging.info(f"  - Found existing {file_name}, overwriting...")
+            logging.info(trans["  - Found existing {file_name}, overwriting..."].format(file_name=file_name))
             subprocess_wrapper.run_as_root_and_verify(["/bin/rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         else:
-            if trans:
-                logging.info(trans["  - Installing: {file_name}"].format(file_name=file_name))
-            else:
-                logging.info(f"  - Installing: {file_name}")
+            logging.info(trans["  - Installing: {file_name}"].format(file_name=file_name))
         subprocess_wrapper.run_as_root_and_verify(generate_copy_arguments(f"{source_folder}/{file_name}", destination_folder), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         fix_permissions(destination_folder + "/" + file_name)
 
@@ -86,10 +75,9 @@ def remove_file(destination_folder: Path, file_name: str, trans: dict = None) ->
     """
 
     if Path(destination_folder + "/" + file_name).exists():
-        if trans:
-            logging.info(trans["  - Removing: {file_name}"].format(file_name=file_name))
-        else:
-            logging.info(f"  - Removing: {file_name}")
+
+        logging.info(trans["  - Removing: {file_name}"].format(file_name=file_name))
+
         if Path(destination_folder + "/" + file_name).is_dir():
             subprocess_wrapper.run_as_root_and_verify(["/bin/rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         else:

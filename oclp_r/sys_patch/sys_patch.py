@@ -393,7 +393,7 @@ class PatchSysVolume:
                                 destination_folder_path = str(self.mount_location) + remove_patch_directory
                             else:
                                 destination_folder_path = str(self.mount_location_data) + remove_patch_directory
-                            remove_file(destination_folder_path, remove_patch_file,self.trans)
+                            remove_file(destination_folder_path, remove_patch_file)
 
 
             for method_install in [PatchType.OVERWRITE_SYSTEM_VOLUME, PatchType.OVERWRITE_DATA_VOLUME, PatchType.MERGE_SYSTEM_VOLUME, PatchType.MERGE_DATA_VOLUME]:
@@ -432,7 +432,7 @@ class PatchSysVolume:
 
                             destination_folder_path = updated_destination_folder_path
                         self.trans_ul=translate_language.TranslateLanguage(global_constants=self.constants).utilities()
-                        install_new_file(source_folder_path, destination_folder_path, install_file, method_install,self.trans_ul)
+                        install_new_file(source_folder_path, destination_folder_path, install_file, method_install)
 
             if PatchType.EXECUTE in required_patches[patch]:
                 for process in required_patches[patch][PatchType.EXECUTE]:
