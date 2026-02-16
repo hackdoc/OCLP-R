@@ -65,7 +65,7 @@ def install_new_file(source_folder: Path, destination_folder: Path, file_name: s
         fix_permissions(destination_folder + "/" + file_name)
 
 
-def remove_file(destination_folder: Path, file_name: str, trans: dict = None) -> None:
+def remove_file(destination_folder: Path, file_name: str) -> None:
     """
     Removes a file from the destination folder
 
