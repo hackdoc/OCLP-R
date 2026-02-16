@@ -206,7 +206,8 @@ class PatchSysVolume:
         kernelcache.KernelCacheSupport(
             mount_location_data=self.mount_location_data,
             detected_os=self.constants.detected_os,
-            skip_root_kmutil_requirement=self.skip_root_kmutil_requirement
+            skip_root_kmutil_requirement=self.skip_root_kmutil_requirement,
+            global_constants=self.constants
         ).clean_auxiliary_kc()
 
         self.constants.root_patcher_succeeded = True
@@ -375,7 +376,8 @@ class PatchSysVolume:
         kc_support_obj = kernelcache.KernelCacheSupport(
             mount_location_data=self.mount_location_data,
             detected_os=self.constants.detected_os,
-            skip_root_kmutil_requirement=self.skip_root_kmutil_requirement
+            skip_root_kmutil_requirement=self.skip_root_kmutil_requirement,
+            global_constants=self.constants
         )
 
         source_files_path = str(self.constants.payload_local_binaries_root_path)
@@ -536,7 +538,8 @@ class PatchSysVolume:
         kernelcache.KernelCacheSupport(
             mount_location_data=self.mount_location_data,
             detected_os=self.constants.detected_os,
-            skip_root_kmutil_requirement=self.skip_root_kmutil_requirement
+            skip_root_kmutil_requirement=self.skip_root_kmutil_requirement,
+            global_constants=self.constants
         ).clean_auxiliary_kc()
 
         # Make sure SNB kexts are compatible with the host

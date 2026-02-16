@@ -21,10 +21,8 @@ class KernelCacheSupport:
         self.mount_location_data = mount_location_data
         self.detected_os = detected_os
         self.skip_root_kmutil_requirement = skip_root_kmutil_requirement
-        if global_constants:
-            self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).kernelcache()
-        else:
-            self.trans = None
+        self.trans = translate_language.TranslateLanguage_sys_patch(global_constants).kernelcache()
+        
 
 
     def check_kexts_needs_authentication(self, kext_name: str) -> bool:
@@ -156,7 +154,7 @@ class KernelCacheSupport:
                             if self.trans:
                                 logging.info(self.trans["  - Removing {file}"].format(file=file))
                             else:
-                                logging.info(f"  - Removing {file}")
+                                logging.info("  - Removing {file}")
                             subprocess_wrapper.run_as_root(["/bin/rm", "-Rf", f"/Library/Extensions/{file}"])
 
         # Handle situations where users migrated from older OSes with a lot of garbage in /L*/E*
