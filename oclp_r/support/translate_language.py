@@ -1208,6 +1208,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Preparing download":"Preparing download",
                 "Cancel":"Cancel",
                 "Download failed: ":"Download failed: ",
+                
                 "Are you sure you want to cancel the download?":"Are you sure you want to cancel the download?",
                 "Cancel Download":"Cancel Download",
                 "Cancelling download, please wait...":"Cancelling download, please wait...",

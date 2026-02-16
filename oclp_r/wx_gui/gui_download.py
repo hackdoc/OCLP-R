@@ -92,7 +92,7 @@ class DownloadFrame(wx.Frame):
             time.sleep(self.constants.thread_sleep_interval)
 
         if self.download_obj.download_complete is False and self.user_cancelled is False:
-            wx.MessageBox(f"{self.trans['Download failed']}: \n{self.download_obj.error_msg}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
+            wx.MessageBox(f"{self.trans['Download failed: ']} \n{self.download_obj.error_msg}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
 
         progress_bar.Destroy()
         frame.Destroy()
