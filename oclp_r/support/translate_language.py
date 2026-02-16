@@ -2716,9 +2716,17 @@ class TranslateLanguage_sys_patch:
                 "Network patches are already applied, requiring network connection":"Network patches are already applied, requiring network connection",
                 "Network patches are applicable, removing other patches":"Network patches are applicable, removing other patches",
                 "Network patches are not applicable, requiring network connection":"Network patches are not applicable, requiring network connection",
+                "Cannot mix Metal and Non-Metal GPUs":"Cannot mix Metal and Non-Metal GPUs",
+                "Stripping out Non-Metal GPUs":"Stripping out Non-Metal GPUs",
+                "  Stripping out {hardware_name}":"  Stripping out {hardware_name}",
+                "Cannot mix Metal 3802 and Metal 31001 GPUs on macOS Sequoia or newer":"Cannot mix Metal 3802 and Metal 31001 GPUs on macOS Sequoia or newer",
             }
         elif self.language_point=="简体中文":
             trans={
+                "  Stripping out {hardware_name}":"  排除{hardware_name}",
+                "Stripping out Non-Metal GPUs":"排除non-metal的GPU",
+                "Cannot mix Metal and Non-Metal GPUs":"无法混用Metal和non-Metal GPU",
+                "Cannot mix Metal 3802 and Metal 31001 GPUs on macOS Sequoia or newer":"在 macOS Sequoia 或更高版本上，无法混用 Metal 3802 和 Metal 31001 GPU",
                 "- Breakdown:":"- 分析",
                 "Network patches are applicable, removing other patches":"网络补丁可用，会移除其他补丁",
                 "Network patches are not applicable, requiring network connection":"网络补丁不适用，需要网络连接",
