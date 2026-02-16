@@ -539,7 +539,7 @@ class HardwarePatchsetDetection:
             item: BaseHardware
             device_properties[item.name()] = True
 
-            if item.name() == "Graphics: Nvidia Web Drivers":
+            if item.name() == "Graphics: Nvidia Web Drivers" or item.name() == "图形: Nvidia Web 驱动程序" :
                 has_nvidia_web_drivers = True
 
             for config in item.required_system_integrity_protection_configurations():

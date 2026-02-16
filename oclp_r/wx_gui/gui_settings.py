@@ -109,7 +109,7 @@ class SettingsFrame(wx.Frame):
 
         tabs = list(self.settings.keys())
         if not Path("~/.hackdoc_developer").expanduser().exists():
-            tabs.remove("Developer")
+            tabs.remove(self.trans["Developer"])
         for tab in tabs:
             panel = wx.Panel(notebook)
             notebook.AddPage(panel, tab)

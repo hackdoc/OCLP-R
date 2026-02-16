@@ -267,7 +267,7 @@ class MainFrame(wx.Frame):
             # Notify user they're booting an unsupported configuration
             pop_up = wx.MessageDialog(
                 self,
-                self.trans["We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac."].format(self.constants.computer.build_model),
+                self.trans["We found you are currently booting OpenCore built for a different unit: {build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac."].format(build_model=self.constants.computer.build_model),
                 self.trans["Unsupported Configuration Detected!"],
                 style=wx.OK | wx.ICON_EXCLAMATION
             )
@@ -280,7 +280,7 @@ class MainFrame(wx.Frame):
             self.constants.has_checked_updates = True
             pop_up = wx.MessageDialog(
                 self,
-                self.trans["OCLP-R has been updated to the latest version: {self.constants.patcher_version}\n\nWould you like to update OpenCore and your root volume patches?"].format(self.constants.patcher_version),
+                self.trans["OCLP-R has been updated to the latest version: {patcher_version}\n\nWould you like to update OpenCore and your root volume patches?"].format(patcher_version=self.constants.patcher_version),
                 self.trans["Update successful!"],
                 style=wx.YES_NO | wx.YES_DEFAULT | wx.ICON_INFORMATION
             )
@@ -408,7 +408,7 @@ Please check the Github page for more information about this release."""]
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.AddSpacer(10)
         self.title_text = wx.StaticText(panel, label=self.trans["A new version of OCLP-R is available!"])
-        self.description = wx.StaticText(panel, label=self.trans[f"OCLP-R {oclp_version} is now available - You have {self.constants.patcher_version}. Would you like to update?"])
+        self.description = wx.StaticText(panel, label=self.trans["OCLP-R {oclp_version} is now available - You have {patcher_version}. Would you like to update?"].format(oclp_version=oclp_version,patcher_version=self.constants.patcher_version))
         self.title_text.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         self.description.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         self.web_view = wx.html2.WebView.New(panel, style=wx.BORDER_SUNKEN)

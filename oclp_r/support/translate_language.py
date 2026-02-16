@@ -1637,11 +1637,11 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Resources for OpenCore Legacy":"Resources for OpenCore Legacy",
                 "Patcher.":"Patcher.",
                 "Unsupported Configuration Detected!":"Unsupported Configuration Detected!",
-                "We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.":"We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.",
+                "We found you are currently booting OpenCore built for a different unit: {build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.":"We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.",
                 "Update successful!":"Update successful!",
-                "OCLP-R has been updated to the latest version: {self.constants.patcher_version}\n\nWould you like to update OpenCore and your root volume patches?":"OCLP-R has been updated to the latest version: {self.constants.patcher_version}\n\nWould you like to update OpenCore and your root volume patches?",
+                "OCLP-R has been updated to the latest version: {patcher_version}\n\nWould you like to update OpenCore and your root volume patches?":"OCLP-R has been updated to the latest version: {patcher_version}\n\nWould you like to update OpenCore and your root volume patches?",
                 "A new version of OCLP-R is available!":"A new version of OCLP-R is available!",
-                "OCLP-R {oclp_version} is now available - You have {self.constants.patcher_version}. Would you like to update?":"OCLP-R {oclp_version} is now available - You have {self.constants.patcher_version}. Would you like to update?",
+                "OCLP-R {oclp_version} is now available - You have {patcher_version}. Would you like to update?":"OCLP-R {oclp_version} is now available - You have {patcher_version}. Would you like to update?",
                 "Unable to fetch changelog\n\nPlease check the Github page for more information about this release.":"Unable to fetch changelog\n\nPlease check the Github page for more information about this release.",
                 "Dismiss":"Dismiss",
                 "View on GitHub":"View on GitHub",
@@ -1687,11 +1687,11 @@ Please check the Github page for more information about this release.""":"""
                 "Resources for OpenCore Legacy":"OpenCore Legacy Patcher",
                 "Patcher.":"的资源。",
                 "Unsupported Configuration Detected!":"检测到不支持的配置！",
-                "We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.":"我们发现您当前正在引导为不同设备构建的 OpenCore：{self.constants.computer.build_model}\n\n我们构建的配置是为匹配单个设备的，不能与不同的 Mac 混合使用或重复使用。\n\n请构建并安装一个新的 OpenCore 配置，然后重启您的 Mac。",
+                "We found you are currently booting OpenCore built for a different unit: {build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.":"我们发现您当前正在引导为不同设备构建的 OpenCore：{self.constants.computer.build_model}\n\n我们构建的配置是为匹配单个设备的，不能与不同的 Mac 混合使用或重复使用。\n\n请构建并安装一个新的 OpenCore 配置，然后重启您的 Mac。",
                 "Update successful!":"更新成功！",
-                "OCLP-R has been updated to the latest version: {self.constants.patcher_version}\n\nWould you like to update OpenCore and your root volume patches?":"OCLP-R 已更新到最新版本：{self.constants.patcher_version}\n\n您是否要更新 OpenCore 和根卷补丁？",
+                "OCLP-R has been updated to the latest version: {patcher_version}\n\nWould you like to update OpenCore and your root volume patches?":"OCLP-R 已更新到最新版本：{patcher_version}\n\n您是否要更新 OpenCore 和根卷补丁？",
                 "A new version of OCLP-R is available!":"OCLP-R 有新版本可用！",
-                "OCLP-R {oclp_version} is now available - You have {self.constants.patcher_version}. Would you like to update?":"OCLP-R {oclp_version} 现已可用 - 您当前版本是 {self.constants.patcher_version}。您是否要更新？",
+                "OCLP-R {oclp_version} is now available - You have {patcher_version}. Would you like to update?":"OCLP-R {oclp_version} 现已可用 - 您当前版本是 {patcher_version}。您是否要更新？",
                 "Unable to fetch changelog\n\nPlease check the Github page for more information about this release.":"无法获取更新日志\n\n请查看 Github 页面了解有关此版本的更多信息。",
                 "Dismiss":"关闭",
                 "View on GitHub":"在 GitHub 上查看",
@@ -2676,7 +2676,7 @@ Hardware Information:
             }
         return trans
 class TranslateLanguage_sys_patch:
-    def __init__(self, global_constants: Constants = None) -> None:
+    def __init__(self, global_constants = None) -> None:
         self.file_name:              str = ".com.hackdoc.oclp-r.plist"
         self.global_settings_folder: str = "/Users/Shared"
         self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"
@@ -2688,6 +2688,8 @@ class TranslateLanguage_sys_patch:
     def detect(self):
         if self.language_point=="English":
             trans={
+                "- Breakdown:":"- Breakdown:",
+                "Network connection missing, checking whether network patches are applicable":"Network connection missing, checking whether network patches are applicable",
                 "Failed to parse diskutil output.":"Failed to parse diskutil output.",
                 "FileVault is Off":"FileVault is Off",
                 "Settings: Kernel Debug Kit required":"Settings: Kernel Debug Kit required",
@@ -2710,9 +2712,17 @@ class TranslateLanguage_sys_patch:
                 "System volume is tainted, unpatching is required":"System volume is tainted, unpatching is required",
                 "Installed patches are from different commit, unpatching is required":"Installed patches are from different commit, unpatching is required",
                 "Patch(es) already installed: {0}, unpatching is required":"Patch(es) already installed: {0}, unpatching is required",
+                "Network patches are already applied, requiring network connection":"Network patches are already applied, requiring network connection",
+                "Network patches are applicable, removing other patches":"Network patches are applicable, removing other patches",
+                "Network patches are not applicable, requiring network connection":"Network patches are not applicable, requiring network connection",
             }
         elif self.language_point=="简体中文":
             trans={
+                "- Breakdown:":"- 分析",
+                "Network patches are applicable, removing other patches":"网络补丁可用，会移除其他补丁",
+                "Network patches are not applicable, requiring network connection":"网络补丁不适用，需要网络连接",
+                "Network patches are already applied, requiring network connection":"网络补丁已应用，需要网络连接",
+                "Network connection missing, checking whether network patches are applicable":"无网络连接，检测网络补丁是否可用",
                 "Patch(es) already installed: {0}, unpatching is required":"已安装的补丁：{0}，需要取消修补",
                 "Installed patches are from different commit, unpatching is required":"已安装的补丁来自不同的提交，需要取消修补",
                 "System volume is tainted, unpatching is required":"系统卷已被修改，需要取消修补",
