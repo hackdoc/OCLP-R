@@ -75,6 +75,8 @@ class MetallibDownloadFrame(wx.Frame):
                         self.kdk_data[i]['url']="https://gh-proxy.com/"+self.kdk_data[i]['url']
                     if self.constants.github_proxy_link=="ghfast":
                         self.kdk_data[i]['url']="https://ghfast.top/"+self.kdk_data[i]['url']
+                    if self.constants.github_proxy_link=="ghllkk":
+                        self.kdk_data[i]['url']="https://gh.llkk.cc/"+self.kdk_data[i]['url']
                     kdk_data_number.append(data)
                     kdk_data_build.append(data2)
                 for i in range(4):

@@ -127,6 +127,8 @@ class CheckBinaryUpdates:
                     link="https://ghfast.top/"+begi
                 elif self.constants.github_proxy_link=="gh-proxy":
                     link="https://gh-proxy.com/"+begi
+                elif self.constants.github_proxy_link=="ghllkk":
+                    link="https://gh.llkk.cc/"+begi
                 self.latest_details = {
                     "Name": asset["name"],
                     "Version": latest_remote_version,

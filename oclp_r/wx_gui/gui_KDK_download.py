@@ -86,6 +86,8 @@ class KDKDownloadFrame(wx.Frame):
                         self.kdk_data[i]['url']="https://gh-proxy.com/"+self.kdk_data[i]['url']
                     if self.constants.github_proxy_link=="ghfast":
                         self.kdk_data[i]['url']="https://ghfast.top/"+self.kdk_data[i]['url']
+                    if self.constants.github_proxy_link=="ghllkk":
+                        self.kdk_data[i]['url']="https://gh.llkk.cc/"+self.kdk_data[i]['url']
                 for i in range(len(self.kdk_data)):
                     data=self.kdk_data[i]["build"][:2]
                     data2=self.kdk_data[i]["build"]

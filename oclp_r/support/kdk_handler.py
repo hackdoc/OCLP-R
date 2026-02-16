@@ -202,6 +202,8 @@ class KernelDebugKitObject:
                 kdk['url']="https://gh-proxy.com/"+kdk['url']
             if self.constants.github_proxy_link=="ghfast":
                 kdk['url']="https://ghfast.top/"+kdk['url']
+            if self.constants.github_proxy_link=="ghllkk":
+                kdk['url']="https://gh.llkk.cc/"+kdk['url']
             self.kdk_url = kdk["url"]
             logging.info(f"KDK URL:{self.kdk_url}")
             self.kdk_url_build = kdk["build"]

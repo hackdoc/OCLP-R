@@ -906,6 +906,7 @@ class SettingsFrame(wx.Frame):
                         "SimpleHac",
                         "gh-proxy",
                         "ghfast",
+                        "ghllkk",
                     ],
                     "value": self.constants.github_proxy_link,
                     "variable": "github_proxy_link",
@@ -915,6 +916,7 @@ class SettingsFrame(wx.Frame):
                         self.trans["SimpleHac : https://next.oclpapi.simplehac.cn/"],
                         self.trans["gh-proxy : https://gh-proxy.com/"],
                         self.trans["ghfast : https://ghfast.top/"],
+                        self.trans["ghllkk : https://gh.llkk.cc/"],
                     ],
                 },
                 

@@ -271,16 +271,21 @@ class Constants:
         ## GitHub mirror:
         ###https://ghfast.top
         ###https://gh-proxy.com
+        ###https://gh.llkk.cc
         ###https://github.moeyy.xyz
         ###https://gitapi.simplehac.top
         self.github_mirror: str = ""
         self.api_link()
-    
+
+    @property
     def api_link(self):
         if self.github_proxy_link!="SimpleHac":
+
             self.kdk_api_link="https://dortania.github.io/KdkSupportPkg/manifest.json"
             self.metallib_api_link="https://dortania.github.io/MetallibSupportPkg/manifest.json"
+
         if self.github_proxy_link=="SimpleHac":
+
             self.kdk_api_link="https://next.oclpapi.simplehac.cn/KdkSupportPkg/manifest.json"
             self.metallib_api_link="https://next.oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
     @property

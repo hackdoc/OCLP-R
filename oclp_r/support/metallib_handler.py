@@ -165,6 +165,8 @@ class MetalLibraryObject:
                 metallib['url']="https://gh-proxy.com/"+metallib['url']
             if self.constants.github_proxy_link=="ghfast":
                 metallib['url']="https://ghfast.top/"+metallib['url']
+            if self.constants.github_proxy_link=="ghllkk":
+                metallib['url']="https://gh.llkk.cc/"+metallib['url']
             self.metallib_url = metallib["url"]
             self.metallib_url_build = metallib["build"]
             self.metallib_url_version = metallib["version"]
