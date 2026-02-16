@@ -622,4 +622,4 @@ class HardwarePatchsetDetection:
                 continue
             if value is False:
                 continue
-            logging.error(self.trans["  - {validation_key}"].format(validation_key=key.replace('Validation: ', '')))
+            logging.error("  - {validation_key}".format(validation_key=key.replace('Validation: ', '')))
