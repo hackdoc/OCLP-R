@@ -58,7 +58,7 @@ class BuildSupport:
 
         kext: dict = self.get_item_by_kv(self.config["Kernel"]["Add"], "BundlePath", bundle_path)
         if not kext:
-            logging.info(self.trans["- Could not find kext {bundle_path}!"])
+            logging.info(self.trans["- Could not find kext {bundle_path}!"].format(bundle_path=bundle_path))
             raise IndexError
         return kext
 
