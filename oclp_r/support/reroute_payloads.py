@@ -42,7 +42,7 @@ class RoutePayloadDiskImage:
             logging.info(self.trans["Creating payloads directory"])
             Path(self.temp_dir.name / Path("payloads")).mkdir(parents=True, exist_ok=True)
             self._unmount_active_dmgs(unmount_all_active=False)
-            output = subprocess.run(
+            output = subprocess_wrapper.run_as_root(
                 [
                     "/usr/bin/hdiutil", "attach", "-noverify", f"{self.constants.payload_path_dmg}",
                     "-mountpoint", Path(self.temp_dir.name / Path("payloads")),
@@ -86,13 +86,13 @@ class RoutePayloadDiskImage:
                         if "shadow-path" in image:
                             if self.temp_dir.name in image["shadow-path"]:
                                 logging.info(self.trans["Unmounting personal {0}"].format(variant))
-                                subprocess.run(
+                                subprocess_wrapper.run_as_root(
                                     ["/usr/bin/hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
                                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT
                                 )
                     else:
                         logging.info(f"Unmounting {variant} at: {image['system-entities'][0]['dev-entry']}")
-                        subprocess.run(
+                        subprocess_wrapper.run_as_root(
                             ["/usr/bin/hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT
                         )

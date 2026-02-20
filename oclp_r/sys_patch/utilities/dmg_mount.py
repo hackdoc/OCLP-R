@@ -31,7 +31,7 @@ class PatcherSupportPkgMount:
             logging.info(self.trans["- PatcherSupportPkg resources missing, Patcher likely corrupted!!!"])
             return False
 
-        output = subprocess.run(
+        output = subprocess_wrapper.run_as_root(
             [
                 "/usr/bin/hdiutil", "attach", "-noverify", f"{self.constants.payload_local_binaries_root_path_dmg}",
                 "-mountpoint", Path(self.constants.payload_path / Path("Universal-Binaries")),
@@ -65,7 +65,7 @@ class PatcherSupportPkgMount:
 
         for i in range(3):
             key = self._request_decryption_key(i)
-            output = subprocess.run(
+            output = subprocess_wrapper.run_as_root(
                 [
                     "/usr/bin/hdiutil", "attach", "-noverify", f"{self.constants.overlay_psp_path_dmg}",
                     "-mountpoint", Path(self.constants.payload_path / Path("HackdocInternal")),
