@@ -130,7 +130,7 @@ class BuildStorage:
                     nvme_aspm = (controller.aspm & (~0b11)) | 0b10
 
                     if controller.pci_path:
-                        logging.info(self.trans.storage()["- Found NVMe ({i}) at {controller_pci_path}"].format(i=i+1,controller_pci_path=controller.pci_path))
+                        logging.info(self.trans.storage()["- Found NVMe ({i}) at {controller_pci_path}"].format(i=i,controller_pci_path=controller.pci_path))
                         self.config["DeviceProperties"]["Add"].setdefault(controller.pci_path, {})["pci-aspm-default"] = nvme_aspm
                         self.config["DeviceProperties"]["Add"][controller.pci_path.rpartition("/")[0]] = {"pci-aspm-default": nvme_aspm}
                     else:
