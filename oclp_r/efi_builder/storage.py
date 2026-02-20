@@ -123,14 +123,14 @@ class BuildStorage:
                 for i, controller in enumerate(nvme_devices):
                     if controller.vendor_id == 0x106b:
                         continue
-                    logging.info(self.trans.storage()["- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}"])
+                    logging.info(self.trans.storage()["- Found 3rd Party NVMe SSD ({i}): {controller.vendor_id}:{device_id}"].format(i=i+1,vendor_id=utilities.friendly_hex(controller.vendor_id),device_id=utilities.friendly_hex(controller.device_id)))
                     self.config["#Revision"][f"Hardware-NVMe-{i}"] = f"{utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}"
 
                     # Disable Bit 0 (L0s), enable Bit 1 (L1)
                     nvme_aspm = (controller.aspm & (~0b11)) | 0b10
 
                     if controller.pci_path:
-                        logging.info(self.trans.storage()["- Found NVMe ({i}) at {controller.pci_path}"])
+                        logging.info(self.trans.storage()["- Found NVMe ({i}) at {controller_pci_path}"].format(i=i+1,controller_pci_path=controller.pci_path))
                         self.config["DeviceProperties"]["Add"].setdefault(controller.pci_path, {})["pci-aspm-default"] = nvme_aspm
                         self.config["DeviceProperties"]["Add"][controller.pci_path.rpartition("/")[0]] = {"pci-aspm-default": nvme_aspm}
                     else:

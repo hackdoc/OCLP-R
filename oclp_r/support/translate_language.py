@@ -3549,8 +3549,8 @@ class TranslateLanguage_efi_builder:
                 "- Adding SATA Hibernation Patch":"- Adding SATA Hibernation Patch",
                 "- Fixing PCIe Storage Controller ({i + 1}) reporting":"- Fixing PCIe Storage Controller ({i + 1}) reporting",
                 "- Failed to find Device path for PCIe Storage Controller {i}, falling back to Innie":"- Failed to find Device path for PCIe Storage Controller {i}, falling back to Innie",
-                "- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}":"- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}",
-                "- Found NVMe ({i}) at {controller.pci_path}":"- Found NVMe ({i}) at {controller.pci_path}",
+                "- Found 3rd Party NVMe SSD ({i}): {vendor_id}:{device_id}":"- Found 3rd Party NVMe SSD ({i}): {vendor_id}:{device_id}",
+                "- Found NVMe ({i}) at {controller_pci_path}":"- Found NVMe ({i}) at {controller_pci_path}",
                 "- Falling back to -nvmefaspm":"- Falling back to -nvmefaspm",
                 "- Disabling APFS TRIM timeout":"- Disabling APFS TRIM timeout"
             }
@@ -3560,8 +3560,8 @@ class TranslateLanguage_efi_builder:
                 "- Adding SATA Hibernation Patch":"- 添加 SATA 休眠补丁",
                 "- Fixing PCIe Storage Controller ({i + 1}) reporting":"- 修复 PCIe 存储控制器 ({i + 1}) 报告",
                 "- Failed to find Device path for PCIe Storage Controller {i}, falling back to Innie":"- 无法找到 PCIe 存储控制器 {i} 的设备路径，回退到 Innie",
-                "- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}":"- 发现第三方 NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}",
-                "- Found NVMe ({i}) at {controller.pci_path}":"- 在 {controller.pci_path} 发现 NVMe ({i})",
+                "- Found 3rd Party NVMe SSD ({i}): {vendor_id}:{device_id}":"- 发现第三方 NVMe SSD ({i}): {vendor_id}:{device_id}",
+                "- Found NVMe ({i}) at {controller_pci_path}":"- 在 {controller_pci_path} 发现 NVMe ({i})",
                 "- Falling back to -nvmefaspm":"- 回退到 -nvmefaspm",
                 "- Disabling APFS TRIM timeout":"- 禁用 APFS TRIM 超时"
             }
