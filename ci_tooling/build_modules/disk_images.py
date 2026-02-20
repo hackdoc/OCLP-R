@@ -77,7 +77,7 @@ class GenerateDiskImages:
             '-megabytes', '32000',  # Overlays can only be as large as the disk image allows
             '-format', 'UDZO', '-ov',
             '-volname', 'OCLP-R Resources (Base)',
-            '-fs', 'HFS+',
+            '-fs', 'APFS',
             '-layout', 'NONE',
             '-srcfolder', './payloads',
             '-passphrase', 'password', '-encryption'
