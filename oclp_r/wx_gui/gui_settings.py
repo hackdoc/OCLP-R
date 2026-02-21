@@ -955,6 +955,7 @@ class SettingsFrame(wx.Frame):
                     "variable": "manually_download_kdk",
                     "constants_variable": "manually_download_kdk",
                     "description": [
+                        "",
                         self.trans["When enabled, patcher will allow"],
                         self.trans["you download KDKs and metallibs manually."],
                     ],
