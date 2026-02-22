@@ -35,8 +35,6 @@ class ModernAudio(BaseHardware):
         """
         AppleHDA was outright removed in macOS 26, so this patch set is always present if OS requires it
         """
-        if utilities.check_kext_loaded("org.voodoo.driver.VoodooHDA") != "" and self._constants.audio_type != "AppleHDA":
-            self._constants.audio_type = "AppleHDA"
         return self._constants.audio_type == "AppleHDA"
 
     def requires_kernel_debug_kit(self) -> bool:
@@ -74,6 +72,15 @@ class ModernAudio(BaseHardware):
                     "/System/Library/Extensions": {
                         "AppleHDA.kext":      f"{self._constants.applehda_version}",
                     },
+                },
+                PatchType.REMOVE_SYSTEM_VOLUME:{
+                    "/Library/Extensions":[
+                        "VoodooHDA.kext",
+                        "AppleHDADisabler.kext",
+                    ],
+                    "/Library/PreferencePanes":[
+                        'VoodooHDA.prefPane',
+                    ]
                 },
             },
         }
