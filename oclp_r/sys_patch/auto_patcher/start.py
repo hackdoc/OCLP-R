@@ -171,7 +171,7 @@ Please check the Github page for more information about this release."""
                 args = [
                     "/usr/bin/osascript",
                     "-e",
-                    f"""display dialog "{self.trans['OCLP-R has detected you\'re running without Root Patches, and would like to install them.\n\nmacOS wipes all root patches during OS installs and updates, so they need to be reinstalled.\n\nFollowing Patches have been detected for your system: \n{patch_string}\nWould you like to apply these patches?{warning_str}']}" """
+                    f"""display dialog "{self.trans['OCLP-R has detected you\'re running without Root Patches, and would like to install them.\n\nmacOS wipes all root patches during OS installs and updates, so they need to be reinstalled.\n\nFollowing Patches have been detected for your system: \n{patch_string}\nWould you like to apply these patches?{warning_str}'].format(patch_string=patch_string,warning_str=warning_str)}" """
                     f'with icon POSIX file "{self.constants.app_icon_path}"',
                 ]
                 output = subprocess.run(
