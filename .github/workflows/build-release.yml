@@ -6,7 +6,7 @@ on:
             description: 'Version'
             required: true
             type: string
-            default: '3.0.1'
+            default: '3.0.3'
         pre_release:
             description: 'Pre-release or not'
             required: true
