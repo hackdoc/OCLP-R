@@ -202,7 +202,7 @@ class InstallOCFrame(wx.Frame):
         )
 
         # Add text: "Volumes on {disk}"
-        text_label = wx.StaticText(dialog, label=f"{self.trans['Volumes on']} {disk}", pos=(-1, 10))
+        text_label = wx.StaticText(dialog, label=f"{self.trans['Volumes on ']} {disk}", pos=(-1, 10))
         text_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         text_label.Centre(wx.HORIZONTAL)
 
