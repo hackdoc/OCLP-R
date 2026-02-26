@@ -1290,13 +1290,15 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "You will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.":"You will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.",
                 "Would you like to reboot?":"Would you like to reboot?",
                 "You can eject the drive, insert it into the ":"You can eject the drive, insert it into the ",
-                ", reboot, hold the Option key and select OpenCore/Boot EFI's option.":", reboot, hold the Option key and select OpenCore/Boot EFI's option.",
+                "reboot, hold the Option key and select OpenCore/Boot EFI\'s option.":"reboot, hold the Option key and select OpenCore/Boot EFI\'s option.",
                 "An internal error occurred while installing:\n":"An internal error occurred while installing:\n",
                 "Available disks:":"Available disks:",
                 "Available partitions for ":"Available partitions for ",
+                'OpenCore has finished installing to disk.\n\nYou can eject the drive, insert it into the ':'OpenCore has finished installing to disk.\n\nYou can eject the drive, insert it into the ',
             }
         elif self.language_point=="简体中文":
             trans={
+                'OpenCore has finished installing to disk.\n\nYou can eject the drive, insert it into the ':'OpenCore已经安装到磁盘,你可以将其插入到',
                 "Available partitions for ":"Available partitions for ",
                 "Available disks:":"可用磁盘:",
                 "Initializing Install OpenCore Frame":"初始化安装 OpenCore 窗口",
@@ -1317,7 +1319,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "You will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.":"您需要重启并按住 Option 键，然后选择 OpenCore/Boot EFI 选项。",
                 "Would you like to reboot?":"要重启吗？",
                 "You can eject the drive, insert it into the ":"您可以弹出驱动器，将其插入 ",
-                ", reboot, hold the Option key and select OpenCore/Boot EFI's option.":", 重启，按住 Option 键，然后选择 OpenCore/Boot EFI 选项。",
+                "reboot, hold the Option key and select OpenCore/Boot EFI\'s option.":"重启，按住 Option 键，然后选择 OpenCore/Boot EFI 选项。",
                 "An internal error occurred while installing:\n":"安装过程中发生内部错误:\n"
             }
         return trans
