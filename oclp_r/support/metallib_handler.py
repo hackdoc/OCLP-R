@@ -100,7 +100,7 @@ class MetalLibraryObject:
                 if content_length:
                     return int(content_length)
         except Exception as e:
-            logging.warning(self.trans["Cannot get file size {0}: {1}".format(url, e)])
+            logging.warning(self.trans["Cannot get file size {0}: {1}"].format(url, e))
         
         return 0
 

@@ -112,7 +112,6 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Metallib installed successfully":"Metallib installed successfully",
                 "Failed to install Metallib":"Failed to install Metallib",
                 "KDK missing, generating KDK download frame":"KDK missing, generating KDK download frame",
-                "KDK download complete, validating with hdiutil":"KDK download complete, validating with hdiutil",
                 "KDK download complete":"KDK download complete",
                 "MetallibSupportPkg missing, generating Metallib download frame":"MetallibSupportPkg missing, generating Metallib download frame",
                 "Metallib download complete, installing Metallib PKG":"Metallib download complete, installing Metallib PKG",
@@ -264,44 +263,6 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Available disks:":"可用磁盘:",
                 "Selected macOS DMG {version} ({build})":"已选择macOS DMG {version} ({build})",
                 "Selected macOS {version} ({build})":"已选择macOS {version} ({build})"
-            }
-            trans = {
-                "Set Validation Mode": "设置验证模式",
-                "- Running from Installer Sandbox, blocking OS updaters": "- 从安装程序沙箱运行, 阻止操作系统更新程序",
-                "Set System Volume patching": "设置系统卷修补",
-                "Set System Volume unpatching": "设置系统卷取消修补",
-                "Set Auto patching": "设置自动修补",
-                "Preparing host for macOS update": "准备主机以进行 macOS 更新",
-                "No update staged, skipping": "没有暂存的更新，跳过",
-                "Preparing for update to": "准备更新到",
-                "Another instance of OS caching is running, exiting": "另一个操作系统缓存实例正在运行，退出",
-                "- Failed to load plist for": "- 无法加载 plist 文件",
-                "- Removing": "- 正在删除",
-                "- Using custom model:": "- 使用自定义型号：",
-                """Your model is not supported by this patcher for running unsupported OSes!"
-
-If you plan to create the USB for another machine, please select the "Change Model" option in the menu.""": """您的型号不受此修补程序支持以运行不支持的操作系统！
-
-如果您计划为另一台机器创建 USB，请在菜单中选择"更改型号"选项。""",
-                "- Using detected model:": "- 使用检测到的型号：",
-                "- Set verbose configuration": "- 设置详细配置",
-                "- Set OpenCore DEBUG configuration": "- 设置 OpenCore 调试配置",
-                "- Set kext DEBUG configuration": "- 设置 kext 调试配置",
-                "- Set HidePicker configuration": "- 设置隐藏选择器配置",
-                "- Set Disable SIP configuration": "- 设置禁用 SIP 配置",
-                "- Set Disable SecureBootModel configuration": "- 设置禁用安全启动机型配置",
-                "- Set Vault configuration": "- 设置 Vault 配置",
-                "- Set FireWire Boot configuration": "- 设置 FireWire 启动配置",
-                "- Set NVMe Boot configuration": "- 设置 NVMe 启动配置",
-                "- Set Wake on WLAN configuration": "- 设置无线局域网唤醒配置",
-                "- Set Disable Thunderbolt configuration": "- 设置禁用 Thunderbolt 配置",
-                "- Forcing SurPlus override configuration": "- 强制 SurPlus 覆盖配置",
-                "- Set Moderate SMBIOS Patching configuration": "- 设置适度 SMBIOS 修补配置",
-                "- Unknown SMBIOS arg passed:": "- 传递了未知的 SMBIOS 参数：",
-                "- Building for natively supported model": "- 为原生支持的型号构建",
-                "Cleaning /Library/Extensions":"正在清理/Library/Extensions",
-                "Failed to load plist for":"加载plist失败:",
-                "Set OpenCore Build":"设置OpenCore构建"
             }
         return trans
     
@@ -1640,7 +1601,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Resources for OpenCore Legacy":"Resources for OpenCore Legacy",
                 "Patcher.":"Patcher.",
                 "Unsupported Configuration Detected!":"Unsupported Configuration Detected!",
-                "We found you are currently booting OpenCore built for a different unit: {build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.":"We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.",
+                "We found you are currently booting OpenCore built for a different unit: {build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.":"We found you are currently booting OpenCore built for a different unit: {build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.",
                 "Update successful!":"Update successful!",
                 "OCLP-R has been updated to the latest version: {patcher_version}\n\nWould you like to update OpenCore and your root volume patches?":"OCLP-R has been updated to the latest version: {patcher_version}\n\nWould you like to update OpenCore and your root volume patches?",
                 "A new version of OCLP-R is available!":"A new version of OCLP-R is available!",
@@ -1690,7 +1651,7 @@ Please check the Github page for more information about this release.""":"""
                 "Resources for OpenCore Legacy":"OpenCore Legacy Patcher",
                 "Patcher.":"的资源。",
                 "Unsupported Configuration Detected!":"检测到不支持的配置！",
-                "We found you are currently booting OpenCore built for a different unit: {build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.":"我们发现您当前正在引导为不同设备构建的 OpenCore：{self.constants.computer.build_model}\n\n我们构建的配置是为匹配单个设备的，不能与不同的 Mac 混合使用或重复使用。\n\n请构建并安装一个新的 OpenCore 配置，然后重启您的 Mac。",
+                "We found you are currently booting OpenCore built for a different unit: {build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.":"我们发现您当前正在引导为不同设备构建的 OpenCore：{build_model}\n\n我们构建的配置是为匹配单个设备的，不能与不同的 Mac 混合使用或重复使用。\n\n请构建并安装一个新的 OpenCore 配置，然后重启您的 Mac。",
                 "Update successful!":"更新成功！",
                 "OCLP-R has been updated to the latest version: {patcher_version}\n\nWould you like to update OpenCore and your root volume patches?":"OCLP-R 已更新到最新版本：{patcher_version}\n\n您是否要更新 OpenCore 和根卷补丁？",
                 "A new version of OCLP-R is available!":"OCLP-R 有新版本可用！",

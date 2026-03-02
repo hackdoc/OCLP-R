@@ -1141,7 +1141,7 @@ class SettingsFrame(wx.Frame):
             self.sip_checkbox.Bind(wx.EVT_CHECKBOX, self.on_sip_value)
     def on_text_change(self, event:wx.Event):
         self.constants.user_download_file = event.GetEventObject().GetValue()
-        logging.info(f"{self.trans['user_download_file:']} {self.constants.user_download_file}")
+        logging.info(self.trans["user_download_file:{path}"].format(path=self.constants.user_download_file))
     def _change_download_path(self,panel:wx.Frame) -> None:
         def is_dir_writable(dirpath):
             import os
@@ -1479,7 +1479,7 @@ Hardware Information:
     def gpu_selection_click(self, event: wx.Event) -> None:
         gpu_choice = event.GetEventObject().GetStringSelection()
 
-        logging.info(self.trans["Updating GPU Selection: {gpu_choice}".format(gpu_choice)])
+        logging.info(self.trans["Updating GPU Selection: {gpu_choice}"].format(gpu_choice=gpu_choice))
         if "AMD" in gpu_choice:
             self.constants.imac_vendor = "AMD"
             self.constants.metal_build = True

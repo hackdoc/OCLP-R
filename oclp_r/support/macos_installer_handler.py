@@ -114,7 +114,7 @@ class InstallerCreation:
         # Adjust installer_path to point to the copied installer
         installer_path = Path(ia_tmp) / Path(Path(installer_path).name)
         if not Path(installer_path).exists():
-            logging.info(self.trans["Failed to copy installer to {0}".format(ia_tmp)])
+            logging.info(self.trans["Failed to copy installer to {0}"].format(ia_tmp))
             return False
 
         # Verify code signature before executing
