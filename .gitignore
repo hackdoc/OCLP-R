@@ -9,6 +9,8 @@ OCLP-GUI.command
 /App
 /Build-Folder
 /build
+CLAUDE.MD
+/.claude
 /dist
 /.vscode
 __pycache__/
