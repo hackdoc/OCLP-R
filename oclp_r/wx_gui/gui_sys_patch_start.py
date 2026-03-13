@@ -201,7 +201,7 @@ class SysPatchStartFrame(wx.Frame):
 
         logging.info(self.trans["Metallib download complete, installing Metallib PKG"])
 
-        header.SetLabel(f"{self.trans["Installing Metallib:"]} {self.metallib_obj.metallib_url_build}")
+        header.SetLabel(f"{self.trans["Installing Metallib: "]} {self.metallib_obj.metallib_url_build}")
         header.Centre(wx.HORIZONTAL)
 
         subheader.SetLabel(self.trans["Installing MetallibSupportPkg PKG..."])
@@ -219,7 +219,7 @@ class SysPatchStartFrame(wx.Frame):
         if self.result is False:
             progress_bar_animation.stop_pulse()
             progress_bar.SetValue(0)
-            wx.MessageBox(f"{self.trans["Metallib installation failed:"]} {self.metallib_obj.error_msg}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
+            wx.MessageBox(f"{self.trans["Metallib installation failed: "]} {self.metallib_obj.error_msg}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
             return False
 
         progress_bar_animation.stop_pulse()
