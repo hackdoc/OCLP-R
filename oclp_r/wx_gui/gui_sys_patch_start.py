@@ -119,7 +119,7 @@ class SysPatchStartFrame(wx.Frame):
             return False
 
         logging.info(self.trans["KDK download complete, validating with hdiutil"])
-        header.SetLabel(f"{self.trans["Validating KDK:"]} {self.kdk_obj.kdk_url_build}")
+        header.SetLabel(f"{self.trans["Validating KDK: "]} {self.kdk_obj.kdk_url_build}")
         header.Centre(wx.HORIZONTAL)
 
         subheader.SetLabel(self.trans["Checking if checksum is valid..."])
