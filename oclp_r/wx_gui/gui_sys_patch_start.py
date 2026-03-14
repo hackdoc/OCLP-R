@@ -100,7 +100,7 @@ class SysPatchStartFrame(wx.Frame):
         if self.kdk_obj.success is False:
             progress_bar_animation.stop_pulse()
             progress_bar.SetValue(0)
-            wx.MessageBox(f"{self.trans["KDK download failed:"]} {self.kdk_obj.error_msg}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
+            wx.MessageBox(f"{self.trans["KDK download failed: "]}{self.kdk_obj.error_msg}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
             return False
 
         kdk_download_obj = self.kdk_obj.retrieve_download()
@@ -132,7 +132,7 @@ class SysPatchStartFrame(wx.Frame):
             progress_bar.SetValue(0)
             logging.error(self.trans["KDK checksum validation failed"])
             logging.error(self.kdk_obj.error_msg)
-            msg = wx.MessageDialog(frame, f"{self.trans["KDK checksum validation failed:"]} {self.kdk_obj.error_msg}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
+            msg = wx.MessageDialog(frame, f"{self.trans["KDK checksum validation failed: "]}{self.kdk_obj.error_msg}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
             msg.ShowModal()
             return False
 
@@ -181,7 +181,7 @@ class SysPatchStartFrame(wx.Frame):
         if self.metallib_obj.success is False:
             progress_bar_animation.stop_pulse()
             progress_bar.SetValue(0)
-            wx.MessageBox(f"{self.trans["Metallib download failed:"]} {self.metallib_obj.error_msg}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
+            wx.MessageBox(f"{self.trans["Metallib download failed: "]}{self.metallib_obj.error_msg}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
             return False
 
         self.metallib_download_obj = self.metallib_obj.retrieve_download()
@@ -194,7 +194,7 @@ class SysPatchStartFrame(wx.Frame):
             title=self.title,
             global_constants=self.constants,
             download_obj=self.metallib_download_obj,
-            item_name=f"{self.trans["Metallib Build"]} {self.metallib_obj.metallib_url_build}"
+            item_name=f"{self.trans["Metallib Build "]}{self.metallib_obj.metallib_url_build}"
         )
         if self.metallib_download_obj.download_complete is False:
             return False

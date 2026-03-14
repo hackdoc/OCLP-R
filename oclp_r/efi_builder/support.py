@@ -189,7 +189,7 @@ class BuildSupport:
                 expected_executable = Path(kext_folder / Path("Contents/MacOS") / Path(kext_data["CFBundleExecutable"]))
                 if not expected_executable.exists():
                     logging.info(self.trans["- Missing executable for {kext_folder_name}: Contents/MacOS/{expected_executable_name}"].format(kext_folder_name=kext_folder.name, expected_executable_name=expected_executable.name))
-                    raise Exception(self.trans[" - Missing executable for {kext_folder_name}: Contents/MacOS/{expected_executable_name}"].format(kext_folder_name=kext_folder.name, expected_executable_name=expected_executable.name))
+                    raise Exception(self.trans["- Missing executable for {kext_folder_name}: Contents/MacOS/{expected_executable_name}"].format(kext_folder_name=kext_folder.name, expected_executable_name=expected_executable.name))
 
             if Path(kext_folder / Path("Contents/PlugIns")).exists():
                 self._validate_malformed_kexts(kext_folder / Path("Contents/PlugIns"))

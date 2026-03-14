@@ -549,6 +549,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Failed to delete temporary files: {0}":"Failed to delete temporary files: {0}",
                 "Downloaded {0} of {1}":"Downloaded {0} of {1}",
                 "Downloaded {0:.2f}% of {1} ({2}/s) ({3:.2f} seconds remaining)":"Downloaded {0:.2f}% of {1} ({2}/s) ({3:.2f} seconds remaining)",
+                "Content-Length missing from headers":"Content-Length missing from headers",
             }
         elif self.language_point=="简体中文":
             trans={
@@ -586,6 +587,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Failed to delete temporary files: {0}":"删除临时文件失败: {0}",
                 "Downloaded {0} of {1}":"已下载 {0} ,共 {1}",
                 "Downloaded {0:.2f}% of {1} ({2}/s) ({3:.2f} seconds remaining)":"已下载 {0:.2f}% ,共 {1} ,速度 {2} ,剩余时间 {3:.2f} 秒",
+                "Content-Length missing from headers":"响应头中缺少 Content-Length",
             }
         return trans
     def private(self):
@@ -1011,6 +1013,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Ventura":"Ventura",
                 "Failed to detect OS build: ":"Failed to detect OS build: ",
                 "Available installers on Dortania":"Available installers on Dortania",
+                "Cannot find any KDKs on Dortania":"Cannot find any KDKs on Dortania",
             }
         elif self.language_point=="简体中文":
             trans={
@@ -1035,9 +1038,10 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Sonoma":"Sonoma",
                 "Ventura":"Ventura",
                 "Available installers on Dortania":"Dortania 上可用的安装器",
+                "Cannot find any KDKs on Dortania":"在 Dortania 上找不到任何 KDK",
             }
         return trans
-    
+
     def gui_about(self):
         if self.language_point=="English":
             trans={
@@ -1256,6 +1260,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Available disks:":"Available disks:",
                 "Available partitions for ":"Available partitions for ",
                 'OpenCore has finished installing to disk.\n\nYou can eject the drive, insert it into the ':'OpenCore has finished installing to disk.\n\nYou can eject the drive, insert it into the ',
+                "Note: Blue represents the disk OpenCore is currently booted from":"Note: Blue represents the disk OpenCore is currently booted from",
             }
         elif self.language_point=="简体中文":
             trans={
@@ -1281,10 +1286,11 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Would you like to reboot?":"要重启吗？",
                 "You can eject the drive, insert it into the ":"您可以弹出驱动器，将其插入 ",
                 "reboot, hold the Option key and select OpenCore/Boot EFI\'s option.":"重启，按住 Option 键，然后选择 OpenCore/Boot EFI 选项。",
-                "An internal error occurred while installing:\n":"安装过程中发生内部错误:\n"
+                "An internal error occurred while installing:\n":"安装过程中发生内部错误:\n",
+                "Note: Blue represents the disk OpenCore is currently booted from":"注意：蓝色表示当前 OpenCore 启动所在的磁盘",
             }
         return trans
-    
+
     def gui_macos_installer_download(self):
         if self.language_point=="English":
             trans={
@@ -2052,6 +2058,7 @@ Booted Information:
                 "Provide English & Chinese Simplified.":"Provide English & Chinese Simplified.",
                 "Updating System Defaults: {variable} = {value} ({value_type})":"Updating System Defaults: {variable} = {value} ({value_type})",
                 "Updating System Defaults (root): {variable} = {value} ({value_type})":"Updating System Defaults (root): {variable} = {value} ({value_type})",
+                "Root Volume update Failed, check terminal output":"Root Volume update Failed, check terminal output",
             }
         elif self.language_point=="简体中文":
             trans={
@@ -2400,10 +2407,11 @@ Hardware Information:
                 "Statistics":"统计信息",
                 "Populate Stats":"填充统计信息",
                 "Return":"返回",
-                "This settings requires 'gpu-power-prefs' NVRAM argument to be set to '1'.\n\nIf missing and this option is toggled, the system will not boot\n\nFull command:\nnvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00":"此设置需要 'gpu-power-prefs' NVRAM 参数设置为 '1'。\n\n如果缺失且此选项被切换，系统将无法启动\n\n完整命令：\nnvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00"
+                "This settings requires 'gpu-power-prefs' NVRAM argument to be set to '1'.\n\nIf missing and this option is toggled, the system will not boot\n\nFull command:\nnvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00":"此设置需要 'gpu-power-prefs' NVRAM 参数设置为 '1'。\n\n如果缺失且此选项被切换，系统将无法启动\n\n完整命令：\nnvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00",
+                "Root Volume update Failed, check terminal output":"根卷更新失败，请检查终端输出",
             }
         return trans
-    
+
     def gui_support(self):
         if self.language_point=="English":
             trans={
@@ -2687,6 +2695,7 @@ class TranslateLanguage_sys_patch:
                 "Stripping out Non-Metal GPUs":"Stripping out Non-Metal GPUs",
                 "  Stripping out {hardware_name}":"  Stripping out {hardware_name}",
                 "Cannot mix Metal 3802 and Metal 31001 GPUs on macOS Sequoia or newer":"Cannot mix Metal 3802 and Metal 31001 GPUs on macOS Sequoia or newer",
+                "Stripping out Metal 3802 GPUs":"Stripping out Metal 3802 GPUs",
             }
         elif self.language_point=="简体中文":
             trans={
@@ -2720,7 +2729,8 @@ class TranslateLanguage_sys_patch:
                 "Validation: nvda_drv(_vrl) variable missing":"Validation: 缺少nvda_drv(_vrl)变量",
                 "Validation: Patching not possible":"Validation: 无法修补",
                 "Validation: Unpatching not possible":"Validation: 无法取消修补",
-                "Validation: Root volume dirty":"Validation: 根卷目录已被修补"
+                "Validation: Root volume dirty":"Validation: 根卷目录已被修补",
+                "Stripping out Metal 3802 GPUs":"排除 Metal 3802 GPU",
             }
         return trans
     def auto_patcher(self):

@@ -581,7 +581,9 @@ class KernelDebugKitObject:
         if result.returncode != 0:
             logging.info(self.trans["Error: Kernel Debug Kit checksum verification failed!"])       
             subprocess_wrapper.log(result)
-            msg = self.trans["Kernel Debug Kit checksum verification failed, please try again.\n\nIf this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)"]
+            part1 = self.trans["Kernel Debug Kit checksum verification failed, please try again."]
+            part2 = self.trans["If this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)"]
+            msg = f"{part1}\n\n{part2}"
             logging.info(f"{msg}")
 
             self.error_msg = msg

@@ -13,6 +13,7 @@ CLAUDE.MD
 /.claude
 /dist
 /.vscode
+Unknown.png
 __pycache__/
 *.kext
 *.py[cod]
