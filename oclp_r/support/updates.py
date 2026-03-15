@@ -92,6 +92,10 @@ class CheckBinaryUpdates:
             # Special builds do not get updates through the updater
             return None
 
+        if self.constants.commit_info[0] == "Running from source":
+            # Running from source, skip update check
+            return None
+
         if self.latest_details:
             # We already checked
             return self.latest_details

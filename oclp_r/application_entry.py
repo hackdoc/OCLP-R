@@ -137,6 +137,8 @@ class OpenCoreLegacyPatcher:
 
         arguments.arguments(self.constants)
 
+        
+
 def main():
     """
     Main entry point
