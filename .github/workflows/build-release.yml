@@ -70,7 +70,7 @@ jobs:
           /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 Build-Project.command
           --run-as-individual-steps
           --prepare-package
-      - name: Create Pre-Release on Push
+      - name: Create Release on Push
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{env.tag}}

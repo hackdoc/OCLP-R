@@ -17,6 +17,7 @@ jobs:
     env:
       # GitHub Information
       branch: ${{ github.ref }}
+      tag: ${{github.env.tag_name}}
       commiturl: ${{ github.event.head_commit.url }}${{ github.event.release.html_url }}
       commitdate: ${{ github.event.head_commit.timestamp }}${{ github.event.release.published_at }}
 
@@ -74,3 +75,15 @@ jobs:
         with:
           name: OCLP-R-Uninstaller.pkg
           path: ./dist/OCLP-R-Uninstaller.pkg
+
+      - name: Create Release on Push
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{env.tag}}
+          name: ${{env.tag}}
+          body: ""
+          prerelease: false
+          files: |
+            ./dist/AutoPkg-Assets.pkg
+            ./dist/OCLP-R.pkg
+            ./dist/OCLP-R-Uninstaller.pkg
