@@ -77,11 +77,11 @@ jobs:
           path: ./dist/OCLP-R-Uninstaller.pkg
 
       - name: Create Release on Push
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{env.tag}}
           name: ${{env.tag}}
-          body: ""
           prerelease: false
           files: |
             ./dist/AutoPkg-Assets.pkg
