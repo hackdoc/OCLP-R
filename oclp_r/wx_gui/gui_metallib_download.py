@@ -69,8 +69,7 @@ class MetallibDownloadFrame(wx.Frame):
                 for i in range(len(self.kdk_data)):
                     data=self.kdk_data[i]["build"][:2]
                     data2=self.kdk_data[i]["build"]
-                    if self.constants.github_proxy_link!="SimpleHac" and self.constants.github_proxy_link!="Default":
-                        self.kdk_data[i]['url']=self.kdk_data[i]['url'].replace("https://gitapi.simplehac.top/","")
+                    
                     if self.constants.github_proxy_link=="gh-proxy":
                         self.kdk_data[i]['url']="https://gh-proxy.com/"+self.kdk_data[i]['url']
                     if self.constants.github_proxy_link=="ghfast":

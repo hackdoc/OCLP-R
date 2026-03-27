@@ -196,8 +196,6 @@ class KernelDebugKitObject:
         for kdk in remote_kdk_version:
             if (kdk["build"] != host_build):
                 continue
-            if self.constants.github_proxy_link!="SimpleHac" and self.constants.github_proxy_link!="Default":
-                kdk['url']=kdk['url'].replace("https://gitapi.simplehac.top/","")
             if self.constants.github_proxy_link=="gh-proxy":
                 kdk['url']="https://gh-proxy.com/"+kdk['url']
             if self.constants.github_proxy_link=="ghfast":
@@ -257,11 +255,18 @@ class KernelDebugKitObject:
                 return
             logging.info(self.trans["No direct match found for {0}, falling back to closest match"].format(host_build))
             logging.info(self.trans["Closest Match: {0} ({1})"].format(self.kdk_closest_match_url_build, self.kdk_closest_match_url_version))
-
+            
             self.kdk_url = self.kdk_closest_match_url
             self.kdk_url_build = self.kdk_closest_match_url_build
             self.kdk_url_version = self.kdk_closest_match_url_version
             self.kdk_url_expected_size = self.kdk_closest_match_url_expected_size
+            if self.constants.github_proxy_link=="gh-proxy":
+                self.kdk_url="https://gh-proxy.com/"+self.kdk_url
+            elif self.constants.github_proxy_link=="ghfast":
+                self.kdk_url="https://ghfast.top/"+self.kdk_url
+            elif self.constants.github_proxy_link=="ghllkk":
+                self.kdk_url="https://gh.llkk.cc"+self.kdk_url
+            
         else:
             logging.info(self.trans["Direct match found for {0} ({1})"].format(host_build, host_version))
 
@@ -273,7 +278,8 @@ class KernelDebugKitObject:
             self.kdk_already_installed = True
             self.success = True
             return
-
+    
+        
         logging.info(self.trans["Following KDK is recommended:"])
         logging.info(self.trans["- KDK Build: {0}"].format(self.kdk_url_build))
         logging.info(self.trans["- KDK Version: {0}"].format(self.kdk_url_version))

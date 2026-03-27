@@ -159,8 +159,6 @@ class MetalLibraryObject:
         for metallib in remote_metallib_version:
             if (metallib["build"] != self.host_build):
                 continue
-            if self.constants.github_proxy_link!="SimpleHac" and self.constants.github_proxy_link!="Default":
-                metallib['url']=metallib['url'].replace("https://gitapi.simplehac.top/","")
             if self.constants.github_proxy_link=="gh-proxy":
                 metallib['url']="https://gh-proxy.com/"+metallib['url']
             if self.constants.github_proxy_link=="ghfast":

@@ -20,7 +20,7 @@ class Constants:
         self.metallib_api_link:               str = ""
 
         # Patcher Versioning
-        self.patcher_version:                 str = "3.0.4"  # OCLP-R
+        self.patcher_version:                 str = "3.0.5"  # OCLP-R
         self.patcher_support_pkg_version:     str = "1.11.1"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2026 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
@@ -275,19 +275,11 @@ class Constants:
         ###https://github.moeyy.xyz
         ###https://gitapi.simplehac.top
         self.github_mirror: str = ""
-        self.api_link()
+        
+        
 
 
-    def api_link(self):
-        if self.github_proxy_link!="SimpleHac":
-
-            self.kdk_api_link="https://dortania.github.io/KdkSupportPkg/manifest.json"
-            self.metallib_api_link="https://dortania.github.io/MetallibSupportPkg/manifest.json"
-
-        if self.github_proxy_link=="SimpleHac":
-
-            self.kdk_api_link="https://next.oclpapi.simplehac.cn/KdkSupportPkg/manifest.json"
-            self.metallib_api_link="https://next.oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
+    
     @property
     def special_build(self):
         """

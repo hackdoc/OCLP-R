@@ -80,8 +80,7 @@ class KDKDownloadFrame(wx.Frame):
                 maxnx=[]
                 for i in range(len(self.kdk_data)):
                     self.kdk_data[i]['seen']=((self.kdk_data[i]['seen']).split("T"))[0]
-                    if self.constants.github_proxy_link!="SimpleHac" and self.constants.github_proxy_link!="Default":
-                        self.kdk_data[i]['url']=self.kdk_data[i]['url'].replace("https://gitapi.simplehac.top/","")
+
                     if self.constants.github_proxy_link=="gh-proxy":
                         self.kdk_data[i]['url']="https://gh-proxy.com/"+self.kdk_data[i]['url']
                     if self.constants.github_proxy_link=="ghfast":

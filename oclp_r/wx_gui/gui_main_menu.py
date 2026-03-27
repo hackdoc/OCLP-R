@@ -54,10 +54,23 @@ class MainFrame(wx.Frame):
 
         self.Centre()
         self.Show()
-        
+        self.api_link()
 
         self._preflight_checks()
+    def api_link(self):
+        if self.constants.github_proxy_link!="SimpleHac":
+            self.constants.kdk_api_link="https://dortania.github.io/KdkSupportPkg/manifest.json"
+            self.constants.metallib_api_link="https://dortania.github.io/MetallibSupportPkg/manifest.json"
+            print(f"- User Select kdk link: {self.constants.kdk_api_link}")
+            print(f"- User Select metallib link: {self.constants.metallib_api_link}")
 
+        if self.constants.github_proxy_link=="SimpleHac":
+
+            self.constants.kdk_api_link="https://next.oclpapi.simplehac.cn/KdkSupportPkg/manifest.json"
+            self.constants.metallib_api_link="https://next.oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
+
+            print(f"- User Select kdk link: {self.constants.kdk_api_link}")
+            print(f"- User Select metallib link: {self.constants.metallib_api_link}")
     def _generate_elements(self) -> None:
         """
         Generate UI elements for the main menu

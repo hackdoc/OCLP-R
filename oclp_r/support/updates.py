@@ -125,8 +125,7 @@ class CheckBinaryUpdates:
                 begi=f"https://github.com/hackdoc/OCLP-R/releases/{latest_remote_version}"
                 if self.constants.github_proxy_link=="Default":
                     link=begi
-                elif self.constants.github_proxy_link=="SimpleHac":
-                    link="https://gitapi.simplehac.top/"+begi
+                
                 elif self.constants.github_proxy_link=="ghfast":
                     link="https://ghfast.top/"+begi
                 elif self.constants.github_proxy_link=="gh-proxy":
