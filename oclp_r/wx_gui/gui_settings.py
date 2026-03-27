@@ -58,6 +58,21 @@ class SettingsFrame(wx.Frame):
 
         self._generate_elements(self.frame_modal)
         self.frame_modal.ShowWindowModal()
+
+    def api_link(self):
+        if self.constants.github_proxy_link!="SimpleHac":
+            self.constants.kdk_api_link="https://dortania.github.io/KdkSupportPkg/manifest.json"
+            self.constants.metallib_api_link="https://dortania.github.io/MetallibSupportPkg/manifest.json"
+            print(f"- User Select kdk link: {self.constants.kdk_api_link}")
+            print(f"- User Select metallib link: {self.constants.metallib_api_link}")
+
+        if self.constants.github_proxy_link=="SimpleHac":
+
+            self.constants.kdk_api_link="https://next.oclpapi.simplehac.cn/KdkSupportPkg/manifest.json"
+            self.constants.metallib_api_link="https://next.oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
+
+            print(f"- User Select kdk link: {self.constants.kdk_api_link}")
+            print(f"- User Select metallib link: {self.constants.metallib_api_link}")
     def condition_exp(self,key:str):
         import json
         try:
@@ -82,7 +97,7 @@ class SettingsFrame(wx.Frame):
         Uses wx.Notebook to implement a tabbed interface
         and relies on 'self._settings()' for populating
         """
-
+        
         notebook = wx.Notebook(frame, style=wx.NB_MULTILINE)
         notebook.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         notebook.SetMinSize((-1, 300))
@@ -901,6 +916,7 @@ class SettingsFrame(wx.Frame):
                 },                
                 self.trans["Github Proxy"]: {
                     "type": "choice",
+                    "function":self.api_link(),
                     "choices": [
                         "Default",
                         "SimpleHac",
@@ -918,6 +934,7 @@ class SettingsFrame(wx.Frame):
                         self.trans["ghfast : https://ghfast.top/"],
                         self.trans["ghllkk : https://gh.llkk.cc/"],
                     ],
+                   
                 },
                 
                 "wrap_around 1": {
@@ -1306,6 +1323,7 @@ Hardware Information:
 
 
     def _update_setting(self, variable, value):
+        self.api_link()
         logging.info(self.trans["Updating Local Setting: {variable} = {value}"].format(variable=variable, value=value))
         setattr(self.constants, variable, value)
         tmp_value = value
