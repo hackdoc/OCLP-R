@@ -5,13 +5,15 @@ on:
     paths-ignore:
       - 'docs/**'
   workflow_dispatch:
+
   release:
     types: [published]
-
+permissions: write-all
 jobs:
   build:
     name: Build wxPython
     runs-on: macos-26
+    
     if: github.repository_owner == 'hackdoc'
 
     env:
