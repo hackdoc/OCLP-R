@@ -43,11 +43,26 @@ class OpenCoreLegacyPatcher:
         logging_handler.InitializeLoggingSupport(self.constants)
 
         self._generate_base_data()
+        threading.Thread(target=self.api_link,daemon=True).start()
 
         if utilities.check_cli_args() is None:
             gui_entry.EntryPoint(self.constants).start()
 
+    def api_link(self):
+        def func():
+            if self.constants.github_proxy_link!="SimpleHac":
+                self.constants.kdk_api_link="https://dortania.github.io/KdkSupportPkg/manifest.json"
+                self.constants.metallib_api_link="https://dortania.github.io/MetallibSupportPkg/manifest.json"
+                
 
+            if self.constants.github_proxy_link=="SimpleHac":
+
+                self.constants.kdk_api_link="https://next.oclpapi.simplehac.cn/KdkSupportPkg/manifest.json"
+                self.constants.metallib_api_link="https://next.oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
+        while True:
+            hookd=threading.Thread(target=func,daemon=True)
+            hookd.start()
+            hookd.join()
     def _fix_cwd(self) -> None:
         """
         In some extreme scenarios, our current working directory may disappear

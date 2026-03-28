@@ -916,7 +916,6 @@ class SettingsFrame(wx.Frame):
                 },                
                 self.trans["Github Proxy"]: {
                     "type": "choice",
-                    "function":self.api_link(),
                     "choices": [
                         "Default",
                         "SimpleHac",

@@ -54,24 +54,10 @@ class MainFrame(wx.Frame):
 
         self.Centre()
         self.Show()
-        threading.Thread(target=self.api_link,daemon=True).start()
+        
 
         self._preflight_checks()
-    def api_link(self):
-        def func():
-            if self.constants.github_proxy_link!="SimpleHac":
-                self.constants.kdk_api_link="https://dortania.github.io/KdkSupportPkg/manifest.json"
-                self.constants.metallib_api_link="https://dortania.github.io/MetallibSupportPkg/manifest.json"
-                
-
-            if self.constants.github_proxy_link=="SimpleHac":
-
-                self.constants.kdk_api_link="https://next.oclpapi.simplehac.cn/KdkSupportPkg/manifest.json"
-                self.constants.metallib_api_link="https://next.oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
-        while True:
-            hookd=threading.Thread(target=func,daemon=True)
-            hookd.start()
-            hookd.join()
+    
             
 
             
