@@ -13,6 +13,7 @@ import enum
 import hashlib
 import atexit
 import json
+import math
 from typing import Union
 from pathlib import Path
 
@@ -188,6 +189,11 @@ class DownloadObject:
         self.downloaded_file_size: float = 0.0
         self.downloaded_file_offset: float = 0.0
         self.start_time:           float = time.time()
+        self.multipart_threshold: float = 1024 * 1024 * 50
+        self.chunk_count:         int = 16
+        self.part_paths:          list[Path] = []
+        self.part_errors:         list[str] = []
+        self._download_lock = threading.Lock()
 
         self.error:             bool = False
         self.should_stop:       bool = False
@@ -403,6 +409,115 @@ class DownloadObject:
         except Exception as e:
             logging.warning(self.trans["Failed to clear progress file: {0}"].format(str(e)))
 
+    def _supports_range_download(self) -> bool:
+        try:
+            result = SESSION.head(self.url, allow_redirects=True, timeout=5)
+            if result.headers.get("Accept-Ranges", "").lower() == "bytes":
+                return True
+
+            probe = NetworkUtilities().get(self.url, stream=True, timeout=10, headers={"Range": "bytes=0-0"})
+            return probe.status_code == 206
+        except Exception:
+            return False
+
+    def _should_use_multipart_download(self) -> bool:
+        if self.resume_download and self.downloaded_file_offset > 0:
+            return False
+        if self.total_file_size == 0.0:
+            return False
+        if self.total_file_size < self.multipart_threshold:
+            return False
+        if self.chunk_count <= 1:
+            return False
+        return self._supports_range_download()
+
+    def _build_download_ranges(self) -> list[tuple[int, int]]:
+        part_size = max(1, math.ceil(self.total_file_size / self.chunk_count))
+        ranges = []
+        start = 0
+
+        while start < self.total_file_size:
+            end = min(start + part_size - 1, int(self.total_file_size) - 1)
+            ranges.append((start, end))
+            start = end + 1
+
+        return ranges
+
+    def _download_part(self, part_index: int, start: int, end: int) -> None:
+        part_path = Path(f"{self.filepath}.part{part_index}")
+        self.part_paths[part_index] = part_path
+        headers = {"Range": f"bytes={start}-{end}"}
+        logging.info(f"- Download part {part_index + 1}/{len(self.part_paths)}: bytes={start}-{end}")
+        response = NetworkUtilities().get(self.url, stream=True, timeout=100, headers=headers)
+
+        if response.status_code != 206:
+            raise Exception(f"Unexpected status code for part {part_index}: {response.status_code}")
+
+        with open(part_path, "wb") as file:
+            for chunk in response.iter_content(1024 * 1024 * 4):
+                if self.should_stop:
+                    raise Exception(self.trans["Download stopped"])
+                if chunk:
+                    file.write(chunk)
+                    with self._download_lock:
+                        self.downloaded_file_size += len(chunk)
+
+        logging.info(f"- Completed part {part_index + 1}/{len(self.part_paths)}: {part_path}")
+
+    def _merge_download_parts(self) -> None:
+        with open(self.filepath, "wb") as destination:
+            for part_path in self.part_paths:
+                with open(part_path, "rb") as source:
+                    while True:
+                        chunk = source.read(1024 * 1024 * 4)
+                        if not chunk:
+                            break
+                        destination.write(chunk)
+                        if self.should_checksum:
+                            self._update_checksum(chunk)
+
+        for part_path in self.part_paths:
+            if part_path and part_path.exists():
+                part_path.unlink()
+
+    def _download_multipart(self) -> None:
+        ranges = self._build_download_ranges()
+        self.part_paths = [None] * len(ranges)
+        self.part_errors = []
+        threads = []
+
+        logging.info(f"- Using multipart download with {len(ranges)} parts")
+
+        def _worker(index: int, start: int, end: int) -> None:
+            try:
+                self._download_part(index, start, end)
+            except Exception as error:
+                self.part_errors.append(str(error))
+                self.should_stop = True
+
+        for index, (start, end) in enumerate(ranges):
+            thread = threading.Thread(target=_worker, args=(index, start, end), name=f"DownloadPart-{index}")
+            thread.start()
+            threads.append(thread)
+
+        for thread in threads:
+            thread.join()
+
+        if self.part_errors:
+            logging.error(f"- Multipart download failed with {len(self.part_errors)} part error(s)")
+            self.delete_temp_files()
+            raise Exception(self.part_errors[0])
+
+        self._merge_download_parts()
+        self.download_complete = True
+        self._clear_progress()
+        logging.info(self.trans["Download complete: {0}"].format(self.filename))
+        logging.info(self.trans["Stats:"])
+        logging.info(self.trans["- Downloaded size: {0}"].format(utilities.human_fmt(self.downloaded_file_size)))
+        logging.info(self.trans["- Time elapsed: {0:.2f} seconds"].format((time.time() - self.start_time)))
+        logging.info(self.trans["- Speed: {0}/s"].format(utilities.human_fmt(self.downloaded_file_size / (time.time() - self.start_time))))
+        logging.info(self.trans["- Location: {0}"].format(self.filepath))
+
 
     def _download(self, display_progress: bool = False) -> None:
         """
@@ -423,13 +538,17 @@ class DownloadObject:
             if self._prepare_working_directory(self.filepath) is False:
                 raise Exception(self.error_msg)
 
+            if self._should_use_multipart_download():
+                self._download_multipart()
+                return
+
             headers = {}
             if self.resume_download and self.downloaded_file_offset > 0:
                 headers['Range'] = f'bytes={self.downloaded_file_offset}-'
                 logging.info(self.trans["Resuming download from byte {0}"].format(self.downloaded_file_offset))
 
             response = NetworkUtilities().get(self.url, stream=True, timeout=100, headers=headers)
-
+            logging.info(f"- Download URL: {self.url}")
             mode = 'ab' if self.resume_download and self.downloaded_file_offset > 0 else 'wb'
             with open(self.filepath, mode) as file:
                 atexit.register(self.stop)
@@ -467,9 +586,10 @@ class DownloadObject:
             self.error_msg = str(e)
             self.status = DownloadStatus.ERROR
             logging.error(self.trans["Error downloading {0}: {1}"].format(self.url, self.error_msg))
-
-        self.status = DownloadStatus.COMPLETE
-        utilities.enable_sleep_after_running()
+        else:
+            self.status = DownloadStatus.COMPLETE
+        finally:
+            utilities.enable_sleep_after_running()
 
 
     def get_percent(self) -> float:
@@ -548,8 +668,13 @@ class DownloadObject:
             if self.progress_file.exists():
                 self.progress_file.unlink()
                 logging.info(self.trans["Deleted progress file: {0}"].format(self.progress_file))
+
+            for part_path in self.part_paths:
+                if part_path and part_path.exists():
+                    part_path.unlink()
+                    logging.info(self.trans["Deleted partially downloaded file: {0}"].format(part_path))
         except Exception as e:
-            logging.warning(self.trans["Failed to delete temporary files: {0}"].format(str(e))) 
+            logging.warning(self.trans["Failed to delete temporary files: {0}"].format(str(e)))
 
     def stop(self) -> None:
         """

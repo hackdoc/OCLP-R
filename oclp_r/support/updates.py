@@ -31,6 +31,20 @@ class CheckBinaryUpdates:
 
         self.latest_details = None
 
+    def _apply_github_proxy(self, url: str) -> str:
+        if self.constants.github_proxy_link == "Default":
+            return url
+        elif self.constants.github_proxy_link == "SimpleHac":
+            return f"https://gitapi.simplehac.top/{url}"
+        elif self.constants.github_proxy_link == "ghfast":
+            return f"https://ghfast.top/{url}"
+        elif self.constants.github_proxy_link == "gh-proxy":
+            return f"https://gh-proxy.com/{url}"
+        elif self.constants.github_proxy_link == "ghllkk":
+            return f"https://gh.llkk.cc/{url}"
+
+        return url
+
     def check_if_newer(self, version: Union[str, version.Version]) -> bool:
         """
         Check if the provided version is newer than the local version
@@ -91,11 +105,11 @@ class CheckBinaryUpdates:
         if self.constants.special_build is True:
             # Special builds do not get updates through the updater
             return None
-
-        if self.constants.commit_info[0] == "Running from source":
-            # Running from source, skip update check
+        
+        if self.constants.commit_info[0] in ["Running from source", "Built from source"] or self.constants.commit_info[2] is None or self.constants.commit_info[2] == "":
+            # skip when you're running from socure
             return None
-
+        
         if self.latest_details:
             # We already checked
             return self.latest_details
@@ -122,21 +136,12 @@ class CheckBinaryUpdates:
         for asset in data_set["assets"]:
             logging.info(self.trans["Found asset: {0}"].format(asset['name']))
             if asset["name"] == "OCLP-R.pkg":
-                begi=f"https://github.com/hackdoc/OCLP-R/releases/{latest_remote_version}"
-                if self.constants.github_proxy_link=="Default":
-                    link=begi
-                
-                elif self.constants.github_proxy_link=="ghfast":
-                    link="https://ghfast.top/"+begi
-                elif self.constants.github_proxy_link=="gh-proxy":
-                    link="https://gh-proxy.com/"+begi
-                elif self.constants.github_proxy_link=="ghllkk":
-                    link="https://gh.llkk.cc/"+begi
+                release_link = f"https://github.com/hackdoc/OCLP-R/releases/{latest_remote_version}"
                 self.latest_details = {
                     "Name": asset["name"],
                     "Version": latest_remote_version,
-                    "Link": asset["browser_download_url"],
-                    "Github Link": link,
+                    "Link": self._apply_github_proxy(asset["browser_download_url"]),
+                    "Github Link": self._apply_github_proxy(release_link),
                 }
                 return self.latest_details
 
