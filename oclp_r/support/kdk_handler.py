@@ -76,7 +76,6 @@ class KernelDebugKitObject:
         self.kdk_url:         str = ""
         self.kdk_url_build:   str = ""
         self.kdk_url_version: str = ""
-        self.size=0
         self.kdk_url_expected_size: int = 0
 
         self.kdk_url_is_exactly_match: bool = False
@@ -244,6 +243,7 @@ class KernelDebugKitObject:
                     self.kdk_closest_match_url_build = closest["build"]
                     self.kdk_closest_match_url_version = closest["version"]
                     self.kdk_closest_match_url_expected_size = closest["fileSize"]
+                
                     self.kdk_url_is_exactly_match = False
 
                 
@@ -327,7 +327,7 @@ class KernelDebugKitObject:
         kdk_plist_path = Path(f"{kdk_download_path.parent}/{KDK_INFO_PLIST}") if override_path == "" else Path(f"{Path(override_path).parent}/{KDK_INFO_PLIST}")
 
         self._generate_kdk_info_plist(kdk_plist_path)
-        return network_handler.DownloadObject(self.kdk_url, kdk_download_path)
+        return network_handler.DownloadObject(self.kdk_url, kdk_download_path,self.kdk_url_expected_size)
 
 
     def _generate_kdk_info_plist(self, plist_path: str) -> None:

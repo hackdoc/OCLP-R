@@ -292,7 +292,7 @@ class KDKDownloadFrame(wx.Frame):
                 title=self.title,
                 global_constants=self.constants,
                 download_obj=download_obj,
-                item_name=f"KDK {selected_installer['version']} {selected_installer['build']}",
+                item_name=f"KDK Build {selected_installer['version']} {selected_installer['build']}",
                 download_icon=self.constants.package_icns_paths[self._macos_version_to_icon(int(selected_installer['build'][:2]))]
             )
             if download_obj.download_complete is False:
