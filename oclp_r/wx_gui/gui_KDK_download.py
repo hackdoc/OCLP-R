@@ -181,7 +181,7 @@ class KDKDownloadFrame(wx.Frame):
             locale.setlocale(locale.LC_TIME, '')
             logging.info(f"{self.trans['Available installers on Dortania']} ({'All entries' if show_full else 'Latest only'}):")
             xnu_name={
-                "26":"Tahoe Beta",
+                "26":"Tahoe",
                 "15":"Sequoia",
                 "14":"Sonoma",
                 "13":"Ventura",
