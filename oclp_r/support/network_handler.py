@@ -540,6 +540,7 @@ class DownloadObject:
 
             if self._should_use_multipart_download():
                 self._download_multipart()
+                self.status = DownloadStatus.COMPLETE
                 return
 
             headers = {}
