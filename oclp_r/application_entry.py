@@ -63,6 +63,7 @@ class OpenCoreLegacyPatcher:
             hookd=threading.Thread(target=func,daemon=True)
             hookd.start()
             hookd.join()
+            time.sleep(1)
     def _fix_cwd(self) -> None:
         """
         In some extreme scenarios, our current working directory may disappear

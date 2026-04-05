@@ -14,6 +14,7 @@ import hashlib
 import atexit
 import json
 import math
+import io
 from typing import Union
 from pathlib import Path
 
@@ -191,8 +192,9 @@ class DownloadObject:
         self.start_time:           float = time.time()
         self.multipart_threshold: float = 1024 * 1024 * 50
         self.chunk_count:         int = 16
-        self.part_paths:          list[Path] = []
+        self.part_buffers:        list[io.BytesIO] = []
         self.part_errors:         list[str] = []
+        self.part_progress:       dict[int, dict] = {}
         self._download_lock = threading.Lock()
 
         self.error:             bool = False
@@ -443,46 +445,91 @@ class DownloadObject:
 
         return ranges
 
-    def _download_part(self, part_index: int, start: int, end: int) -> None:
-        part_path = Path(f"{self.filepath}.part{part_index}")
-        self.part_paths[part_index] = part_path
+    def _download_part(self, part_index: int, start: int, end: int, max_retries: int = 3) -> None:
+        buffer = io.BytesIO()
+        self.part_buffers[part_index] = buffer
+        part_size = end - start + 1
+        
+        with self._download_lock:
+            self.part_progress[part_index] = {
+                'status': 'pending',
+                'downloaded': 0,
+                'total': part_size,
+                'percent': 0.0,
+                'attempt': 0
+            }
+        
         headers = {"Range": f"bytes={start}-{end}"}
-        logging.info(f"- Download part {part_index + 1}/{len(self.part_paths)}: bytes={start}-{end}")
-        response = NetworkUtilities().get(self.url, stream=True, timeout=100, headers=headers)
-
-        if response.status_code != 206:
-            raise Exception(f"Unexpected status code for part {part_index}: {response.status_code}")
-
-        with open(part_path, "wb") as file:
-            for chunk in response.iter_content(1024 * 1024 * 4):
-                if self.should_stop:
-                    raise Exception(self.trans["Download stopped"])
-                if chunk:
-                    file.write(chunk)
+        
+        for attempt in range(max_retries):
+            try:
+                with self._download_lock:
+                    self.part_progress[part_index]['status'] = 'downloading'
+                    self.part_progress[part_index]['attempt'] = attempt + 1
+                
+                if attempt > 0:
+                    logging.info(f"- Retry part {part_index + 1} (attempt {attempt + 1}/{max_retries})")
+                    buffer.seek(0)
+                    buffer.truncate(0)
                     with self._download_lock:
-                        self.downloaded_file_size += len(chunk)
+                        self.part_progress[part_index]['downloaded'] = 0
+                        self.part_progress[part_index]['percent'] = 0.0
+                
+                logging.info(f"- Download part {part_index + 1}/{len(self.part_buffers)}: bytes={start}-{end}")
+                response = NetworkUtilities().get(self.url, stream=True, timeout=100, headers=headers)
 
-        logging.info(f"- Completed part {part_index + 1}/{len(self.part_paths)}: {part_path}")
+                if response.status_code != 206:
+                    raise Exception(f"Unexpected status code for part {part_index}: {response.status_code}")
+
+                for chunk in response.iter_content(1024 * 1024 * 4):
+                    if self.should_stop:
+                        raise Exception(self.trans["Download stopped"])
+                    if chunk:
+                        buffer.write(chunk)
+                        with self._download_lock:
+                            self.downloaded_file_size += len(chunk)
+                            self.part_progress[part_index]['downloaded'] = len(buffer.getvalue())
+                            self.part_progress[part_index]['percent'] = (
+                                self.part_progress[part_index]['downloaded'] / 
+                                self.part_progress[part_index]['total'] * 100
+                            )
+
+                with self._download_lock:
+                    self.part_progress[part_index]['status'] = 'complete'
+                logging.info(f"- Completed part {part_index + 1}/{len(self.part_buffers)}: {len(buffer.getvalue())} bytes in memory")
+                return
+            except Exception as e:
+                if self.should_stop:
+                    with self._download_lock:
+                        self.part_progress[part_index]['status'] = 'cancelled'
+                    raise e
+                with self._download_lock:
+                    self.part_progress[part_index]['status'] = 'error'
+                if attempt < max_retries - 1:
+                    logging.warning(f"- Part {part_index + 1} failed: {e}, retrying...")
+                    time.sleep(2 ** attempt)
+                else:
+                    raise e
 
     def _merge_download_parts(self) -> None:
         with open(self.filepath, "wb") as destination:
-            for part_path in self.part_paths:
-                with open(part_path, "rb") as source:
-                    while True:
-                        chunk = source.read(1024 * 1024 * 4)
-                        if not chunk:
-                            break
-                        destination.write(chunk)
-                        if self.should_checksum:
-                            self._update_checksum(chunk)
-
-        for part_path in self.part_paths:
-            if part_path and part_path.exists():
-                part_path.unlink()
+            for buffer in self.part_buffers:
+                if buffer is None:
+                    continue
+                buffer.seek(0)
+                while True:
+                    chunk = buffer.read(1024 * 1024 * 4)
+                    if not chunk:
+                        break
+                    destination.write(chunk)
+                    if self.should_checksum:
+                        self._update_checksum(chunk)
+        
+        self.part_buffers.clear()
 
     def _download_multipart(self) -> None:
         ranges = self._build_download_ranges()
-        self.part_paths = [None] * len(ranges)
+        self.part_buffers = [None] * len(ranges)
         self.part_errors = []
         threads = []
 
@@ -600,10 +647,10 @@ class DownloadObject:
         Returns:
             float: The download percent, or -1 if unknown
         """
-
-        if self.total_file_size == 0.0:
-            return -1
-        return self.downloaded_file_size / self.total_file_size * 100
+        with self._download_lock:
+            if self.total_file_size == 0.0:
+                return -1
+            return self.downloaded_file_size / self.total_file_size * 100
 
 
     def get_speed(self) -> float:
@@ -613,8 +660,11 @@ class DownloadObject:
         Returns:
             float: The download speed in bytes per second
         """
-
-        return self.downloaded_file_size / (time.time() - self.start_time)
+        with self._download_lock:
+            elapsed = time.time() - self.start_time
+            if elapsed <= 0:
+                return 0
+            return self.downloaded_file_size / elapsed
 
 
     def get_time_remaining(self) -> float:
@@ -624,13 +674,16 @@ class DownloadObject:
         Returns:
             float: The time remaining in seconds, or -1 if unknown
         """
-
-        if self.total_file_size == 0.0:
-            return -1
-        speed = self.get_speed()
-        if speed <= 0:
-            return -1
-        return (self.total_file_size - self.downloaded_file_size) / speed
+        with self._download_lock:
+            if self.total_file_size == 0.0:
+                return -1
+            elapsed = time.time() - self.start_time
+            if elapsed <= 0:
+                return -1
+            speed = self.downloaded_file_size / elapsed
+            if speed <= 0:
+                return -1
+            return (self.total_file_size - self.downloaded_file_size) / speed
 
 
     def get_file_size(self) -> float:
@@ -640,7 +693,56 @@ class DownloadObject:
         Returns:
             float: The file size in bytes, or 0.0 if unknown
         """
-        return self.total_file_size
+        with self._download_lock:
+            return self.total_file_size
+
+
+    def get_downloaded_size(self) -> float:
+        """
+        Query the downloaded file size
+
+        Returns:
+            float: The downloaded file size in bytes
+        """
+        with self._download_lock:
+            return self.downloaded_file_size
+
+
+    def get_part_progress(self) -> dict[int, dict]:
+        """
+        Query the progress of each download part
+
+        Returns:
+            dict: Dictionary with part index as key and progress info as value
+                  Each entry contains: status, downloaded, total, percent, attempt
+        """
+        with self._download_lock:
+            return dict(self.part_progress)
+
+
+    def print_part_progress(self) -> None:
+        """
+        Print the progress of all parts to console
+        """
+        progress = self.get_part_progress()
+        if not progress:
+            return
+        
+        print(f"\n--- Part Progress ({len(progress)} parts) ---")
+        for idx, info in sorted(progress.items()):
+            status_icon = {
+                'pending': '⏳',
+                'downloading': '⬇️',
+                'complete': '✅',
+                'error': '❌',
+                'cancelled': '🚫'
+            }.get(info['status'], '❓')
+            
+            retry_info = f" [retry {info['attempt']}]" if info['attempt'] > 1 else ""
+            print(f"Part {idx + 1:2d}: {status_icon} {info['status']:12s} "
+                  f"{info['percent']:6.1f}% ({utilities.human_fmt(info['downloaded'])}/{utilities.human_fmt(info['total'])})"
+                  f"{retry_info}")
+        print("----------------------------------------")
 
 
     def is_active(self) -> bool:
@@ -670,10 +772,9 @@ class DownloadObject:
                 self.progress_file.unlink()
                 logging.info(self.trans["Deleted progress file: {0}"].format(self.progress_file))
 
-            for part_path in self.part_paths:
-                if part_path and part_path.exists():
-                    part_path.unlink()
-                    logging.info(self.trans["Deleted partially downloaded file: {0}"].format(part_path))
+            # Clear memory buffers
+            self.part_buffers.clear()
+            logging.info(self.trans["Cleared download memory buffers"])
         except Exception as e:
             logging.warning(self.trans["Failed to delete temporary files: {0}"].format(str(e)))
 

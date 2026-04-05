@@ -75,14 +75,17 @@ class DownloadFrame(wx.Frame):
         while self.download_obj.is_active():
 
             percentage: int = round(self.download_obj.get_percent())
+            downloaded_size = self.download_obj.get_downloaded_size()
+            total_size = self.download_obj.get_file_size()
+            
             if percentage == 0:
                 percentage = 1
 
             if percentage == -1:
-                amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} {self.trans['downloaded']} ({utilities.human_fmt(self.download_obj.get_speed())}/s)"
+                amount_str = f"{utilities.human_fmt(downloaded_size)} {self.trans['downloaded']} ({utilities.human_fmt(self.download_obj.get_speed())}/s)"
                 progress_bar.Pulse()
             else:
-                amount_str = self.trans["{0} left - {1} of {2} ({3}/s)"].format(utilities.seconds_to_readable_time(self.download_obj.get_time_remaining()), utilities.human_fmt(self.download_obj.downloaded_file_size), utilities.human_fmt(self.download_obj.total_file_size), utilities.human_fmt(self.download_obj.get_speed()))
+                amount_str = self.trans["{0} left - {1} of {2} ({3}/s)"].format(utilities.seconds_to_readable_time(self.download_obj.get_time_remaining()), utilities.human_fmt(downloaded_size), utilities.human_fmt(total_size), utilities.human_fmt(self.download_obj.get_speed()))
                 progress_bar.SetValue(int(percentage))
 
             label_amount.SetLabel(amount_str)
