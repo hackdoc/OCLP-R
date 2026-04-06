@@ -15,15 +15,142 @@ import atexit
 import json
 import math
 import io
-from typing import Union
+import os
+import queue
+import re
+from typing import Union, Optional
 from pathlib import Path
-
-from urllib3 import response
+from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
 
 from . import utilities
 from .. import constants
 SESSION = requests.Session()
 from .translate_language import TranslateLanguage
+
+# Security constants
+ALLOWED_URL_SCHEMES = {'https', 'http'}
+MAX_REDIRECTS = 10
+MAX_MEMORY_USAGE = 1024 * 1024 * 1024 * 1024  # 1TB max memory for multipart downloads
+SENSITIVE_PARAMS = {'token', 'key', 'api_key', 'apikey', 'secret', 'password', 'auth', 'access_token'}
+
+# Default allowed domains (can be extended by configuration)
+DEFAULT_ALLOWED_DOMAINS = {
+    "next.oclpapi.simplehac.cn",
+    "oclpapi.simplehac.cn",
+    "simplehac.cn","gitapi.simplehac.top",
+    "ghfast.top","gh-proxy.com","gh.llkk.cc",
+    'github.com', 'api.github.com', 'codeload.github.com',
+    'github-releases.githubusercontent.com',
+    'github-production-release-asset-2e65be.s3.amazonaws.com',
+    'objects.githubusercontent.com',
+    'developer.apple.com', 'download.developer.apple.com',
+    'updates.cdn-apple.com', 'swcdn.apple.com',
+    'oclp-download.example.com'
+}
+
+
+def sanitize_url_for_logging(url: str) -> str:
+    """
+    Remove sensitive parameters from URL for safe logging
+    
+    Parameters:
+        url (str): URL to sanitize
+        
+    Returns:
+        str: Sanitized URL with sensitive params masked
+    """
+    try:
+        parsed = urlparse(url)
+        if not parsed.query:
+            return url
+        
+        params = parse_qs(parsed.query)
+        sanitized_params = {}
+        for key, value in params.items():
+            if key.lower() in SENSITIVE_PARAMS:
+                sanitized_params[key] = ['***']
+            else:
+                sanitized_params[key] = value
+        
+        new_query = urlencode(sanitized_params, doseq=True)
+        sanitized = parsed._replace(query=new_query)
+        return urlunparse(sanitized)
+    except Exception:
+        return "[URL sanitization failed]"
+
+
+def validate_url(url: str, allowed_domains: set = None) -> tuple[bool, str]:
+    """
+    Validate URL for security
+    
+    Parameters:
+        url (str): URL to validate
+        allowed_domains (set): Set of allowed domains (optional)
+        
+    Returns:
+        tuple: (is_valid, error_message)
+    """
+    if not url:
+        return False, "URL is empty"
+    
+    try:
+        parsed = urlparse(url)
+        
+        # Check scheme
+        if parsed.scheme.lower() not in ALLOWED_URL_SCHEMES:
+            return False, f"URL scheme '{parsed.scheme}' not allowed. Only {ALLOWED_URL_SCHEMES} are permitted."
+        
+        # Check domain
+        domains = allowed_domains if allowed_domains else DEFAULT_ALLOWED_DOMAINS
+        hostname = parsed.netloc.lower()
+        # Remove port if present
+        if ':' in hostname:
+            hostname = hostname.split(':')[0]
+        
+        # Check if domain or subdomain is allowed
+        domain_allowed = any(
+            hostname == domain or hostname.endswith('.' + domain)
+            for domain in domains
+        )
+        
+        if not domain_allowed:
+            return False, f"Domain '{hostname}' not in allowed list"
+        
+        return True, ""
+        
+    except Exception as e:
+        return False, f"Invalid URL format: {str(e)}"
+
+
+def validate_path(path: Path, base_dir: Path = None) -> tuple[bool, str]:
+    """
+    Validate path to prevent path traversal attacks
+    
+    Parameters:
+        path (Path): Path to validate
+        base_dir (Path): Base directory that path must be within (optional)
+        
+    Returns:
+        tuple: (is_valid, error_message)
+    """
+    try:
+        resolved_path = path.resolve()
+        
+        # Check for suspicious patterns
+        path_str = str(resolved_path)
+        if '..' in path_str:
+            return False, "Path traversal detected"
+        
+        # If base_dir is specified, ensure path is within it
+        if base_dir:
+            resolved_base = base_dir.resolve()
+            if not str(resolved_path).startswith(str(resolved_base)):
+                return False, f"Path '{resolved_path}' is outside allowed directory '{resolved_base}'"
+        
+        return True, ""
+        
+    except Exception as e:
+        return False, f"Invalid path: {str(e)}"
 
 class DownloadStatus(enum.Enum):
     """
@@ -62,7 +189,7 @@ class NetworkUtilities:
         """
 
         try:
-            response=requests.head(self.url, timeout=5, allow_redirects=True,verify=False)
+            response = requests.head(self.url, timeout=5, allow_redirects=True, verify=True)
             if response.status_code == 200:
                 return True
             if response.status_code == 404:
@@ -72,7 +199,8 @@ class NetworkUtilities:
             requests.exceptions.Timeout,
             requests.exceptions.TooManyRedirects,
             requests.exceptions.ConnectionError,
-            requests.exceptions.HTTPError
+            requests.exceptions.HTTPError,
+            requests.exceptions.SSLError
         ):
             return False
 
@@ -93,7 +221,8 @@ class NetworkUtilities:
             requests.exceptions.Timeout,
             requests.exceptions.TooManyRedirects,
             requests.exceptions.ConnectionError,
-            requests.exceptions.HTTPError
+            requests.exceptions.HTTPError,
+            requests.exceptions.SSLError
         ):
             return False
 
@@ -114,12 +243,16 @@ class NetworkUtilities:
         result: requests.Response = None
 
         try:
+            # Set default max redirects if not specified
+            if 'allow_redirects' in kwargs and kwargs['allow_redirects']:
+                kwargs['max_redirects'] = kwargs.get('max_redirects', MAX_REDIRECTS)
             result = SESSION.get(url, **kwargs)
         except (
             requests.exceptions.Timeout,
             requests.exceptions.TooManyRedirects,
             requests.exceptions.ConnectionError,
-            requests.exceptions.HTTPError
+            requests.exceptions.HTTPError,
+            requests.exceptions.SSLError
         ) as error:
             logging.warning(f"{self.trans['Error calling requests.get']}: {error}")
             # Return empty response object
@@ -143,12 +276,16 @@ class NetworkUtilities:
         result: requests.Response = None
 
         try:
+            # Set default max redirects if not specified
+            if 'allow_redirects' in kwargs and kwargs['allow_redirects']:
+                kwargs['max_redirects'] = kwargs.get('max_redirects', MAX_REDIRECTS)
             result = SESSION.post(url, **kwargs)
         except (
             requests.exceptions.Timeout,
             requests.exceptions.TooManyRedirects,
             requests.exceptions.ConnectionError,
-            requests.exceptions.HTTPError
+            requests.exceptions.HTTPError,
+            requests.exceptions.SSLError
         ) as error:
             logging.warning(f"{self.trans['Error calling requests.post']}: {error}")
             # Return empty response object
@@ -175,32 +312,44 @@ class DownloadObject:
 
     """
 
-    def __init__(self, url: str, path: str, size:str=None, resume_download: bool = True) -> None:
-        self.url:       str = url
-        self.status:    str = DownloadStatus.INACTIVE
+    def __init__(self, url: str, path: str, size: str = None, resume_download: bool = True,
+                 allowed_domains: set = None, base_dir: Path = None, skip_validation: bool = False) -> None:
+        self.contents = constants.Constants()
+        self.trans = TranslateLanguage(self.contents).network_handler()
+        self.url: str = url
+        self.status: str = DownloadStatus.INACTIVE
         self.error_msg: str = ""
-        self.filename:  str = self._get_filename()
-        self.size:      str = size
+        self.filename: str = self._get_filename()
+        self.size: str = size
         self.resume_download: bool = resume_download
+        self.allowed_domains: set = allowed_domains if allowed_domains else DEFAULT_ALLOWED_DOMAINS
+        self.base_dir: Path = base_dir
         
-        self.filepath:  Path = Path(path)
-        self.progress_file: Path = Path(f"{path}.progress")
+        # Initialize all attributes first (before validation)
+        self.filepath: Path = Path(path) if path else Path("/tmp/download")
+        self.progress_file: Path = Path(f"{path}.progress") if path else Path("/tmp/download.progress")
     
-        self.total_file_size:      float = 0.0
+        self.total_file_size: float = 0.0
         self.downloaded_file_size: float = 0.0
         self.downloaded_file_offset: float = 0.0
-        self.start_time:           float = time.time()
+        self.start_time: float = time.time()
         self.multipart_threshold: float = 1024 * 1024 * 50
-        self.chunk_count:         int = 16
-        self.part_buffers:        list[io.BytesIO] = []
-        self.part_errors:         list[str] = []
-        self.part_progress:       dict[int, dict] = {}
+        self.chunk_count: int = 16
+        self.part_buffers: list[io.BytesIO] = []
+        self.part_errors_queue: queue.Queue = queue.Queue()
+        self.part_progress: dict[int, dict] = {}
         self._download_lock = threading.Lock()
+        
+        # Private session and active connections for quick cancellation
+        self._session: requests.Session = None
+        self._active_responses: list[requests.Response] = []
+        self._connections_lock = threading.Lock()
 
-        self.error:             bool = False
-        self.should_stop:       bool = False
+        self.error: bool = False
+        self.should_stop: bool = False
         self.download_complete: bool = False
-        self.has_network:       bool = NetworkUtilities(self.url).verify_network_connection()
+        self.has_network: bool = False
+        self._validation_passed: bool = False
 
         self.active_thread: threading.Thread = None
 
@@ -209,11 +358,47 @@ class DownloadObject:
         self.checksum = None
         self._checksum_storage: hash = None
         
-        self.contents=constants.Constants()
-        self.trans=TranslateLanguage(self.contents).network_handler()
+        # Security validation
+        if not skip_validation:
+            if not self._validate_inputs():
+                return
+        
+        self._validation_passed = True
+        self.has_network = NetworkUtilities(self.url).verify_network_connection()
 
         if self.has_network:
             self._populate_file_size()
+
+    def _validate_inputs(self) -> bool:
+        """
+        Validate URL and path inputs for security
+        
+        Returns:
+            bool: True if validation passed, False otherwise
+        """
+        # Validate URL
+        is_valid, error_msg = validate_url(self.url, self.allowed_domains)
+        if not is_valid:
+            self.error = True
+            self.error_msg = f"URL validation failed: {error_msg}"
+            self.status = DownloadStatus.ERROR
+            logging.error(self.error_msg)
+            return False
+        
+        # Validate path
+        is_valid, error_msg = validate_path(Path(self.url.split('?')[0].split('/')[-1]).name if self.url else "download", self.base_dir)
+        # Path validation for download location is done in _prepare_working_directory
+        
+        return True
+
+    def _get_sanitized_url(self) -> str:
+        """
+        Get URL sanitized for logging
+        
+        Returns:
+            str: Sanitized URL
+        """
+        return sanitize_url_for_logging(self.url)
 
 
     def __del__(self) -> None:
@@ -368,10 +553,12 @@ class DownloadObject:
 
     def _save_progress(self) -> None:
         """
-        Save download progress to a file
+        Save download progress to a file with secure permissions
         """
         try:
-            with open(self.progress_file, 'w') as f:
+            # Create file with secure permissions (read/write for owner only)
+            fd = os.open(str(self.progress_file), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+            with os.fdopen(fd, 'w') as f:
                 json.dump({
                     'downloaded': self.downloaded_file_size,
                     'total': self.total_file_size,
@@ -449,6 +636,7 @@ class DownloadObject:
         buffer = io.BytesIO()
         self.part_buffers[part_index] = buffer
         part_size = end - start + 1
+        response = None
         
         with self._download_lock:
             self.part_progress[part_index] = {
@@ -461,55 +649,84 @@ class DownloadObject:
         
         headers = {"Range": f"bytes={start}-{end}"}
         
-        for attempt in range(max_retries):
-            try:
-                with self._download_lock:
-                    self.part_progress[part_index]['status'] = 'downloading'
-                    self.part_progress[part_index]['attempt'] = attempt + 1
-                
-                if attempt > 0:
-                    logging.info(f"- Retry part {part_index + 1} (attempt {attempt + 1}/{max_retries})")
-                    buffer.seek(0)
-                    buffer.truncate(0)
+        try:
+            for attempt in range(max_retries):
+                try:
                     with self._download_lock:
-                        self.part_progress[part_index]['downloaded'] = 0
-                        self.part_progress[part_index]['percent'] = 0.0
-                
-                logging.info(f"- Download part {part_index + 1}/{len(self.part_buffers)}: bytes={start}-{end}")
-                response = NetworkUtilities().get(self.url, stream=True, timeout=100, headers=headers)
-
-                if response.status_code != 206:
-                    raise Exception(f"Unexpected status code for part {part_index}: {response.status_code}")
-
-                for chunk in response.iter_content(1024 * 1024 * 4):
-                    if self.should_stop:
-                        raise Exception(self.trans["Download stopped"])
-                    if chunk:
-                        buffer.write(chunk)
+                        self.part_progress[part_index]['status'] = 'downloading'
+                        self.part_progress[part_index]['attempt'] = attempt + 1
+                    
+                    if attempt > 0:
+                        logging.info(f"- Retry part {part_index + 1} (attempt {attempt + 1}/{max_retries})")
+                        buffer.seek(0)
+                        buffer.truncate(0)
                         with self._download_lock:
-                            self.downloaded_file_size += len(chunk)
-                            self.part_progress[part_index]['downloaded'] = len(buffer.getvalue())
-                            self.part_progress[part_index]['percent'] = (
-                                self.part_progress[part_index]['downloaded'] / 
-                                self.part_progress[part_index]['total'] * 100
-                            )
+                            self.part_progress[part_index]['downloaded'] = 0
+                            self.part_progress[part_index]['percent'] = 0.0
+                    
+                    logging.info(f"- Download part {part_index + 1}/{len(self.part_buffers)}: bytes={start}-{end}")
+                    
+                    # Use private session and track response for quick cancellation
+                    if not self._session:
+                        self._session = requests.Session()
+                    
+                    response = self._session.get(self.url, stream=True, timeout=100, headers=headers)
+                    
+                    # Track response for cancellation
+                    with self._connections_lock:
+                        self._active_responses.append(response)
 
-                with self._download_lock:
-                    self.part_progress[part_index]['status'] = 'complete'
-                logging.info(f"- Completed part {part_index + 1}/{len(self.part_buffers)}: {len(buffer.getvalue())} bytes in memory")
-                return
-            except Exception as e:
-                if self.should_stop:
+                    if response.status_code != 206:
+                        raise Exception(f"Unexpected status code for part {part_index}: {response.status_code}")
+
+                    for chunk in response.iter_content(1024 * 1024 * 4):
+                        if self.should_stop:
+                            raise Exception("Download stopped")
+                        if chunk:
+                            buffer.write(chunk)
+                            with self._download_lock:
+                                self.downloaded_file_size += len(chunk)
+                                self.part_progress[part_index]['downloaded'] = len(buffer.getvalue())
+                                self.part_progress[part_index]['percent'] = (
+                                    self.part_progress[part_index]['downloaded'] / 
+                                    self.part_progress[part_index]['total'] * 100
+                                )
+
                     with self._download_lock:
-                        self.part_progress[part_index]['status'] = 'cancelled'
-                    raise e
-                with self._download_lock:
-                    self.part_progress[part_index]['status'] = 'error'
-                if attempt < max_retries - 1:
-                    logging.warning(f"- Part {part_index + 1} failed: {e}, retrying...")
-                    time.sleep(2 ** attempt)
-                else:
-                    raise e
+                        self.part_progress[part_index]['status'] = 'complete'
+                    logging.info(f"- Completed part {part_index + 1}/{len(self.part_buffers)}: {len(buffer.getvalue())} bytes in memory")
+                    return
+                except Exception as e:
+                    if self.should_stop:
+                        with self._download_lock:
+                            self.part_progress[part_index]['status'] = 'cancelled'
+                        # Close and clear buffer on cancellation
+                        buffer.close()
+                        self.part_buffers[part_index] = None
+                        raise e
+                    with self._download_lock:
+                        self.part_progress[part_index]['status'] = 'error'
+                    if attempt < max_retries - 1:
+                        logging.warning(f"- Part {part_index + 1} failed: {e}, retrying...")
+                        time.sleep(2 ** attempt)
+                    else:
+                        raise e
+                finally:
+                    # Remove response from tracking and close it
+                    if response:
+                        with self._connections_lock:
+                            if response in self._active_responses:
+                                self._active_responses.remove(response)
+                        try:
+                            response.close()
+                        except Exception:
+                            pass
+        except Exception:
+            # Ensure buffer is closed on any unhandled exception
+            if buffer:
+                buffer.close()
+                self.part_buffers[part_index] = None
+            raise
 
     def _merge_download_parts(self) -> None:
         with open(self.filepath, "wb") as destination:
@@ -530,7 +747,12 @@ class DownloadObject:
     def _download_multipart(self) -> None:
         ranges = self._build_download_ranges()
         self.part_buffers = [None] * len(ranges)
-        self.part_errors = []
+        # Clear the error queue
+        while not self.part_errors_queue.empty():
+            try:
+                self.part_errors_queue.get_nowait()
+            except queue.Empty:
+                break
         threads = []
 
         logging.info(f"- Using multipart download with {len(ranges)} parts")
@@ -539,7 +761,7 @@ class DownloadObject:
             try:
                 self._download_part(index, start, end)
             except Exception as error:
-                self.part_errors.append(str(error))
+                self.part_errors_queue.put(str(error))
                 self.should_stop = True
 
         for index, (start, end) in enumerate(ranges):
@@ -550,10 +772,18 @@ class DownloadObject:
         for thread in threads:
             thread.join()
 
-        if self.part_errors:
-            logging.error(f"- Multipart download failed with {len(self.part_errors)} part error(s)")
+        # Collect errors from queue
+        errors = []
+        while not self.part_errors_queue.empty():
+            try:
+                errors.append(self.part_errors_queue.get_nowait())
+            except queue.Empty:
+                break
+        
+        if errors:
+            logging.error(f"- Multipart download failed with {len(errors)} part error(s)")
             self.delete_temp_files()
-            raise Exception(self.part_errors[0])
+            raise Exception(errors[0])
 
         self._merge_download_parts()
         self.download_complete = True
@@ -582,13 +812,22 @@ class DownloadObject:
             if not self.has_network:
                 raise Exception(self.trans["No network connection"])
 
+            if not self._validation_passed:
+                raise Exception(self.error_msg if self.error_msg else "Validation failed")
+
             if self._prepare_working_directory(self.filepath) is False:
                 raise Exception(self.error_msg)
 
+            # Check memory limit for multipart downloads
             if self._should_use_multipart_download():
-                self._download_multipart()
-                self.status = DownloadStatus.COMPLETE
-                return
+                estimated_memory = self.total_file_size
+                if estimated_memory > MAX_MEMORY_USAGE:
+                    logging.warning(f"- File size ({utilities.human_fmt(estimated_memory)}) exceeds memory limit ({utilities.human_fmt(MAX_MEMORY_USAGE)}), using single-thread download")
+                    self.chunk_count = 1
+                else:
+                    self._download_multipart()
+                    self.status = DownloadStatus.COMPLETE
+                    return
 
             headers = {}
             if self.resume_download and self.downloaded_file_offset > 0:
@@ -596,7 +835,7 @@ class DownloadObject:
                 logging.info(self.trans["Resuming download from byte {0}"].format(self.downloaded_file_offset))
 
             response = NetworkUtilities().get(self.url, stream=True, timeout=100, headers=headers)
-            logging.info(f"- Download URL: {self.url}")
+            logging.info(f"- Download URL: {self._get_sanitized_url()}")
             mode = 'ab' if self.resume_download and self.downloaded_file_offset > 0 else 'wb'
             with open(self.filepath, mode) as file:
                 atexit.register(self.stop)
@@ -761,22 +1000,64 @@ class DownloadObject:
         """
         Delete temporary files created during download
         """
+        errors = []
+        
         try:
             # Delete the partially downloaded file
-            if self.filepath.exists():
+            if self.filepath and self.filepath.exists():
                 self.filepath.unlink()
-                logging.info(self.trans["Deleted partially downloaded file: {0}"].format(self.filepath))
-            
-            # Delete the progress file
-            if self.progress_file.exists():
-                self.progress_file.unlink()
-                logging.info(self.trans["Deleted progress file: {0}"].format(self.progress_file))
-
-            # Clear memory buffers
-            self.part_buffers.clear()
-            logging.info(self.trans["Cleared download memory buffers"])
+                logging.info(self.trans.get("Deleted partially downloaded file: {0}", "Deleted partially downloaded file: {0}").format(self.filepath))
         except Exception as e:
-            logging.warning(self.trans["Failed to delete temporary files: {0}"].format(str(e)))
+            errors.append(f"Failed to delete file {self.filepath}: {e}")
+        
+        try:
+            # Delete the progress file
+            if self.progress_file and self.progress_file.exists():
+                self.progress_file.unlink()
+                logging.info(self.trans.get("Deleted progress file: {0}", "Deleted progress file: {0}").format(self.progress_file))
+        except Exception as e:
+            errors.append(f"Failed to delete progress file: {e}")
+
+        try:
+            # Clear memory buffers and free memory
+            for i, buffer in enumerate(self.part_buffers):
+                if buffer is not None:
+                    try:
+                        buffer.close()
+                    except Exception:
+                        pass
+            self.part_buffers.clear()
+            logging.info("Cleared download memory buffers")
+        except Exception as e:
+            errors.append(f"Failed to clear memory buffers: {e}")
+        
+        if errors:
+            logging.warning(f"Errors during cleanup: {'; '.join(errors)}")
+
+    def _close_all_connections(self) -> None:
+        """
+        Close all active network connections immediately
+        This ensures quick cancellation without waiting for network timeouts
+        """
+        with self._connections_lock:
+            # Close all active response objects
+            for response in self._active_responses:
+                try:
+                    if response:
+                        response.close()
+                except Exception:
+                    pass
+            self._active_responses.clear()
+            
+            # Close the private session
+            if self._session:
+                try:
+                    self._session.close()
+                except Exception:
+                    pass
+                self._session = None
+            
+            logging.info("Closed all network connections")
 
     def stop(self) -> None:
         """
@@ -784,10 +1065,16 @@ class DownloadObject:
 
         If the download is active, this function will hold the thread until stopped or timeout
         """
-
         self.should_stop = True
+        
+        # First, close all network connections for quick cancellation
+        self._close_all_connections()
+        
+        # Wait for active thread with timeout
         if self.active_thread and self.active_thread.is_alive():
             self.active_thread.join(timeout=10)
+            if self.active_thread.is_alive():
+                logging.warning("Download thread did not stop gracefully within timeout")
         
         # Delete temporary files if download was cancelled by user
         if not self.download_complete:
