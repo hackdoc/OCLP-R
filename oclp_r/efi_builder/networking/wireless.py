@@ -61,7 +61,7 @@ class BuildWirelessNetworking:
             # This works around OCLP spoofing the Wifi card and therefore unable to actually detect the correct device
             if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirportBrcmNIC and self.constants.validate is False and self.computer.wifi.country_code:
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
-                logging.info(self.trans["- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}"].format(computer=self.computer))
+                logging.info(self.trans["- Setting Wireless Card's Country Code: {country_code}"].format(country_code=self.computer.wifi.country_code))
                 if self.computer.wifi.pci_path:
                     arpt_path = self.computer.wifi.pci_path
                     logging.info(self.trans["- Found ARPT device at {arpt_path}"].format(arpt_path=arpt_path))
@@ -175,5 +175,5 @@ class BuildWirelessNetworking:
             logging.info(self.trans["- Using known ARPT Path: {arpt_path}"].format(arpt_path=arpt_path))
 
         if not self.constants.custom_model and self.computer.wifi and self.constants.validate is False and self.computer.wifi.country_code:
-            logging.info(self.trans["- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}"].format(computer=self.computer))
+            logging.info(self.trans["- Applying fake ID for WiFi, setting Country Code: {country_code}"].format(country_code=self.computer.wifi.country_code))
             self.config["DeviceProperties"]["Add"][arpt_path] = {"brcmfx-country": self.computer.wifi.country_code}

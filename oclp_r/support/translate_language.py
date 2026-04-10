@@ -3621,7 +3621,7 @@ class TranslateLanguage_efi_builder:
         if self.language_point=="English":
             trans={
                 "- Found Wireless Device {0}:{1}":"- Found Wireless Device {0}:{1}",
-                "- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}":"- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}",
+                "- Setting Wireless Card's Country Code: {country_code}":"- Setting Wireless Card's Country Code: {country_code}",
                 "- Found ARPT device at {arpt_path}":"- Found ARPT device at {arpt_path}",
                 "- Enabling Wake on WLAN support":"- Enabling Wake on WLAN support",
                 "- Enabling BCM943224 and BCM94331 Networking Support":"- Enabling BCM943224 and BCM94331 Networking Support",
@@ -3629,12 +3629,12 @@ class TranslateLanguage_efi_builder:
                 "- Enabling Atheros Networking Support":"- Enabling Atheros Networking Support",
                 "No known PCI pathing for this model":"No known PCI pathing for this model",
                 "- Using known ARPT Path: {arpt_path}":"- Using known ARPT Path: {arpt_path}",
-                "- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}":"- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}"
+                "- Applying fake ID for WiFi, setting Country Code: {country_code}":"- Applying fake ID for WiFi, setting Country Code: {country_code}"
             }
         elif self.language_point=="简体中文":
             trans={
                 "- Found Wireless Device {0}:{1}":"- 发现无线设备 {0}:{1}",
-                "- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}":"- 设置无线网卡的国家代码：{self.computer.wifi.country_code}",
+                "- Setting Wireless Card's Country Code: {country_code}":"- 设置无线网卡的国家代码：{country_code}",
                 "- Found ARPT device at {arpt_path}":"- 在 {arpt_path} 发现 ARPT 设备",
                 "- Enabling Wake on WLAN support":"- 启用无线局域网唤醒支持",
                 "- Enabling BCM943224 and BCM94331 Networking Support":"- 启用 BCM943224 和 BCM94331 网络支持",
@@ -3642,6 +3642,6 @@ class TranslateLanguage_efi_builder:
                 "- Enabling Atheros Networking Support":"- 启用 Atheros 网络支持",
                 "No known PCI pathing for this model":"此型号没有已知的 PCI 路径",
                 "- Using known ARPT Path: {arpt_path}":"- 使用已知的 ARPT 路径：{arpt_path}",
-                "- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}":"- 为 WiFi 应用假 ID，设置国家代码：{self.computer.wifi.country_code}"
+                "- Applying fake ID for WiFi, setting Country Code: {country_code}":"- 为 WiFi 应用假 ID，设置国家代码：{country_code}"
             }
         return trans
