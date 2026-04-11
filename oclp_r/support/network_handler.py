@@ -45,7 +45,7 @@ DEFAULT_ALLOWED_DOMAINS = {
     'objects.githubusercontent.com',
     'developer.apple.com', 'download.developer.apple.com',
     'updates.cdn-apple.com', 'swcdn.apple.com',
-    'oclp-download.example.com'
+    "apple.com","opensource.apple.com","swdist.apple.com"
 }
 
 
@@ -170,13 +170,14 @@ class NetworkUtilities:
     """
 
     def __init__(self, url: str = None) -> None:
-        self.url: str = url
         self.contents=constants.Constants()
         self.trans=TranslateLanguage(self.contents).network_handler()
-        if self.contents.github_proxy_link=="Default":
-            self.url="https://www.github.com/"
+        if url:
+            self.url: str = url
+        elif self.contents.github_proxy_link=="Default":
+            self.url: str = "https://www.github.com/"
         else:
-            self.url = "https://baidu.com/"
+            self.url: str = "https://baidu.com/"
 
 
 
@@ -419,6 +420,7 @@ class DownloadObject:
 
         """
         self.status = DownloadStatus.DOWNLOADING
+        self.start_time = time.time()
         logging.info(self.trans["Starting download: {0}"].format(self.filename))
         if spawn_thread:
             if self.active_thread:
@@ -486,13 +488,39 @@ class DownloadObject:
         """
 
         try:
+            # Try HEAD request first
             result = SESSION.head(self.url, allow_redirects=True, timeout=5)
             if 'Content-Length' in result.headers:
                 self.total_file_size = float(result.headers['Content-Length'])
                 if self.size != None:
                     self.total_file_size = self.convert_size(self.size)
-            else:
-                raise Exception(self.trans["Content-Length missing from headers"])
+                return
+        except Exception as e:
+            logging.warning(self.trans["HEAD request failed for {0}: {1}"].format(self.url, str(e)))
+
+        # Fallback: Try GET request with Range header (for Apple CDN and other servers that don't support HEAD with Content-Length)
+        try:
+            headers = {"Range": "bytes=0-0"}
+            result = SESSION.get(self.url, stream=True, headers=headers, timeout=10, allow_redirects=True)
+            if 'Content-Length' in result.headers:
+                self.total_file_size = float(result.headers['Content-Length'])
+                if self.size != None:
+                    self.total_file_size = self.convert_size(self.size)
+                result.close()
+                return
+            elif 'Content-Range' in result.headers:
+                # Content-Range format: "bytes 0-0/12345678"
+                content_range = result.headers['Content-Range']
+                if '/' in content_range:
+                    total_size = content_range.split('/')[-1]
+                    if total_size != '*':
+                        self.total_file_size = float(total_size)
+                        if self.size != None:
+                            self.total_file_size = self.convert_size(self.size)
+                        result.close()
+                        return
+            result.close()
+            raise Exception(self.trans["Content-Length missing from headers"])
         except Exception as e:
             logging.error(self.trans["Error determining file size {0}: {1}"].format(self.url, str(e)))
             logging.error(self.trans["Assuming file size is 0"])
@@ -522,11 +550,13 @@ class DownloadObject:
 
         try:
             if Path(path).exists():
-                if self.resume_download:
-                    # For resumable download, keep the existing file
-                    self.downloaded_file_offset = Path(path).stat().st_size
+                existing_size = Path(path).stat().st_size
+                if self.resume_download and self.total_file_size > 0 and existing_size < self.total_file_size:
+                    # For resumable download, keep the existing file only if it's incomplete
+                    self.downloaded_file_offset = existing_size
                     logging.info(self.trans["Resuming download from {0}: {1}"].format(utilities.human_fmt(self.downloaded_file_offset), path))
                 else:
+                    # Delete existing file if download is complete or resume is disabled
                     logging.info(self.trans["Deleting existing file: {0}"].format(path))
                     Path(path).unlink()
                 return True
@@ -861,11 +891,15 @@ class DownloadObject:
                 else:
                     self.download_complete = True
                     self._clear_progress()
+                    # If no new data was downloaded but file exists, use the file size on disk
+                    if self.downloaded_file_size == 0 and self.filepath.exists():
+                        self.downloaded_file_size = self.filepath.stat().st_size
                     logging.info(self.trans["Download complete: {0}"].format(self.filename))
                     logging.info(self.trans["Stats:"])
                     logging.info(self.trans["- Downloaded size: {0}"].format(utilities.human_fmt(self.downloaded_file_size)))
                     logging.info(self.trans["- Time elapsed: {0:.2f} seconds"].format((time.time() - self.start_time)))
-                    logging.info(self.trans["- Speed: {0}/s"].format(utilities.human_fmt(self.downloaded_file_size / (time.time() - self.start_time))))
+                    if (time.time() - self.start_time) > 0:
+                        logging.info(self.trans["- Speed: {0}/s"].format(utilities.human_fmt(self.downloaded_file_size / (time.time() - self.start_time))))
                     logging.info(self.trans["- Location: {0}"].format(self.filepath))
         except Exception as e:
             self._save_progress()

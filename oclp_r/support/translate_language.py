@@ -550,6 +550,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Downloaded {0} of {1}":"Downloaded {0} of {1}",
                 "Downloaded {0:.2f}% of {1} ({2}/s) ({3:.2f} seconds remaining)":"Downloaded {0:.2f}% of {1} ({2}/s) ({3:.2f} seconds remaining)",
                 "Content-Length missing from headers":"Content-Length missing from headers",
+                "HEAD request failed for {0}: {1}":"HEAD request failed for {0}: {1}",
             }
         elif self.language_point=="简体中文":
             trans={
@@ -588,6 +589,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Downloaded {0} of {1}":"已下载 {0} ,共 {1}",
                 "Downloaded {0:.2f}% of {1} ({2}/s) ({3:.2f} seconds remaining)":"已下载 {0:.2f}% ,共 {1} ,速度 {2} ,剩余时间 {3:.2f} 秒",
                 "Content-Length missing from headers":"响应头中缺少 Content-Length",
+                "HEAD request failed for {0}: {1}":"HEAD 请求失败 {0}: {1}",
             }
         return trans
     def private(self):
