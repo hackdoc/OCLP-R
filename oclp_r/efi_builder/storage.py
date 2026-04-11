@@ -123,7 +123,7 @@ class BuildStorage:
                 for i, controller in enumerate(nvme_devices):
                     if controller.vendor_id == 0x106b:
                         continue
-                    logging.info(self.trans.storage()["- Found 3rd Party NVMe SSD ({i}): {controller.vendor_id}:{device_id}"].format(i=i+1,vendor_id=utilities.friendly_hex(controller.vendor_id),device_id=utilities.friendly_hex(controller.device_id)))
+                    logging.info(self.trans.storage()["- Found 3rd Party NVMe SSD ({i}): {vendor_id}:{device_id}"].format(i=i+1,vendor_id=utilities.friendly_hex(controller.vendor_id),device_id=utilities.friendly_hex(controller.device_id)))
                     self.config["#Revision"][f"Hardware-NVMe-{i}"] = f"{utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}"
 
                     # Disable Bit 0 (L0s), enable Bit 1 (L1)

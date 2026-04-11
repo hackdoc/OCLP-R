@@ -1260,6 +1260,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Available disks:":"Available disks:",
                 "Available partitions for ":"Available partitions for ",
                 'OpenCore has finished installing to disk.\n\nYou can eject the drive, insert it into the ':'OpenCore has finished installing to disk.\n\nYou can eject the drive, insert it into the ',
+                'OpenCore has finished installing to disk.\n\nYou will need to reboot and hold the Option key and select OpenCore/Boot EFI\'s option.\n\nWould you like to reboot?':'OpenCore has finished installing to disk.\n\nYou will need to reboot and hold the Option key and select OpenCore/Boot EFI\'s option.\n\nWould you like to reboot?',
                 "Note: Blue represents the disk OpenCore is currently booted from":"Note: Blue represents the disk OpenCore is currently booted from",
             }
         elif self.language_point=="简体中文":
