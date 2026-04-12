@@ -96,7 +96,7 @@ class MetalLibraryObject:
         try:
             response = requests.head(url, verify=False, allow_redirects=True, timeout=10)
             if response.status_code == 200:
-                content_length = response.headers.get('content-length')
+                content_length = response.headers.get('Content-Length')
                 if content_length:
                     return int(content_length)
         except Exception as e:

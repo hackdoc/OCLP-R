@@ -45,7 +45,8 @@ DEFAULT_ALLOWED_DOMAINS = {
     'objects.githubusercontent.com',
     'developer.apple.com', 'download.developer.apple.com',
     'updates.cdn-apple.com', 'swcdn.apple.com',
-    "apple.com","opensource.apple.com","swdist.apple.com"
+    "apple.com","opensource.apple.com","swdist.apple.com",
+    "nightly.link",
 }
 
 
@@ -190,11 +191,19 @@ class NetworkUtilities:
         """
 
         try:
-            response = requests.head(self.url, timeout=5, allow_redirects=True, verify=True)
+            if "nightly.link" in self.url:
+                response=requests.get(self.url, timeout=200, allow_redirects=True, verify=True,stream=True)
+            else:
+                response = requests.head(self.url, timeout=200, allow_redirects=True, verify=False)
+            
+            print("Checking network connection...")
             if response.status_code == 200:
+                print("Network connection verified")
                 return True
             if response.status_code == 404:
+                print("Network connection is 404")
                 return False
+            print(f"Status Co: {response.status_code}")
             return True
         except (
             requests.exceptions.Timeout,
@@ -202,7 +211,8 @@ class NetworkUtilities:
             requests.exceptions.ConnectionError,
             requests.exceptions.HTTPError,
             requests.exceptions.SSLError
-        ):
+        ) as e:
+            print(f"Error:{e}")
             return False
 
     def validate_link(self) -> bool:
@@ -662,7 +672,7 @@ class DownloadObject:
 
         return ranges
 
-    def _download_part(self, part_index: int, start: int, end: int, max_retries: int = 3) -> None:
+    def _download_part(self, part_index: int, start: int, end: int, max_retries: int = 30) -> None:
         buffer = io.BytesIO()
         self.part_buffers[part_index] = buffer
         part_size = end - start + 1

@@ -22,7 +22,7 @@ from ..support import (
     updates,
     subprocess_wrapper
 )
-
+import requests
 
 from ..support.translate_language import TranslateLanguage
 class UpdateFrame(wx.Frame):
@@ -66,7 +66,7 @@ class UpdateFrame(wx.Frame):
         self.version_label = version_label
         self.url = url
 
-        logging.info(self.trans["Update URL: {url}"].format(url=url))
+        logging.info(self.trans["Update URL: {url}"].format(url=self.url))
         logging.info(self.trans["Update Version: {version_label}"].format(version_label=version_label))
 
         self.frame: wx.Frame = wx.Frame(
@@ -95,12 +95,14 @@ class UpdateFrame(wx.Frame):
         self.frame.Centre()
         self.frame.Show()
         wx.Yield()
-
+        self.res=requests.get(self.url, stream=True,allow_redirects=True)
+        self.size=str(self.res.headers["Content-Length"])
         download_obj = None
+
         def _fetch_update() -> None:
             nonlocal download_obj
             file_name = "OCLP-R.pkg.zip" if url.endswith(".zip") else "OCLP-R.pkg"
-            download_obj = network_handler.DownloadObject(url, self.constants.payload_path / file_name)
+            download_obj = network_handler.DownloadObject(self.url, self.constants.payload_path / file_name,self.size)
 
         thread = threading.Thread(target=_fetch_update)
         thread.start()
