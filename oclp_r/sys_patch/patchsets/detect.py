@@ -44,7 +44,7 @@ from .hardware.misc import (
     pcie_webcam,
     t1_security,
     cpu_missing_avx,
-    
+    io_nvme
 )
 from .hardware.USB import (
     modern_usb,
@@ -147,6 +147,7 @@ class HardwarePatchsetDetection:
             t1_security.T1SecurityChip,
             legacy_usb11.USB11Controller,
             cpu_missing_avx.CPUMissingAVX,
+            io_nvme.IONvme
         ]
 
         self.device_properties = None

@@ -20,8 +20,8 @@ class Constants:
         self.metallib_api_link:               str = ""
 
         # Patcher Versioning
-        self.patcher_version:                 str = "3.0.9"  # OCLP-R
-        self.patcher_support_pkg_version:     str = "1.11.1"  # PatcherSupportPkg
+        self.patcher_version:                 str = "3.1.0"  # OCLP-R
+        self.patcher_support_pkg_version:     str = "1.11.2"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2026 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
         
@@ -257,7 +257,7 @@ class Constants:
         self.allow_apfs_aligned_patch:           bool = True
         
         
-       
+        self.allow_ionvme_patch: bool = False
         
 
         ## Non-Metal OS support

@@ -152,10 +152,12 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Selected installer: {name} ({version} ({build}))":"Selected installer: {name} ({version} ({build}))",
                 "Available disks:":"Available disks:",
                 "Selected macOS DMG {version} ({build})":"Selected macOS DMG {version} ({build})",
-                "Selected macOS {version} ({build})":"Selected macOS {version} ({build})"
+                "Selected macOS {version} ({build})":"Selected macOS {version} ({build})",
+                "Set IONvme Patch is True":"Set IONvme Patch is True",
             }
         elif self.language_point=="简体中文":
             trans = {
+                "Set IONvme Patch is True":"设置IONvme补丁",
                 "Set Validation Mode": "设置验证模式",
                 "- Running from Installer Sandbox, blocking OS updaters": "- 从安装程序沙箱运行, 阻止操作系统更新程序",
                 "Set System Volume patching": "设置系统卷修补",
@@ -1203,11 +1205,13 @@ If you plan to create the USB for another machine, please select the "Change Mod
     def gui_entry(self):
         if self.language_point=="English":
             trans={
+                "Set IONvme Patch is True":"Set IONvme Patch is True",
                 "Entry point set:":"Entry point set:",
                 "Cleaning up wxPython GUI":"Cleaning up wxPython GUI"
             }
         elif self.language_point=="简体中文":
             trans={
+                "Set IONvme Patch is True":"设置IONvme补丁",
                 "Entry point set:":"入口点已设置:",
                 "Cleaning up wxPython GUI":"正在清理 wxPython GUI"
             }
@@ -3132,6 +3136,7 @@ class TranslateLanguage_sys_patch:
                 "Legacy Audio":"Legacy Audio",
                 "Modern Audio":"Modern Audio",
                 "Voodoo Audio":"Voodoo Audio",
+                "IONvme Patch":"IONvme Patch",
                 
                 # Graphics
                 "AMD Legacy GCN":"AMD Legacy GCN",
@@ -3180,7 +3185,7 @@ class TranslateLanguage_sys_patch:
                 "Legacy Audio":"传统音频补丁",
                 "Modern Audio":"现代音频补丁",
                 "Voodoo Audio":"Voodoo 音频补丁",
-                
+                "IONvme Patch":"IONvme 补丁",
                 # Graphics
                 "AMD Legacy GCN":"AMD 传统 GCN",
                 "AMD Navi":"AMD Navi",

@@ -50,7 +50,8 @@ class arguments:
         """
         Parses arguments passed to the patcher
         """
-
+        
+            
         if self.args.validate:
             self._validation_handler()
             return
@@ -78,6 +79,8 @@ class arguments:
         if self.args.auto_patch:
             self._sys_patch_auto_handler()
             return
+        
+        
 
 
     def _validation_handler(self) -> None:
@@ -87,6 +90,8 @@ class arguments:
         logging.info(self.trans["Set Validation Mode"])
         validation.PatcherValidation(self.constants)
 
+    
+        
 
     def _sys_patch_handler(self) -> None:
         """
@@ -206,6 +211,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         else:
             self.constants.verbose_debug = False  # Override Defaults detected
 
+        
         if self.args.debug_oc:
             logging.info(self.trans["- Set OpenCore DEBUG configuration"])
             self.constants.opencore_debug = True
@@ -272,5 +278,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             logging.info(self.trans["- Building for natively supported model"])
             self.constants.allow_oc_everywhere = True
             self.constants.serial_settings = "None"
+        
+
 
         build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants)
