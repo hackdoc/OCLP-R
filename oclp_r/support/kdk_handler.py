@@ -234,6 +234,10 @@ class KernelDebugKitObject:
                                 logging.info(self.trans["This is macOS beta's KDK"])
                                 closest=kdk
                                 break
+                            else:
+                                closest=kdk
+                                break
+                            
                         elif kdk["build"][0:2] == host_build[0:2] and ord(kdk["build"][2])-1==ord(host_build[2]):
                             closest=kdk
                             break

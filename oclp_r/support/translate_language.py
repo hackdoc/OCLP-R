@@ -2447,6 +2447,7 @@ Hardware Information:
     def gui_sys_patch_display(self):
         if self.language_point=="English":
             trans={
+                "No applicable patches available":"No applicable patches available",
                 "Built from source, running from socure":"Built from source, running from socure",
                 "Checking if new patches are needed":"Checking if new patches are needed",
                 "No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?":"No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?",
@@ -2474,6 +2475,7 @@ Hardware Information:
             }
         elif self.language_point=="简体中文":
             trans={
+                "No applicable patches available":"没有可用的补丁",
                 "Built from source, running from socure":"以源代码运行",
                 "Checking if new patches are needed":"检查是否需要新的补丁",
                 "Initializing Root Patch Display Frame":"初始化根卷补丁显示框架",
