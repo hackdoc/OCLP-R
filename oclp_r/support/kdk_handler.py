@@ -2,6 +2,7 @@
 kdk_handler.py: Module for parsing and determining best Kernel Debug Kit for host OS
 """
 
+import json
 import logging
 import plistlib
 import requests
@@ -210,33 +211,18 @@ class KernelDebugKitObject:
             break
 
         # If no exact match, check for closest match
-        if self.kdk_url == "":
-                count_kdks=[]
-                for kdk in remote_kdk_version:
-                    kdk_version = cast(packaging.version.Version, packaging.version.parse(kdk["version"]))
-                    if kdk_version > parsed_version:
-                        continue
-                    if kdk_version.major != parsed_version.major:
-                        continue
-                    if kdk_version.minor not in range(parsed_version.minor - 1, parsed_version.minor + 1):
-                        continue
-                    count_kdks.append(kdk)
+        if not self.kdk_url_is_exactly_match:
+                count_kdks=remote_kdk_version
                 if count_kdks:
                     count_kdks.sort(key=lambda x: x["build"], reverse=True)
+                    
                     closest = None
                     for kdk in count_kdks:
                         # Need same version (example: 26.3==26.3 -> 26D==26D)
                         if kdk["build"][0:3] == host_build[0:3]:
                             # We need to check beta versions
-                            if kdk["build"][-1]>="a" and kdk["build"][-1]<="z":
-                                # example: 25D5087f -> macOS 26.3 Beta
-                                # earlier than 25D125
-                                logging.info(self.trans["This is macOS beta's KDK"])
-                                closest=kdk
-                                break
-                            else:
-                                closest=kdk
-                                break
+                            closest=kdk
+                            break
                             
                         elif kdk["build"][0:2] == host_build[0:2] and ord(kdk["build"][2])-1==ord(host_build[2]):
                             closest=kdk
@@ -252,7 +238,7 @@ class KernelDebugKitObject:
 
                 
 
-        if self.kdk_url == "":
+        if not self.kdk_url_is_exactly_match:
             if self.kdk_closest_match_url == "":
                 logging.warning(self.trans["No KDKs found for {0} ({1})"].format(host_build, host_version))
                 self.error_msg = self.trans["No KDKs found for {0} ({1})"].format(host_build, host_version)

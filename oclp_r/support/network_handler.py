@@ -37,7 +37,7 @@ SENSITIVE_PARAMS = {'token', 'key', 'api_key', 'apikey', 'secret', 'password', '
 DEFAULT_ALLOWED_DOMAINS = {
     "next.oclpapi.simplehac.cn",
     "oclpapi.simplehac.cn",
-    "simplehac.cn","gitapi.simplehac.top",
+    "simplehac.cn","gitapi.simplehac.top", 
     "ghfast.top","gh-proxy.com","gh.llkk.cc",
     'github.com', 'api.github.com', 'codeload.github.com',
     'github-releases.githubusercontent.com',
