@@ -223,7 +223,7 @@ class NetworkUtilities:
             bool: True if link is valid, False otherwise
         """
         try:
-            response = SESSION.head(self.url, timeout=5, allow_redirects=True)
+            response = SESSION.head(self.url, timeout=500, allow_redirects=True)
             if response.status_code == 404:
                 return False
             else:
@@ -345,7 +345,8 @@ class DownloadObject:
         self.downloaded_file_offset: float = 0.0
         self.start_time: float = time.time()
         self.multipart_threshold: float = 1024 * 1024 * 50
-        self.chunk_count: int = 16
+        self.chunk_count: int = 64
+        
         self.part_buffers: list[io.BytesIO] = []
         self.part_errors_queue: queue.Queue = queue.Queue()
         self.part_progress: dict[int, dict] = {}
