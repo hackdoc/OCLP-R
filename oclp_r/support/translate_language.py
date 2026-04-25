@@ -2506,6 +2506,7 @@ Hardware Information:
     def gui_sys_patch_start(self):
         if self.language_point=="English":
             trans={
+                "KDK checksum validation failed":"KDK checksum validation failed",
                 "An internal error occurred while running the Root Patcher:\n":"An internal error occurred while running the Root Patcher:\n",
                 "Starting root patching":"Starting root patching",
                 "Metallib installation complete":"Metallib installation complete",
@@ -2551,6 +2552,7 @@ Hardware Information:
             }
         elif self.language_point=="简体中文":
             trans={
+                "KDK checksum validation failed":"KDK 校验失败",
                 "Built from source, running from socure":"以源代码运行",
                 "- Patch {patch} not installed":"- 补丁 {patch} 未安装",
                 "No new patches detected for system":"没有新的系统补丁",

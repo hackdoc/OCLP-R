@@ -74,24 +74,31 @@ class KDKDownloadFrame(wx.Frame):
                 KDK_API_LINK=self.constants.kdk_api_link
                 response = requests.get(KDK_API_LINK,verify=False)
                 self.kdk_data = response.json()
+                
                 self.kdk_data_latest = []
-                kdk_data_number=[]
-                kdk_data_build=[]
+                kdk_data_number=[] #大版本number的合集
+                kdk_data_build=[] #所有版本的合集
                 maxnx=[]
+                #处理kdk的 seen 和 url参数
                 for i in range(len(self.kdk_data)):
                     self.kdk_data[i]['seen']=((self.kdk_data[i]['seen']).split("T"))[0]
-
                     if self.constants.github_proxy_link=="gh-proxy":
                         self.kdk_data[i]['url']="https://gh-proxy.com/"+self.kdk_data[i]['url']
                     if self.constants.github_proxy_link=="ghfast":
                         self.kdk_data[i]['url']="https://ghfast.top/"+self.kdk_data[i]['url']
                     if self.constants.github_proxy_link=="ghllkk":
                         self.kdk_data[i]['url']="https://gh.llkk.cc/"+self.kdk_data[i]['url']
+                
                 for i in range(len(self.kdk_data)):
-                    data=self.kdk_data[i]["build"][:2]
-                    data2=self.kdk_data[i]["build"]
-                    kdk_data_number.append(data)
-                    kdk_data_build.append(data2)
+                    data=self.kdk_data[i]["build"][:2] # 获取build大版本,darwin的版本
+                    data2=self.kdk_data[i]["build"] #获取build的完整版本
+
+                    kdk_data_number.append(data) #增加版本
+                    kdk_data_number.sort(reverse=True)
+                    kdk_data_build.append(data2) 
+                    kdk_data_build.sort(reverse=True)
+                logging.info(f"kdk_data_number: {kdk_data_number}")
+                logging.info(f"kdk_data_build: {kdk_data_build}")
                 for i in range(4):
                     maxn=kdk_data_number[0]
                     while True:

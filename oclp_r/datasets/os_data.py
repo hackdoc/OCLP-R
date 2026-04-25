@@ -63,7 +63,9 @@ class os_conversion:
         Returns:
             str: OS version
         """
-        if kernel >= os_data.big_sur:
+        if kernel >= os_data.tahoe:
+            return str((kernel + 1))
+        elif kernel >= os_data.big_sur and kernel < os_data.tahoe:
             return str((kernel - 9))
         else:
             return str((f"10.{kernel - 4}"))
