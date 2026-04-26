@@ -17,6 +17,8 @@ from ..support import (
     utilities,
     network_handler,
 )
+import re
+from packaging import version
 from ..support.translate_language import TranslateLanguage
 class KDKDownloadFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants,screen_location: tuple = None):
@@ -74,13 +76,15 @@ class KDKDownloadFrame(wx.Frame):
                 KDK_API_LINK=self.constants.kdk_api_link
                 response = requests.get(KDK_API_LINK,verify=False)
                 self.kdk_data = response.json()
-                
+                self.kdk_data=sorted(self.kdk_data, key=lambda item: item['build'],reverse=True)
                 self.kdk_data_latest = []
                 kdk_data_number=[] #大版本number的合集
                 kdk_data_build=[] #所有版本的合集
                 maxnx=[]
                 #处理kdk的 seen 和 url参数
                 for i in range(len(self.kdk_data)):
+                    if not re.match(r'^[1-9][0-9].[0-9]',self.kdk_data[i]['version']):
+                        self.kdk_data[i]['version']+=".0"
                     self.kdk_data[i]['seen']=((self.kdk_data[i]['seen']).split("T"))[0]
                     if self.constants.github_proxy_link=="gh-proxy":
                         self.kdk_data[i]['url']="https://gh-proxy.com/"+self.kdk_data[i]['url']

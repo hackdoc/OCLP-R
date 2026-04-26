@@ -65,11 +65,14 @@ class MetallibDownloadFrame(wx.Frame):
                 self.kdk_data_latest = []
                 kdk_data_number=[]
                 kdk_data_build=[]
+                self.kdk_data=sorted(self.kdk_data, key=lambda item: item['build'],reverse=True)
                 maxnx=[]
                 for i in range(len(self.kdk_data)):
                     data=self.kdk_data[i]["build"][:2]
                     data2=self.kdk_data[i]["build"]
-                    
+                    import re
+                    if not re.match(r'^[1-9][0-9].[0-9]',self.kdk_data[i]['version']):
+                        self.kdk_data[i]['version']+=".0"
                     if self.constants.github_proxy_link=="gh-proxy":
                         self.kdk_data[i]['url']="https://gh-proxy.com/"+self.kdk_data[i]['url']
                     if self.constants.github_proxy_link=="ghfast":
@@ -77,7 +80,10 @@ class MetallibDownloadFrame(wx.Frame):
                     if self.constants.github_proxy_link=="ghllkk":
                         self.kdk_data[i]['url']="https://gh.llkk.cc/"+self.kdk_data[i]['url']
                     kdk_data_number.append(data)
+                    kdk_data_number.sort(reverse=True)
+
                     kdk_data_build.append(data2)
+                    kdk_data_build.sort(reverse=True)
                 for i in range(4):
                     try:
                         maxn=kdk_data_number[0]
