@@ -171,6 +171,17 @@ class GenerateApplication:
         }
         plistlib.dump(_plist, _file.open("wb"), sort_keys=True)
 
+    def _embed_bundle_icon_name(self) -> None:
+        """
+        Set CFBundleIconName name
+        """
+        _file = self._application_output / "Contents" / "Info.plist"
+
+        print("Embedding CFBundleIconName name")
+        _plist = plistlib.load(_file.open("rb"))
+        _plist["CFBundleIconName"] = "AppIcon"
+        plistlib.dump(_plist, _file.open("wb"), sort_keys=True)
+
 
     def _embed_resources(self) -> None:
         """
@@ -199,4 +210,5 @@ class GenerateApplication:
         self._patch_load_command()
         self._patch_sdk_version() 
         self._embed_git_data()
+        self._embed_bundle_icon_name()
         self._embed_resources()

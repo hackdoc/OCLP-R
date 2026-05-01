@@ -20,7 +20,7 @@ class Constants:
         self.metallib_api_link:               str = ""
 
         # Patcher Versioning
-        self.patcher_version:                 str = "3.1.1"  # OCLP-R
+        self.patcher_version:                 str = "3.1.2"  # OCLP-R
         self.patcher_support_pkg_version:     str = "1.11.2"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2026 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
@@ -793,7 +793,7 @@ class Constants:
 
     @property
     def app_icon_path(self):
-        return self.payload_path / Path("Icon/AppIcons/OC-Patcher.icns")
+        return self.payload_path / Path("Icon/AppIcons/AppIcon.icns")
 
     @property
     def icon_path_external(self):
