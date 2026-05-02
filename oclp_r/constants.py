@@ -21,7 +21,7 @@ class Constants:
 
         # Patcher Versioning
         self.patcher_version:                 str = "3.1.2"  # OCLP-R
-        self.patcher_support_pkg_version:     str = "1.11.2"  # PatcherSupportPkg
+        self.patcher_support_pkg_version:     str = "1.11.3"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2026 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
         
