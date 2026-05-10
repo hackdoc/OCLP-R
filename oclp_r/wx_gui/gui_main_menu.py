@@ -39,7 +39,7 @@ class MainFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
         self.trans= TranslateLanguage(global_constants=global_constants).gui_main_menu()
         logging.info(f"{self.trans['Initializing Main Menu Frame']}")
-        super(MainFrame, self).__init__(parent, title=title, size=(600, 400), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        super(MainFrame, self).__init__(parent, title=title, size=(680, 450), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         gui_support.GenerateMenubar(self, global_constants).generate()
 
         self.constants: constants.Constants = global_constants
@@ -130,7 +130,7 @@ class MainFrame(wx.Frame):
                     ],
                     "icon": str(self.constants.icns_resource_path / "OC-Patch.icns"),
                 },
-                f"{self.trans['MetalLib Download']}": {
+                f"{self.trans['MetallibSupportPkg Download']}": {
 
                     "function": self.on_download_ml,
                     "description": [
@@ -192,7 +192,7 @@ class MainFrame(wx.Frame):
             }
         button_x = 30
         button_y = model_label.GetPosition()[1] + 30
-        rollover = len(menu_buttons) / 2
+        rollover = len(menu_buttons) / 2 
         if rollover % 1 != 0:
             rollover = int(rollover) + 1
         index = 0
@@ -202,18 +202,20 @@ class MainFrame(wx.Frame):
             if "icon" in button_function:
                 icon = wx.StaticBitmap(self, bitmap=wx.Bitmap(button_function["icon"], wx.BITMAP_TYPE_ICON), pos=(button_x - 10, button_y), size=(64, 64))
                 if button_name == self.trans["Post-Install Root Patch"]:
-                    icon.SetPosition((button_x-10, button_y + 7))
+                    icon.SetPosition((button_x-5, button_y + 4))
                 if button_name == self.trans["Create macOS Installer"]:
-                    icon.SetPosition((button_x - 10, button_y + 3))
-                    icon.SetSize((70,70))
+                    icon.SetPosition((button_x - 11, button_y + 3))
+                    icon.SetSize((68,68))
                 if button_name == self.trans["Support"]:
+                    icon.SetPosition((button_x - 3, button_y + 3))
+                if button_name == self.trans["MetallibSupportPkg Download"]:
                     icon.SetPosition((button_x - 3, button_y + 3))
                 if button_name == self.trans["Build and Install OpenCore"]:
                     icon.SetSize((70, 70))
             if button_name == self.trans["⚙️ Settings"]:
                 button_y += 5
 
-            button = wx.Button(self, label=button_name, pos=(button_x + 70, button_y), size=(180, 30))
+            button = wx.Button(self, label=button_name, pos=(button_x + 75, button_y), size=(220, 38))
             button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
             button.Bind(wx.EVT_BUTTON, lambda event, function=button_function["function"]: function(event))
             button_y += 30
@@ -221,7 +223,7 @@ class MainFrame(wx.Frame):
             # # Text: Description
             description_label = wx.StaticText(self, label='\n'.join(button_function["description"]), pos=(button_x + 75, button.GetPosition()[1] + button.GetSize()[1] + 3))
             description_label.SetFont(gui_support.font_factory(10, wx.FONTWEIGHT_NORMAL))
-            # button_y += 15
+            button_y += 15
 
             for i, line in enumerate(button_function["description"]):
                 if line == "":
@@ -231,7 +233,6 @@ class MainFrame(wx.Frame):
                 else:
                     button_y += 13
 
-            button_y += 25
 
             if button_name == self.trans["Build and Install OpenCore"]:
                 self.build_button = button
@@ -244,11 +245,11 @@ class MainFrame(wx.Frame):
                 button.SetSize((100, -1))
                 button.Centre(wx.HORIZONTAL)
                 description_label.Centre(wx.HORIZONTAL)
-
+            button_y +=15
             index += 1
             if index == rollover:
                 max_height = button_y
-                button_x = 320
+                button_x += 320
                 button_y = model_label.GetPosition()[1] + 30
 
 

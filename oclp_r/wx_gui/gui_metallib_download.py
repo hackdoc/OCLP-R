@@ -164,8 +164,8 @@ class MetallibDownloadFrame(wx.Frame):
         self.os_build_tahoe=self.detect_os_build(False)
         bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
         self.frame_modal.Destroy()
-        self.frame_modal = wx.Dialog(self, title=self.trans["Choose Metallib Version"], size=(414, 580))
-        title_label = wx.StaticText(self.frame_modal, label=self.trans["Choose Metallib"], pos=(-1,-1))
+        self.frame_modal = wx.Dialog(self, title=self.trans["Select MetallibSupportPkg Version"], size=(414, 580))
+        title_label = wx.StaticText(self.frame_modal, label=self.trans["Select MetallibSupportPkg"], pos=(-1,-1))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         id = wx.NewIdRef()
         self.list = wx.ListCtrl(self.frame_modal, id, style=wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER | wx.BORDER_SUNKEN)
@@ -214,7 +214,7 @@ class MetallibDownloadFrame(wx.Frame):
         self.copy_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         if show_full is True:
             self.copy_button.Disable()
-        self.copy_button.SetToolTip(self.trans["Copy Metallib Download Link"])
+        self.copy_button.SetToolTip(self.trans["Copy MetallibSupportPkg Download Link"])
         self.copy_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_copy_link(installers))
         return_button = wx.Button(self.frame_modal, label=self.trans["Return to Main Menu"], pos=(-1, -1), size=(150, -1))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)

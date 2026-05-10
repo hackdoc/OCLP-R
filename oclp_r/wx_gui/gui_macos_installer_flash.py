@@ -559,7 +559,7 @@ class macOSInstallerFlashFrame(wx.Frame):
         if metallib_pkg_path.exists():
             metallib_pkg_path.unlink()
 
-        logging.info(self.trans["Initiating Metallib download"])
+        logging.info(self.trans["Initiating MetallibSupportPkg Download"])
         logging.info(f"- {self.trans['Build:']} {build}")
         logging.info(f"- {self.trans['Version:']} {version}")
         logging.info(f"- {self.trans['Working Directory:']} {download_dir}")

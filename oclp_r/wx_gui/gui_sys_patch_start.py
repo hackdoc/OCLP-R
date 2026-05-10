@@ -149,7 +149,7 @@ class SysPatchStartFrame(wx.Frame):
     def _metallib_download(self, frame: wx.Frame = None) -> bool:
         frame = self if not frame else frame
 
-        logging.info(self.trans["MetallibSupportPkg missing, generating Metallib download frame"])
+        logging.info(self.trans["MetallibSupportPkg missing, generating MetallibSupportPkg Download frame"])
 
         header = wx.StaticText(frame, label=self.trans["Downloading Metal Libraries"], pos=(-1,5))
         header.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
@@ -181,7 +181,7 @@ class SysPatchStartFrame(wx.Frame):
         if self.metallib_obj.success is False:
             progress_bar_animation.stop_pulse()
             progress_bar.SetValue(0)
-            wx.MessageBox(f"{self.trans["Metallib download failed: "]}{self.metallib_obj.error_msg}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
+            wx.MessageBox(f"{self.trans["MetallibSupportPkg Download failed: "]}{self.metallib_obj.error_msg}", self.trans["Error"], wx.OK | wx.ICON_ERROR)
             return False
 
         self.metallib_download_obj = self.metallib_obj.retrieve_download()
@@ -199,7 +199,7 @@ class SysPatchStartFrame(wx.Frame):
         if self.metallib_download_obj.download_complete is False:
             return False
 
-        logging.info(self.trans["Metallib download complete, installing Metallib PKG"])
+        logging.info(self.trans["MetallibSupportPkg Download complete, installing Metallib PKG"])
 
         header.SetLabel(f"{self.trans["Installing Metallib: "]} {self.metallib_obj.metallib_url_build}")
         header.Centre(wx.HORIZONTAL)

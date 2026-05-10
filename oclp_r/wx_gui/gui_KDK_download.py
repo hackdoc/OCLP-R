@@ -59,17 +59,17 @@ class KDKDownloadFrame(wx.Frame):
             return 0
 
     def _generate_catalog_frame(self) -> None:
-        super(KDKDownloadFrame, self).__init__(None, title=self.title, size=(300, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        super(KDKDownloadFrame, self).__init__(None, title=self.title, size=(380, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         gui_support.GenerateMenubar(self, self.constants).generate()
         self.Centre()
-        title_label = wx.StaticText(self, label=self.trans["Fetching KDKs"], pos=(-1,5))
+        title_label = wx.StaticText(self, label=self.trans["Finding Available Kernal Debug Kit"], pos=(-1,5))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
         progress_bar = wx.Gauge(self, range=100, pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5), size=(250, 30))
         progress_bar.Centre(wx.HORIZONTAL)
         progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
         progress_bar_animation.start_pulse()
-        self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
+        self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 50))
         self.Show()
         def _fetch_installers():
             try:
@@ -175,7 +175,7 @@ class KDKDownloadFrame(wx.Frame):
         bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
         self.frame_modal.Destroy()
         self.frame_modal = wx.Dialog(self, title=self.trans["Choose KDK Version"], size=(500, 580))
-        title_label = wx.StaticText(self.frame_modal, label=self.trans["Choose KDKs"], pos=(-1,-1))
+        title_label = wx.StaticText(self.frame_modal, label=self.trans["Select KDK"], pos=(-1,-1))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         id = wx.NewIdRef()
         self.list = wx.ListCtrl(self.frame_modal, id, style=wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER | wx.BORDER_SUNKEN)
@@ -218,7 +218,7 @@ class KDKDownloadFrame(wx.Frame):
         self.select_button = wx.Button(self.frame_modal, label=self.trans["Download"], pos=(-1, -1), size=(150, -1))
         self.select_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         self.select_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_download_installer(installers))
-        self.select_button.SetToolTip(self.trans["Choose KDKs"])
+        self.select_button.SetToolTip(self.trans["Select KDK"])
         self.select_button.SetDefault()
         if show_full is True:
             self.select_button.Disable()
