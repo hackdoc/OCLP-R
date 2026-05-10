@@ -155,7 +155,7 @@ class SysPatchStartFrame(wx.Frame):
         header.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         header.Centre(wx.HORIZONTAL)
 
-        subheader = wx.StaticText(frame, label=self.trans["Fetching MetallibSupportPkg database..."], pos=(-1, header.GetPosition()[1] + header.GetSize()[1] + 5))
+        subheader = wx.StaticText(frame, label=self.trans["Finding Available MetallibsupportPkg database..."], pos=(-1, header.GetPosition()[1] + header.GetSize()[1] + 5))
         subheader.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         subheader.Centre(wx.HORIZONTAL)
 

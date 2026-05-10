@@ -47,7 +47,7 @@ class MetallibDownloadFrame(wx.Frame):
         super(MetallibDownloadFrame, self).__init__(None, title=self.title, size=(300, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         gui_support.GenerateMenubar(self, self.constants).generate()
         self.Centre()
-        title_label = wx.StaticText(self, label=self.trans["Fetching Metallibs"], pos=(-1,5))
+        title_label = wx.StaticText(self, label=self.trans["Finding Available Metallibs"], pos=(-1,5))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
         progress_bar = wx.Gauge(self, range=100, pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5), size=(250, 30))

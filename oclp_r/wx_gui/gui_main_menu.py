@@ -209,8 +209,13 @@ class MainFrame(wx.Frame):
                 if button_name == self.trans["Support"]:
                     icon.SetPosition((button_x - 3, button_y + 3))
                 if button_name == self.trans["MetallibSupportPkg Download"]:
-                    icon.SetPosition((button_x - 3, button_y + 3))
+                    icon.SetPosition((button_x - 7, button_y - 4))
+                    icon.SetSize((70, 70))
                 if button_name == self.trans["Build and Install OpenCore"]:
+                    icon.SetPosition((button_x - 12, button_y))
+                    icon.SetSize((70, 70))
+                if button_name == self.trans["KDK Download"]:
+                    icon.SetPosition((button_x - 12, button_y))
                     icon.SetSize((70, 70))
             if button_name == self.trans["⚙️ Settings"]:
                 button_y += 5
