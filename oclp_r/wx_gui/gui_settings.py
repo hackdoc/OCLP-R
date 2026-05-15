@@ -54,7 +54,7 @@ class SettingsFrame(wx.Frame):
         self.hyperlink_colour = (25, 179, 231)
         self.settings = self._settings()
 
-        self.frame_modal = wx.Dialog(parent, title=title, size=(600, 720))
+        self.frame_modal = wx.Dialog(parent, title=title, size=(680, 800))
 
         self._generate_elements(self.frame_modal)
         self.frame_modal.ShowWindowModal()
@@ -192,7 +192,7 @@ class SettingsFrame(wx.Frame):
 
                 if setting_info["type"] == "wrap_around":
                     height = highest_height_reached
-                    width = 300 if width is stock_width else stock_width
+                    width = 380 if width is stock_width else stock_width
                     continue
 
                 if setting_info["type"] == "checkbox":
@@ -1278,7 +1278,7 @@ Hardware Information:
             pprint.pformat(self.constants.computer, indent=4),
         )
         # TextCtrl: properties
-        self.app_stats = wx.TextCtrl(panel, value=lines, pos=(-1, title.GetPosition()[1] + 30), size=(600, 240), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
+        self.app_stats = wx.TextCtrl(panel, value=lines, pos=(-1, title.GetPosition()[1] + 30), size=(680, 240), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
         self.app_stats.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
 
 

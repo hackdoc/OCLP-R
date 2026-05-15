@@ -207,7 +207,8 @@ class MainFrame(wx.Frame):
                     icon.SetPosition((button_x - 11, button_y + 3))
                     icon.SetSize((68,68))
                 if button_name == self.trans["Support"]:
-                    icon.SetPosition((button_x - 3, button_y + 3))
+                    icon.SetPosition((button_x - 8, button_y + 3))
+                    icon.SetSize((70,70))
                 if button_name == self.trans["MetallibSupportPkg Download"]:
                     icon.SetPosition((button_x - 7, button_y - 4))
                     icon.SetSize((70, 70))
