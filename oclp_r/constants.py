@@ -20,7 +20,7 @@ class Constants:
         self.metallib_api_link:               str = ""
 
         # Patcher Versioning
-        self.patcher_version:                 str = "3.1.3"  # OCLP-R
+        self.patcher_version:                 str = "3.1.4"  # OCLP-R
         self.patcher_support_pkg_version:     str = "1.11.3"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2026 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
