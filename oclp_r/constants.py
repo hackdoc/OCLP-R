@@ -18,6 +18,7 @@ class Constants:
         #API Link
         self.kdk_api_link:                    str = ""
         self.metallib_api_link:               str = ""
+        self.voodoo_patch_already:            bool = False
 
         # Patcher Versioning
         self.patcher_version:                 str = "3.1.4"  # OCLP-R
@@ -140,6 +141,7 @@ class Constants:
         self.current_path:  Path = Path(__file__).parent.parent.resolve()
         self.original_path: Path = Path(__file__).parent.parent.resolve()
         self.payload_path:  Path = self.current_path / Path("payloads")
+        self.voodoo_kext_path = Path('/Library/Extensions/VoodooHDA.kext')
 
 
         # Patcher Settings

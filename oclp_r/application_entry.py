@@ -43,6 +43,7 @@ class OpenCoreLegacyPatcher:
         logging_handler.InitializeLoggingSupport(self.constants)
 
         self._generate_base_data()
+        self.check_voodoo_patch()
         threading.Thread(target=self.api_link,daemon=True).start()
 
         if utilities.check_cli_args() is None:
@@ -77,7 +78,8 @@ class OpenCoreLegacyPatcher:
             os.chdir(_test_dir)
             logging.warning(f"{self.trans['Current working directory was invalid, switched to:']} {_test_dir}")
 
-
+    def check_voodoo_patch(self) -> None:
+        self.constants.voodoo_patch_already=os.path.exists(self.constants.voodoo_kext_path)
     def _generate_base_data(self) -> None:
         """
         Generate base data required for the patcher to run
