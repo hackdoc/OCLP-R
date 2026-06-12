@@ -180,7 +180,7 @@ class KDKDownloadFrame(wx.Frame):
         id = wx.NewIdRef()
         self.list = wx.ListCtrl(self.frame_modal, id, style=wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER | wx.BORDER_SUNKEN)
         self.list.SetSmallImages(bundles)
-        self.list.InsertColumn(0, "name",        width=160)
+        self.list.InsertColumn(0, "name",        width=200)
         self.list.InsertColumn(1, "version",      width=50)
         self.list.InsertColumn(2, "build",        width=75)
         self.list.InsertColumn(3, "size",         width=85)
@@ -192,6 +192,7 @@ class KDKDownloadFrame(wx.Frame):
             locale.setlocale(locale.LC_TIME, '')
             logging.info(f"{self.trans['Available installers on Dortania']} ({'All entries' if show_full else 'Latest only'}):")
             xnu_name={
+                "27":"Golden Gate",
                 "26":"Tahoe",
                 "15":"Sequoia",
                 "14":"Sonoma",

@@ -182,7 +182,8 @@ class MetallibDownloadFrame(wx.Frame):
             locale.setlocale(locale.LC_TIME, '')
             logging.info(f"{self.trans['Available installers on Github']} ({self.trans['All entries'] if show_full else self.trans['Latest only']}):")
             xnu_name={
-                "26":"Tahoe Beta",
+                "27":"Golden Gate",
+                "26":"Tahoe",
                 "15":"Sequoia",
                 "14":"Sonoma",
                 "13":"Ventura",
