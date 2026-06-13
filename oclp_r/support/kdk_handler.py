@@ -209,22 +209,21 @@ class KernelDebugKitObject:
             self.kdk_url_expected_size = kdk["fileSize"]
             self.kdk_url_is_exactly_match = True
             break
-
         # If no exact match, check for closest match
         if not self.kdk_url_is_exactly_match:
                 count_kdks=remote_kdk_version
                 if count_kdks:
                     count_kdks.sort(key=lambda x: x["build"], reverse=True)
-                    
                     closest = None
                     for kdk in count_kdks:
+                        print(ord(kdk["build"][2]))
                         # Need same version (example: 26.3==26.3 -> 26D==26D)
                         if kdk["build"][0:3] == host_build[0:3]:
                             # We need to check beta versions
                             closest=kdk
                             break
-                            
-                        elif kdk["build"][0:2] == host_build[0:2] and ord(kdk["build"][2])-1==ord(host_build[2]):
+                        
+                        elif kdk["build"][0:2] == host_build[0:2] and ord(kdk["build"][2]) +1 == ord(host_build[2]):
                             closest=kdk
                             break
                     if closest is None:
