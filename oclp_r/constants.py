@@ -275,7 +275,6 @@ class Constants:
         ###https://gh-proxy.com
         ###https://gh.llkk.cc
         ###https://github.moeyy.xyz
-        ###https://gitapi.simplehac.top
         self.github_mirror: str = ""
         
         

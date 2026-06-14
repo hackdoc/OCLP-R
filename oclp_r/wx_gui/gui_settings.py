@@ -60,19 +60,12 @@ class SettingsFrame(wx.Frame):
         self.frame_modal.ShowWindowModal()
 
     def api_link(self):
-        if self.constants.github_proxy_link!="SimpleHac":
-            self.constants.kdk_api_link="https://dortania.github.io/KdkSupportPkg/manifest.json"
-            self.constants.metallib_api_link="https://dortania.github.io/MetallibSupportPkg/manifest.json"
-            print(f"- User Select kdk link: {self.constants.kdk_api_link}")
-            print(f"- User Select metallib link: {self.constants.metallib_api_link}")
+        self.constants.kdk_api_link="https://dortania.github.io/KdkSupportPkg/manifest.json"
+        self.constants.metallib_api_link="https://dortania.github.io/MetallibSupportPkg/manifest.json"
+        print(f"- User Select kdk link: {self.constants.kdk_api_link}")
+        print(f"- User Select metallib link: {self.constants.metallib_api_link}")
 
-        if self.constants.github_proxy_link=="SimpleHac":
-
-            self.constants.kdk_api_link="https://next.oclpapi.simplehac.cn/KdkSupportPkg/manifest.json"
-            self.constants.metallib_api_link="https://next.oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
-
-            print(f"- User Select kdk link: {self.constants.kdk_api_link}")
-            print(f"- User Select metallib link: {self.constants.metallib_api_link}")
+        
     def condition_exp(self,key:str):
         import json
         try:
@@ -918,7 +911,6 @@ class SettingsFrame(wx.Frame):
                     "type": "choice",
                     "choices": [
                         "Default",
-                        "SimpleHac",
                         "gh-proxy",
                         "ghfast",
                         "ghllkk",
@@ -928,7 +920,6 @@ class SettingsFrame(wx.Frame):
                     "constants_variable": "github_proxy_link",
                     "description": [
                         self.trans["Default : https://dortania.github.io/"],
-                        self.trans["SimpleHac : https://next.oclpapi.simplehac.cn/"],
                         self.trans["gh-proxy : https://gh-proxy.com/"],
                         self.trans["ghfast : https://ghfast.top/"],
                         self.trans["ghllkk : https://gh.llkk.cc/"],

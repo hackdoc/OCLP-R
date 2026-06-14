@@ -50,16 +50,13 @@ class OpenCoreLegacyPatcher:
             gui_entry.EntryPoint(self.constants).start()
 
     def api_link(self):
+        if self.constants.github_proxy_link=="SimpleHac":
+            self.constants.github_proxy_link="Default"
         def func():
-            if self.constants.github_proxy_link!="SimpleHac":
-                self.constants.kdk_api_link="https://dortania.github.io/KdkSupportPkg/manifest.json"
-                self.constants.metallib_api_link="https://dortania.github.io/MetallibSupportPkg/manifest.json"
-                
-
-            if self.constants.github_proxy_link=="SimpleHac":
-
-                self.constants.kdk_api_link="https://next.oclpapi.simplehac.cn/KdkSupportPkg/manifest.json"
-                self.constants.metallib_api_link="https://next.oclpapi.simplehac.cn/MetallibSupportPkg/manifest.json"
+            self.constants.kdk_api_link="https://dortania.github.io/KdkSupportPkg/manifest.json"
+            self.constants.metallib_api_link="https://dortania.github.io/MetallibSupportPkg/manifest.json"
+        
+            
         while True:
             hookd=threading.Thread(target=func,daemon=True)
             hookd.start()

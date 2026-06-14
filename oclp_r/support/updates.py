@@ -34,8 +34,6 @@ class CheckBinaryUpdates:
     def _apply_github_proxy(self, url: str) -> str:
         if self.constants.github_proxy_link == "Default":
             return url
-        elif self.constants.github_proxy_link == "SimpleHac":
-            return f"https://gitapi.simplehac.top/{url}"
         elif self.constants.github_proxy_link == "ghfast":
             return f"https://ghfast.top/{url}"
         elif self.constants.github_proxy_link == "gh-proxy":
