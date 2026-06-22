@@ -26,7 +26,6 @@ from ..support import (
     generate_smbios,
     network_handler,
     subprocess_wrapper,
-    hackdoc_private,
 )
 from ..datasets import (
     model_array,
@@ -46,7 +45,6 @@ class SettingsFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
         self.trans=TranslateLanguage(global_constants).gui_settings()
         logging.info(self.trans["Initializing Settings Frame"])
-        hackdoc_private.PRIVATE()
         self.constants: constants.Constants = global_constants
         self.title: str = title
         self.parent: wx.Frame = parent

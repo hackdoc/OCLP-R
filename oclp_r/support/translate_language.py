@@ -321,10 +321,12 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Creating backup: {0}":"Creating backup: {0}",
                 "Backup already exists, skipping":"Backup already exists, skipping",
                 "Failed to create KDK backup:":"Failed to create KDK backup:",
-                "Cleaning unused KDKs":"Cleaning unused KDKs"
+                "Cleaning unused KDKs":"Cleaning unused KDKs",
+                "Checking for KDKs loosely matching {0}":"Checking for KDKs loosely matching {0}",
             }
         elif self.language_point=="简体中文":
             trans={
+                "Checking for KDKs loosely matching {0}":"检查与 {0} 粗略匹配的 KDK",
                 "This is macOS beta's KDK":"这是macOS beta的KDK",
                 "Could not contact KDK API":"无法联系 KDK API",
                 "Pulling KDK list from KdkSupportPkg API":"从 KdkSupportPkg API 获取 KDK 列表",
