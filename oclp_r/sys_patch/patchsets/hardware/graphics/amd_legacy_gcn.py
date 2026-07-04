@@ -9,7 +9,7 @@ from ...base import PatchType
 from ...shared_patches.monterey_gva    import MontereyGVA
 from ...shared_patches.monterey_opencl import MontereyOpenCL
 from ...shared_patches.amd_opencl      import AMDOpenCL
-from ...shared_patches.metal_31001     import LegacyMetal31001
+from ...shared_patches.renderbox     import LegacyMetal31001
 from .....constants  import Constants
 from .....detections import device_probe
 

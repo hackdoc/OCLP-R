@@ -10,7 +10,7 @@ from ...shared_patches.monterey_opencl import MontereyOpenCL
 
 from .....constants  import Constants
 from .....detections import device_probe
-from ...shared_patches.metal_31001     import LegacyMetal31001
+from ...shared_patches.renderbox     import LegacyMetal31001
 from .....datasets.os_data import os_data
 
 
