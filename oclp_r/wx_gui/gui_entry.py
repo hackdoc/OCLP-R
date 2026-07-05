@@ -87,9 +87,6 @@ class EntryPoint:
         elif "--gui_unpatch" in sys.argv:
             self.frame.revert_root_patching()
 
-        if "--ionv" in sys.argv:
-            logging.info(self.trans["Set IONvme Patch is True"])
-            self.constants.allow_ionvme_patch = True
 
 
         self.app.MainLoop()

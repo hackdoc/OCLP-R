@@ -781,16 +781,6 @@ class SettingsFrame(wx.Frame):
                     ],
                     "condition":self.condition_exp("USB")
                 },     
-                self.trans["Allow APFS Patch For Non-T2"]: {
-                    "type": "checkbox",
-                    "value": self.constants.allow_apfs_aligned_patch,
-                    "variable": "allow_apfs_aligned_patch",
-                    "constants_variable": "allow_apfs_aligned_patch",
-                    "description": [
-                        self.trans["When enabled, this will patch the apfs.efi"],
-                        self.trans["on Tahoe."],
-                    ],
-                },     
                 self.trans["AppleHDA.kext Version"]: {
                     "type": "choice",
                     "choices": [

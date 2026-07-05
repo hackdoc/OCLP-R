@@ -40,11 +40,9 @@ from .hardware.misc import (
     display_backlight,
     gmux,
     keyboard_backlight,
-    apfs_aligned,
     pcie_webcam,
     t1_security,
     cpu_missing_avx,
-    io_nvme
 )
 from .hardware.USB import (
     modern_usb,
@@ -137,7 +135,6 @@ class HardwarePatchsetDetection:
             modern_wireless.ModernWireless,
             legacy_audio.LegacyAudio,
             modern_audio.ModernAudio,
-            apfs_aligned.APFSP,
             voodoo_audio.VoodooAudio,
             modern_usb.LegacyUSBHost,
             display_backlight.DisplayBacklight,
@@ -147,7 +144,6 @@ class HardwarePatchsetDetection:
             t1_security.T1SecurityChip,
             legacy_usb11.USB11Controller,
             cpu_missing_avx.CPUMissingAVX,
-            io_nvme.IONvme
         ]
 
         self.device_properties = None
