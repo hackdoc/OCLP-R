@@ -62,25 +62,6 @@ class SettingsFrame(wx.Frame):
         self.constants.metallib_api_link="https://dortania.github.io/MetallibSupportPkg/manifest.json"
         print(f"- User Select kdk link: {self.constants.kdk_api_link}")
         print(f"- User Select metallib link: {self.constants.metallib_api_link}")
-
-        
-    def condition_exp(self,key:str):
-        import json
-        try:
-            
-            developer_path=Path("~/.hackdoc_developer").expanduser()
-            if developer_path.exists():
-                return True
-            
-            base_path=Path("~/Library/Logs/Hackdoc/JSON/control.json").expanduser()
-            with open(base_path,"r",encoding="utf-8") as file:
-                data=json.load(file)
-                if data[key]=="1":
-                    return True
-            return False
-        except:
-            return False
-    
         
     def _generate_elements(self, frame: wx.Frame = None) -> None:
         """
@@ -779,7 +760,6 @@ class SettingsFrame(wx.Frame):
                         self.trans["When enabled, this will patch the Old USB"],
                         self.trans["extensions on Tahoe."],
                     ],
-                    "condition":self.condition_exp("USB")
                 },     
                 self.trans["AppleHDA.kext Version"]: {
                     "type": "choice",
