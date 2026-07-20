@@ -21,7 +21,7 @@ class Constants:
         self.voodoo_patch_already:            bool = False
 
         # Patcher Versioning
-        self.patcher_version:                 str = "3.1.6"  # OCLP-R
+        self.patcher_version:                 str = "3.1.7"  # OCLP-R
         self.patcher_support_pkg_version:     str = "1.11.3"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2026 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
