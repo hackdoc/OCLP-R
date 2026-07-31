@@ -28,7 +28,6 @@ class nvidia_ids:
         0x0194,  # G80 [GeForce 8800 Ultra]
         0x019E,  # G80GL [Quadro FX 4600]
         0x019D,  # G80GL [Quadro FX 5600]
-        0x1010,  # Cant boot ,you can use it
         # G84
         0x0400,  # G84 [8600 GTS]
         0x0401,  # G84 [8600 GT]
@@ -46,7 +45,6 @@ class nvidia_ids:
         0x040D,  # G84 [FX 1600M]
         0x040E,  # G84 [FX 570]
         0x040F,  # G84 [FX 1700]
-        0x1011,# Cant boot ,you can use it
         # G86
         0x0420,  # G86 [8400 SE]
         0x0421,  # G86 [8500 GT]
@@ -64,7 +62,6 @@ class nvidia_ids:
         0x042D,  # G86 [FX 360M]
         0x042E,  # G86 [9300M G]
         0x042F,  # G86 [NVS 290]
-        0x1012, # Cant boot ,you can use it
         # G92
         0x0410,  # G92 [GT 330]
         0x0600,  # G92 [8800 GTS 512]
@@ -96,7 +93,6 @@ class nvidia_ids:
         0x061D,  # G92 [FX 2800M]
         0x061E,  # G92 [FX 3700M]
         0x061F,  # G92 [FX 3800M]
-        0x1013, # Cant boot ,you can use it
         # G94
         0x0621,  # G94 [GT 230]
         0x0622,  # G94 [9600 GT]
@@ -117,7 +113,6 @@ class nvidia_ids:
         0x0637,  # G94 [9600 GT]
         0x0638,  # G94 [FX 1800]
         0x063A,  # G94 [FX 2700M]
-        0x1014, # Cant boot ,you can use it
         # G96
         0x0640,  # G96 [9500 GT]
         0x0641,  # G96 [9400 GT]
@@ -143,7 +138,6 @@ class nvidia_ids:
         0x065B,  # G96 [9400 GT]
         0x065C,  # G96 [FX 770M]
         0x065F,  # G96 [G210]
-        0x1015, # Cant boot ,you can use it
         # G98
         0x06E0,  # G98 [9300 GE]
         0x06E1,  # G98 [9300 GS]
@@ -167,7 +161,6 @@ class nvidia_ids:
         0x06FB,  # G98 [FX 370M]
         0x06FD,  # G98 [NVS 295]
         0x06FF,  # G98 [HICx16]
-        0x1016, # Cant boot ,you can use it
         # GT200
         0x05E0,  # GT200 [GTX 295]
         0x05E1,  # GT200 [GTX 280]
@@ -184,7 +177,6 @@ class nvidia_ids:
         0x05FD,  # GT200GL [Quadro FX 5800]
         0x05FE,  # GT200GL [Quadro FX 4800]
         0x05FF,  # GT200GL [Quadro FX 3800]
-        0x1017, # Cant boot ,you can use it
         # MCP77 GPU
         0x0840,  # MCP77 GPU [8200M]
         0x0844,  # MCP77 GPU [9100M G]
@@ -198,7 +190,6 @@ class nvidia_ids:
         0x084C,  # MCP77 GPU [980A/780A SLI]
         0x084D,  # MCP77 GPU [750A SLI]
         0x084F,  # MCP77 GPU [8100 / 720A]
-        0x1018, # Cant boot ,you can use it
         # MCP79 GPU
         0x0860,  # MCP79 GPU [9400]
         0x0861,  # MCP79 GPU [9400]
@@ -225,7 +216,6 @@ class nvidia_ids:
         0x087D,  # MCP79 GPU [ION]
         0x087E,  # MCP79 GPU [ION LE]
         0x087F,  # MCP79 GPU [ION LE]
-        0x1019, # Cant boot ,you can use it
         # GT215
         0x0CA0,  # GT215 [GT 330]
         0x0CA2,  # GT215 [GT 320]
@@ -292,7 +282,6 @@ class nvidia_ids:
         0x08A2,  # MCP89 GPU [320M]
         0x08A3,  # MCP89 GPU [320M]
         0x08A4,  # MCP89 GPU [320M]
-        0x1023, # Cant boot ,you can use it
     ]
 
     fermi_ids = [
@@ -311,7 +300,6 @@ class nvidia_ids:
         0x06DD,  # GF100 [4000]
         0x06DE,  # GF100 [T20]
         0x06DF,  # GF100 [M2070-Q]
-        0x1111, # Cant drive,you can use it
         # GF104
         0x0E22,  # GF104 [GTX 460]
         0x0E23,  # GF104 [GTX 460 SE]
@@ -320,7 +308,6 @@ class nvidia_ids:
         0x0E31,  # GF104 [GTX 485M]
         0x0E3A,  # GF104 [3000M]
         0x0E3B,  # GF104 [4000M]
-        0x1112, # Cant boot ,you can use it
         # GF114
         0x1200,  # GF114 [GTX 560 Ti]
         0x1201,  # GF114 [GTX 560]
@@ -334,7 +321,6 @@ class nvidia_ids:
         0x1211,  # GF114 [GTX 580M]
         0x1212,  # GF114 [GTX 675M]
         0x1213,  # GF114 [GTX 670M]
-        0x1135, # Cant boot ,you can use it
         # GF106
         0x0DC0,  # GF106 [GT 440]
         0x0DC4,  # GF106 [GTS 450]
@@ -348,7 +334,6 @@ class nvidia_ids:
         0x0DD6,  # GF106 [GT 550M]
         0x0DD8,  # GF106 [2000]
         0x0DDA,  # GF106 [2000M]
-        0x1113,# Cant boot ,you can use it
         # GF116
         0x1241,  # GF116 [GT 545 OEM]
         0x1243,  # GF116 [GT 545]
@@ -361,7 +346,6 @@ class nvidia_ids:
         0x124B,  # GF116 [GT 640 OEM]
         0x124D,  # GF116 [GT 555M]
         0x1251,  # GF116 [GTX 560M]
-        0x1114, # Cant drive,you can use it
         # GF108
         0x0DE0,  # GF108 [GT 440]
         0x0DE1,  # GF108 [GT 430]
@@ -392,7 +376,6 @@ class nvidia_ids:
         0x0F00,  # GF108 [GT 630]
         0x0F01,  # GF108 [GT 620]
         0x0F02,  # GF108 [GT 730]
-        0x1115,# Cant drive,you can use it
         # GF110
         0x1080,  # GF110 [GTX 580]
         0x1081,  # GF110 [GTX 570]
@@ -407,7 +390,6 @@ class nvidia_ids:
         0x1096,  # GF110GL [Tesla C2050 / C2075]
         0x109A,  # GF110 [5010M]
         0x109B,  # GF110 [7000]
-        0x1116, # Cant drive,you can use it
         # GF119
         0x1040,  # GF119 [GT 520]
         0x1042,  # GF119 [510]
@@ -429,7 +411,6 @@ class nvidia_ids:
         0x105B,  # GF119M [705M]
         0x107C,  # GF119 [NVS 315]
         0x107D,  # GF119 [NVS 310]
-        0x1117,# Cant drive,you can use it
         # GF117
         0x1140,  # GF117 [GT 620M]
     ]
@@ -804,7 +785,6 @@ class amd_ids:
     gcn_7000_ids = [
         # GCN v1
         # AMDPitcairnGraphicsAccelerator - AMD7000Controller
-        0x1222,# Cant drive,you can use it
         0x6800,  # HD 7970M
         0x6801,  # HD 8970M
         0x6806,  # Unknown
@@ -837,7 +817,6 @@ class amd_ids:
     gcn_8000_ids = [
         # GCN v2
         # AMDBonaireGraphicsAccelerator - AMD8000Controller
-        0x1223,# Cant drive,you can use it
         0x6640,  # M6100
         0x6641,  # HD 8930M
         0x6646,  # R9 M280X / W6170M
@@ -853,7 +832,6 @@ class amd_ids:
     gcn_9000_ids = [
         # GCN v3
         # AMDFijiGraphicsAccelerator - AMD9000Controller
-        0x1233,# Cant drive,you can use it
         0x7300,  # R9 FURY / NANO
         0x730F,  # Unknown
         # AMDTongaGraphicsAccelerator - AMD9000Controller
@@ -890,13 +868,11 @@ class amd_ids:
         0x67CA,  # Unknown
         0x67CC,  # Unknown
         0x67CF,  # Unknown
-        0x1234,# Cant boot ,you can use it
     ]
 
     polaris_spoof_ids = [
         # Polaris 12 (Lexa)
         0x6981,  # Lexa XT [Radeon PRO WX 3200]
-        0x4321, # Cant boot ,you can use it
     ]
 
     vega_ids = [
@@ -931,7 +907,6 @@ class amd_ids:
         0x66A3,  # Pro Vega II/ Pro Vega II Duo
         0x66A7,  # Unknown
         0x66AF,  # VII
-        0x5657, # Cant boot ,you can use it
     ]
 
     navi_ids = [
@@ -961,7 +936,6 @@ class amd_ids:
         0x73E3,  # Pro W6600
         0x73FF,  # 6600/6600 XT/6600M
         0x73E0,  # Unknown
-        0x7777,# Cant boot ,you can use it
     ]
 
     r500_ids = [
@@ -969,7 +943,6 @@ class amd_ids:
         0x7146,  # X1300/X1550
         0x71c5,  # Mobile X1600
         0x7249,  # X1900 XT
-        0x8888,# Cant boot ,you can use it
     ]
 
     terascale_1_ids = [
@@ -1007,7 +980,6 @@ class amd_ids:
         0x9552,  # HD 4330/4350/4550 (mobile)
         0x9553,  # HD 4530/4570/545v (mobile)
         0x94A0,  # HD 4830
-        0x8989,# Cant boot ,you can use it
     ]
 
     terascale_2_ids = [
@@ -1040,7 +1012,6 @@ class amd_ids:
         0x6740,  # HD 6730M/6770M/7690M XT
         0x6741,  # HD 6630M/6650M/6750M/7670M/7690M
         0x6745,  # Unknown
-        0x9099,# Cant boot ,you can use it
     ]
 
 
@@ -1051,19 +1022,16 @@ class intel_ids:
         0x2592,  # 915GM
         0x2772,  # 945G
         0x27A2,  # 945GM
-        0x8891,# Cant boot ,you can use it
     ]
 
     gma_x3100_ids = [
         0x2a02,  # 965GM
-        0x8890,# Cant boot ,you can use it
     ]
 
     iron_ids = [
         # AppleIntelHDGraphics IDs
         0x0044,  # Unknown
         0x0046,  # HD Graphics
-        0x8887,# Cant boot ,you can use it
     ]
 
     sandy_ids = [
@@ -1074,7 +1042,6 @@ class intel_ids:
         0x0116,  # HD Graphics 3000
         0x0102,  # HD Graphics 2000
         0x0126,  # HD Graphics 3000
-        0x8886,# Cant boot ,you can use it
     ]
 
     ivy_ids = [
@@ -1084,7 +1051,6 @@ class intel_ids:
         0x0156,  # HD Graphics 2500
         0x0162,  # HD Graphics 4000
         0x0166,  # HD Graphics 4000
-        0x8885,# Cant boot ,you can use it
     ]
 
     haswell_ids = [
@@ -1095,7 +1061,6 @@ class intel_ids:
         0x0A2E,  # Iris Graphics 5100
         0x0D22,  # Iris Pro Graphics 5200
         0x0412,  # HD Graphics 4600
-        0x8884,# Cant boot ,you can use it
     ]
 
     broadwell_ids = [
@@ -1111,7 +1076,6 @@ class intel_ids:
         0x1622,  # Iris Pro Graphics 6200
         0x1612,  # HD Graphics 5600
         0x162B,  # Iris Graphics 6100
-        0x8883,# Cant boot ,you can use it
     ]
 
     skylake_ids = [
@@ -1126,7 +1090,6 @@ class intel_ids:
         0x1917,  # Unknown
         0x193B,  # Iris Pro Graphics 580
         0x191B,  # HD Graphics 530
-        0x8882,# Cant boot ,you can use it
     ]
 
     kaby_lake_ids = [
@@ -1139,7 +1102,6 @@ class intel_ids:
         0x5926,  # Iris Plus Graphics 640
         0x5927,  # Iris Plus Graphics 650
         0x5923,  # HD Graphics 635
-        0x8881,# Cant boot ,you can use it
     ]
 
     coffee_lake_ids = [
@@ -1150,14 +1112,12 @@ class intel_ids:
         0x3E92,  # UHD Graphics 630
         0x3E91,  # UHD Graphics 630
         0x3E98,  # UHD Graphics 630
-        0x8880,# Cant boot ,you can use it
     ]
 
     comet_lake_ids = [
         0x9BC8,  # UHD Graphics 630
         0x9BC5,  # UHD Graphics 630
         0x9BC4,  # UHD Graphics
-        0x8879,# Cant boot ,you can use it
     ]
 
     ice_lake_ids = [
@@ -1172,7 +1132,6 @@ class intel_ids:
         0x8A53,  # Iris Plus Graphics G7
         0x8A5A,  # Iris Plus Graphics G4
         0x8A5B,  # Unknown
-        0x8878,# Cant boot ,you can use it
     ]
 
     AppleIntel8254XEthernet = [
