@@ -751,7 +751,7 @@ class SettingsFrame(wx.Frame):
                 "wrap_around 1": {
                     "type": "wrap_around",
                 },
-                self.trans["Allow Tahoe Modern USB Patch"]: {
+                self.trans["Allow Tahoe Modern USB Patch (Deprecated)"]: {
                     "type": "checkbox",
                     "value": self.constants.allow_usb_patch,
                     "variable": "allow_usb_patch",

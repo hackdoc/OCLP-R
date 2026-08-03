@@ -686,6 +686,7 @@ class Computer:
     oclp_sys_signed: Optional[bool] = False
     firmware_vendor: Optional[str] = None
     rosetta_active: Optional[bool] = False
+    t2_chip: Optional[bool] = False
 
     @staticmethod
     def probe():
@@ -704,6 +705,7 @@ class Computer:
         computer.bluetooth_probe()
         computer.topcase_probe()
         computer.t1_probe()
+        computer.t2_probe()
         computer.ambient_light_sensor_probe()
         computer.pcie_webcam_probe()
         computer.sata_disk_probe()
@@ -1014,7 +1016,27 @@ class Computer:
                     continue
                 self.t1_chip = True
                 break
-
+    def t2_probe(self):
+        """Detect Apple T2 controllers by their physical PCI identifiers."""
+        matching = {
+            "IOProviderClass": "IOPCIDevice",
+            "IOPropertyMatch": [
+                {
+                    "vendor-id": (0x106B).to_bytes(4, byteorder="little"),
+                    "device-id": device_id.to_bytes(4, byteorder="little"),
+                }
+                for device_id in (0x1801, 0x1802)
+            ],
+        }
+        devices = ioreg.ioiterator_to_list(
+            ioreg.IOServiceGetMatchingServices(ioreg.kIOMasterPortDefault, matching, None)[1]
+        )
+        device = next(devices, None)
+        if device:
+            self.t2_chip = True
+            ioreg.IOObjectRelease(device)
+        for device in devices:
+            ioreg.IOObjectRelease(device)
     def sata_disk_probe(self):
         # Get all SATA Controllers/Disks from 'system_profiler SPSerialATADataType'
         # Determine whether SATA SSD is present and Apple-made

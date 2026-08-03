@@ -250,7 +250,7 @@ class Constants:
         self.set_vmm_cpuid:          bool = False  # Set VMM bit inside CPUID
         self.disable_mediaanalysisd: bool = False  # Set mediaanalysisd to spawn
         self.force_quad_thread:      bool = False  #  Force quad thread mode (cpus=4)
-        self.allow_usb_patch:        bool = True   # Allow USB patch on macOS 26+
+        self.allow_usb_patch:        bool = False   # Allow USB patch on macOS 26+
         self.set_alc_usage:          bool = True   #  Set AppleALC usage
         self.allow_3rd_party_drives: bool = True   #  Allow ThridPartyDrives quirk
         self.allow_nvme_fixing:      bool = True   #  Allow NVMe Kernel Space Patches

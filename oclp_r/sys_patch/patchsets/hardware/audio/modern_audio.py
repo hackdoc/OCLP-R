@@ -35,7 +35,7 @@ class ModernAudio(BaseHardware):
         """
         AppleHDA was outright removed in macOS 26, so this patch set is always present if OS requires it
         """
-        return self._constants.audio_type == "AppleHDA"
+        return self._constants.audio_type == "AppleHDA" and not self._computer.t2_chip
 
     def requires_kernel_debug_kit(self) -> bool:
         """
