@@ -211,7 +211,6 @@ class InitializeLoggingSupport:
 
             # Ask user if they want to send crash report
             try:
-                #result = applescript.AppleScript(self.trans['display dialog "{error_msg}" with title "OCLP-R ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution'].format(error_msg,self.constants.patcher_version)).run()
                 result=applescript.AppleScript(f'display dialog "{error_msg}" with title "OCLP-R ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution').run()
             except Exception as e:
                 logging.error(self.trans["Failed to display crash report dialog: {0}"].format(e))
