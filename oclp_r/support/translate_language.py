@@ -59,9 +59,9 @@ class TranslateLanguage:
                 "- Failed to load plist for":"- Failed to load plist for",
                 "- Removing":"- Removing",
                 "- Using custom model:":"- Using custom model:",
-                """Your model is not supported by this patcher for running unsupported OSes!"
+                """Your model is not supported by this patcher for running unsupported OSes!
 
-If you plan to create the USB for another machine, please select the "Change Model" option in the menu.""":"""Your model is not supported by this patcher for running unsupported OSes!"
+If you plan to create the USB for another machine, please select the "Change Model" option in the menu.""":"""Your model is not supported by this patcher for running unsupported OSes!
 
 If you plan to create the USB for another machine, please select the "Change Model" option in the menu.""",
                 "- Using detected model:":"- Using detected model:",
@@ -170,7 +170,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "- Failed to load plist for": "- 无法加载 plist 文件",
                 "- Removing": "- 正在删除",
                 "- Using custom model:":"- 使用自定义型号:",
-                """Your model is not supported by this patcher for running unsupported OSes!"
+                """Your model is not supported by this patcher for running unsupported OSes!
 
 If you plan to create the USB for another machine, please select the "Change Model" option in the menu.""": """您的型号不受此修补程序支持以运行不支持的操作系统!
 
@@ -280,7 +280,9 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Failed to fetch KDK list, falling back to local KDK matching":"Failed to fetch KDK list, falling back to local KDK matching",
                 "Checking for KDKs loosely matching {0}":"Checking for KDKs loosely matching {0}",
                 "Found matching KDK: {0}":"Found matching KDK: {0}",
+                "Couldn't find KDK matching {0} or {1}, please install one manually":"Couldn't find KDK matching {0} or {1}, please install one manually",
                 "Couldn't find KDK matching {0} ({1}) or {2} was installed.":"Couldn't find KDK matching {0} ({1}) or {2} was installed.",
+                "No KDKs found for {0} ({1})":"No KDKs found for {0} ({1})",
                 "Please ensure you have a network connection or manually install a KDK.":"Please ensure you have a network connection or manually install a KDK.",
                 "No direct match found for {0}, falling back to closest match":"No direct match found for {0}, falling back to closest match",
                 "Closest Match: {0} ({1})":"Closest Match: {0} ({1})",
@@ -336,7 +338,9 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Failed to fetch KDK list, falling back to local KDK matching":"获取 KDK 列表失败, 回退到本地 KDK 匹配",
                 "Checking for KDKs loosely matching {0}":"检查与 {0} 松散匹配的 KDK",
                 "Found matching KDK: {0}":"找到匹配的 KDK: {0}",
+                "Couldn't find KDK matching {0} or {1}, please install one manually":"找不到与 {0} 或 {1} 匹配的 KDK, 请手动安装",
                 "Couldn't find KDK matching {0} ({1}) or {2} was installed.":"找不到与 {0} ({1}) 或 {2} 匹配的 KDK.",
+                "No KDKs found for {0} ({1})":"找不到适用于 {0} ({1}) 的 KDK",
                 "Please ensure you have a network connection or manually install a KDK.":"请确保您有网络连接或手动安装 KDK.",
                 "No direct match found for {0}, falling back to closest match":"未找到 {0} 的直接匹配, 回退到最接近的匹配",
                 "Closest Match: {0} ({1})":"最接近的匹配: {0} ({1})",
@@ -2067,6 +2071,8 @@ Booted Information:
                 "Provide English & Chinese Simplified.":"Provide English & Chinese Simplified.",
                 "Updating System Defaults: {variable} = {value} ({value_type})":"Updating System Defaults: {variable} = {value} ({value_type})",
                 "Updating System Defaults (root): {variable} = {value} ({value_type})":"Updating System Defaults (root): {variable} = {value} ({value_type})",
+                "Updating GPU Selection: {gpu_choice}":"Updating GPU Selection: {gpu_choice}",
+                "user_download_file:{path}":"user_download_file:{path}",
                 "Root Volume update Failed, check terminal output":"Root Volume update Failed, check terminal output",
             }
         elif self.language_point=="简体中文":
@@ -2417,6 +2423,8 @@ Hardware Information:
                 "Populate Stats":"填充统计信息",
                 "Return":"返回",
                 "This settings requires 'gpu-power-prefs' NVRAM argument to be set to '1'.\n\nIf missing and this option is toggled, the system will not boot\n\nFull command:\nnvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00":"此设置需要 'gpu-power-prefs' NVRAM 参数设置为 '1'。\n\n如果缺失且此选项被切换，系统将无法启动\n\n完整命令：\nnvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00",
+                "Updating GPU Selection: {gpu_choice}":"正在更新GPU选择: {gpu_choice}",
+                "user_download_file:{path}":"用户下载的文件: {path}",
                 "Root Volume update Failed, check terminal output":"根卷更新失败，请检查终端输出",
             }
         return trans
@@ -2551,6 +2559,8 @@ Hardware Information:
                 "No new patches detected for system":"No new patches detected for system",
                 "- Patch {patch} not installed":"- Patch {patch} not installed",
                 "Built from source, running from socure":"Built from source, running from socure",
+                "- Commit URLs differ":"- Commit URLs differ",
+                "- Commit URLs:":"- Commit URLs:",
             }
         elif self.language_point=="简体中文":
             trans={
@@ -2596,7 +2606,9 @@ Hardware Information:
                 "We just finished installing the patches to your Root Volume!\n\nHowever, Apple requires users to manually approve the kernel extensions installed before they can be used next reboot.\n\nWould you like to open System Preferences?":"我们刚刚完成了对您根卷的补丁安装！\n\n但, Apple 要求用户手动批准安装的内核扩展，然后才能在下次重启时使用它们。\n\n您想要打开系统偏好设置吗?",
                 "Open System Preferences?":"打开系统偏好设置？",
                 "Open System Preferences":"打开系统偏好设置",
-                "Ignore":"忽略"
+                "Ignore":"忽略",
+                "- Commit URLs differ":"- 提交 URL 不同",
+                "- Commit URLs:":"- 提交 URL 为：",
             }
         return trans
     

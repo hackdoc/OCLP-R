@@ -178,7 +178,7 @@ class KernelDebugKitObject:
                 return
 
             older_version = f"{parsed_version.major}.{parsed_version.minor - 1 if parsed_version.minor > 0 else 0}"
-            logging.info(self.trans["Checking for KDKs matching {0}"].format(older_version))
+            logging.info(self.trans["Checking for KDKs loosely matching {0}"].format(older_version))
             self.kdk_installed_path = self._local_kdk_installed(match=older_version, check_version=True)
             if self.kdk_installed_path:
                 logging.info(self.trans["Found matching KDK: {0}"].format(Path(self.kdk_installed_path).name))
@@ -188,7 +188,7 @@ class KernelDebugKitObject:
 
             logging.warning(self.trans["Couldn't find KDK matching {0} or {1}, please install one manually"].format(host_version,host_build))
 
-            self.error_msg = self.trans["Couldn't find KDK matching {0} ({1}) or {2} was installed.\nPlease ensure you have a network connection or manually install a KDK."].format(host_version,host_build,older_version)
+            self.error_msg = self.trans["Couldn't find KDK matching {0} ({1}) or {2} was installed."].format(host_version,host_build,older_version) + "\n" + self.trans["Please ensure you have a network connection or manually install a KDK."]
 
             return
 

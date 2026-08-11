@@ -53,7 +53,7 @@ def run_as_root(*args, **kwargs) -> subprocess.CompletedProcess:
     """
     # Check if first argument exists
     if not Path(args[0][0]).exists():
-        raise FileNotFoundError(trans["file_not_found: {0}"].format(args[0][0]))
+        raise FileNotFoundError(trans["File not found: {0}"].format(args[0][0]))
 
     return subprocess.run([OCLP_PRIVILEGED_HELPER] + [args[0][0]] + args[0][1:], **kwargs)
 

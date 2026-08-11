@@ -150,7 +150,7 @@ class MetalLibraryObject:
 
             logging.warning(self.trans["Couldn't find metallib matching {0} or {1}, please install one manually"].format(self.host_version, older_version))
 
-            self.error_msg = self.trans["Could not contact MetallibSupportPkg API, and no metallib matching {0} ({1}) or {2} was installed.\nPlease ensure you have a network connection or manually install a metallib."].format(self.host_version, self.host_build, older_version)
+            self.error_msg = self.trans["Could not contact MetallibSupportPkg API, and no metallib matching {0} ({1}) or {2} was installed."].format(self.host_version, self.host_build, older_version) + "\n" + self.trans["Please ensure you have a network connection or manually install a metallib."]
 
             return
 
@@ -272,12 +272,12 @@ class MetalLibraryObject:
         self.error_msg = ""
 
         if self.metallib_already_installed:
-            logging.info(self.trans[f"No download required, metallib already installed"])
+            logging.info(self.trans["No download required, metallib already installed"])
             self.success = True
             return None
 
         if self.metallib_url == "":
-            self.error_msg = self.trans[f"Could not retrieve metallib catalog, no metallib to download"]
+            self.error_msg = self.trans["Could not retrieve metallib catalog, no metallib to download"]
             logging.error(self.error_msg)
             return None
 
@@ -294,11 +294,11 @@ class MetalLibraryObject:
         """
 
         if not self.success:
-            logging.error(self.trans[f"Cannot install metallib, no metallib was successfully retrieved"])
+            logging.error(self.trans["Cannot install metallib, no metallib was successfully retrieved"])
             return False
 
         if self.metallib_already_installed:
-            logging.info(self.trans[f"No installation required, metallib already installed"])
+            logging.info(self.trans["No installation required, metallib already installed"])
             return True
 
         result = subprocess_wrapper.run_as_root([

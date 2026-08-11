@@ -152,7 +152,7 @@ class KernelDebugKitMerge:
         kdk_path = Path(kdk_obj.kdk_installed_path) if kdk_obj.kdk_installed_path != "" else None
         if kdk_path is None:
             logging.info(self.trans["- Unable to find Kernel Debug Kit"])
-            raise Exception(self.trans["Unable to find Kernel Debug Kit"])
+            raise Exception(self.trans["- Unable to find Kernel Debug Kit"])
 
         logging.info(self.trans["- Found KDK at: {kdk_path}"].format(kdk_path=kdk_path))
 
