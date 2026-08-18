@@ -3,24 +3,24 @@
 <plist version="1.0">
 <dict>
 	<key>OCLP-R</key>
-	<string>v3.0.2</string>
+	<string>v3.1.8</string>
 	<key>PatcherSupportPkg</key>
-	<string>v1.11.0</string>
+	<string>v1.11.3</string>
 	<key>Time Patched</key>
-	<string>February 05, 2026 @ 14:10:11</string>
+	<string>August 18, 2026 @ 15:44:28</string>
 	<key>Commit URL</key>
 	<string></string>
 	<key>Kernel Debug Kit Used</key>
-	<string>/Library/Developer/KDKs/KDK_26.3_25D5087f.kdk</string>
+	<string>Not applicable</string>
 	<key>Metal Library Used</key>
 	<string>Not applicable</string>
 	<key>OS Version</key>
-	<string>25.3 (25D122)</string>
+	<string>25.6 (25G220)</string>
 	<key>Custom Signature</key>
 	<true/>
 	<key>Modern Wireless</key>
 	<dict>
-		<key>覆盖系统卷</key>
+		<key>Overwrite System Volume</key>
 		<dict>
 			<key>/usr/libexec</key>
 			<dict>
@@ -28,7 +28,7 @@
 				<string>13.7.2-25</string>
 			</dict>
 		</dict>
-		<key>合并系统卷</key>
+		<key>Merge System Volume</key>
 		<dict>
 			<key>/System/Library/PrivateFrameworks</key>
 			<dict>
@@ -41,14 +41,19 @@
 			<dict/>
 		</dict>
 	</dict>
-	<key>Modern Audio</key>
+	<key>Voodoo Audio</key>
 	<dict>
-		<key>覆盖系统卷</key>
+		<key>Overwrite System Volume</key>
 		<dict>
-			<key>/System/Library/Extensions</key>
+			<key>/Library/Extensions</key>
 			<dict>
-				<key>AppleHDA.kext</key>
-				<string>26.0 Beta 1</string>
+				<key>VoodooHDA.kext</key>
+				<string>11.3</string>
+			</dict>
+			<key>/Library/PreferencePanes</key>
+			<dict>
+				<key>VoodooHDA.prefPane</key>
+				<string>11.3</string>
 			</dict>
 		</dict>
 	</dict>

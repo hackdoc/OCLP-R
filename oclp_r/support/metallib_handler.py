@@ -16,7 +16,10 @@ from .. import constants
 from ..datasets import os_data
 
 from .translate_language import TranslateLanguage
-METALLIB_INSTALL_PATH: str  = "/Library/Application Support/Hackdoc/MetallibSupportPkg"
+METALLIB_INSTALL_PATHS: list = [
+    "/Library/Application Support/Dortania/MetallibSupportPkg",
+    "/Library/Application Support/Hackdoc/MetallibSupportPkg",
+]
 
 
 METALLIB_ASSET_LIST:   list = None
@@ -245,20 +248,21 @@ class MetalLibraryObject:
         if self.ignore_installed:
             return None
 
-        if not Path(METALLIB_INSTALL_PATH).exists():
-            return None
-
-        for metallib_folder in Path(METALLIB_INSTALL_PATH).iterdir():
-            if not metallib_folder.is_dir():
+        for install_path in METALLIB_INSTALL_PATHS:
+            if not Path(install_path).exists():
                 continue
-            if check_version:
-                if match not in metallib_folder.name:
-                    continue
-            else:
-                if not metallib_folder.name.endswith(f"-{match}"):
-                    continue
 
-            return metallib_folder
+            for metallib_folder in Path(install_path).iterdir():
+                if not metallib_folder.is_dir():
+                    continue
+                if check_version:
+                    if match not in metallib_folder.name:
+                        continue
+                else:
+                    if not metallib_folder.name.endswith(f"-{match}"):
+                        continue
+
+                return metallib_folder
 
         return None
 

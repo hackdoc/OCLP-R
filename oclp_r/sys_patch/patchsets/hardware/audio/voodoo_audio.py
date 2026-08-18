@@ -50,7 +50,10 @@ class VoodooAudio(BaseHardware):
         if self._xnu_major >= os_data.tahoe and self._os_build != "25A5279m":
             return {
                 "Voodoo Audio": {
-                    PatchType.OVERWRITE_SYSTEM_VOLUME: {
+                    # On macOS 26+ /Library is a firmlink to the Data volume, so
+                    # /Library/Extensions and /Library/PreferencePanes no longer exist
+                    # on the System volume. Install to the Data volume instead.
+                    PatchType.OVERWRITE_DATA_VOLUME: {
                         "/Library/Extensions": {
                             "VoodooHDA.kext":"11.3",
                         },
