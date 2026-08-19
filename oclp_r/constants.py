@@ -37,7 +37,7 @@ class Constants:
         self.user_download_file:              str = f"/Users/{getpass.getuser()}/Downloads"
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_version: str = "1.0.6"
+        self.opencore_version: str = "1.0.7"
 
         # Kext Versioning
         ## Acidanthera
