@@ -19,10 +19,11 @@ class Constants:
         self.kdk_api_link:                    str = ""
         self.metallib_api_link:               str = ""
         self.voodoo_patch_already:            bool = False
+        self.hdau_patch_already:              bool = False
 
         # Patcher Versioning
         self.patcher_version:                 str = "3.1.8"  # OCLP-R
-        self.patcher_support_pkg_version:     str = "1.11.3"  # PatcherSupportPkg
+        self.patcher_support_pkg_version:     str = "1.11.4"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2026 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
         
@@ -142,6 +143,7 @@ class Constants:
         self.original_path: Path = Path(__file__).parent.parent.resolve()
         self.payload_path:  Path = self.current_path / Path("payloads")
         self.voodoo_kext_path = Path('/Library/Extensions/VoodooHDA.kext')
+        self.hdau_kext_path = Path('/Library/Extensions/HDAUniversal.kext')
 
 
         # Patcher Settings

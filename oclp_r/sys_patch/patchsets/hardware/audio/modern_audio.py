@@ -77,6 +77,7 @@ class ModernAudio(BaseHardware):
                     "/Library/Extensions":[
                         "VoodooHDA.kext",
                         "AppleHDADisabler.kext",
+                        "HDAUniversal.kext",
                     ],
                     "/Library/PreferencePanes":[
                         'VoodooHDA.prefPane',

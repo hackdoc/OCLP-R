@@ -735,7 +735,8 @@ class SettingsFrame(wx.Frame):
                     "type": "choice",
                     "choices": [
                         "AppleHDA",
-                        "VoodooHDA"
+                        "VoodooHDA",
+                        "HDAUniversal"
                     ],
                     "value": self.constants.audio_type,
                     "variable": "audio_type",

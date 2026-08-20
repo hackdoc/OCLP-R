@@ -77,6 +77,8 @@ class OpenCoreLegacyPatcher:
 
     def check_voodoo_patch(self) -> None:
         self.constants.voodoo_patch_already=os.path.exists(self.constants.voodoo_kext_path)
+        self.constants.hdau_patch_already = os.path.exists(self.constants.hdau_kext_path)
+        
     def _generate_base_data(self) -> None:
         """
         Generate base data required for the patcher to run

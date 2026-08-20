@@ -27,7 +27,7 @@ class VoodooAudio(BaseHardware):
         return AmfiConfigDetectLevel.NO_CHECK
 
     def present(self) -> bool:
-        return self._constants.audio_type=="VoodooHDA" and not self._constants.voodoo_patch_already
+        return self._constants.audio_type=="VoodooHDA" and not self._constants.voodoo_patch_already and not self._computer.t2_chip
 
     
     def native_os(self) -> bool:
