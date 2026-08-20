@@ -58,7 +58,7 @@ class HDAU(BaseHardware):
                         "HDAUniversal.kext":"HDAUniversal",
                     },
                 },
-                PatchType.REMOVE_SYSTEM_VOLUME:{
+                PatchType.REMOVE_DATA_VOLUME:{
                     "/Library/Extensions":[
                         "VoodooHDA.kext",
                         "AppleHDADisabler.kext",

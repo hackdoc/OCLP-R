@@ -203,6 +203,7 @@ class PatchSysVolume:
         self._clean_skylight_plugins()
         self._delete_nonmetal_enforcement()
         self.clean_launchpad()
+        self._clean_up_voodoo_and_hdau()
         kernelcache.KernelCacheSupport(
             mount_location_data=self.mount_location_data,
             detected_os=self.constants.detected_os,
@@ -213,6 +214,14 @@ class PatchSysVolume:
         self.constants.root_patcher_succeeded = True
         logging.info(self.trans["- Unpatching complete"])
         logging.info(self.trans["\nPlease reboot the machine for patches to take effect"])
+
+    def _clean_up_voodoo_and_hdau(self) -> None:
+        try:
+            subprocess_wrapper.run_as_root_and_verify(["/bin/rm", "-Rf", self.constants.hdau_kext_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root_and_verify(["/bin/rm", "-Rf", self.constants.voodoo_kext_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root_and_verify(["/bin/rm", "-Rf", "/Library/PreferencePanes/VoodooHDA.prefPane"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        except:
+            pass
 
 
     def _rebuild_root_volume(self) -> bool:

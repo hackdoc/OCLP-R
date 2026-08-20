@@ -66,7 +66,7 @@ class VoodooAudio(BaseHardware):
         else:
             return {
                 "Voodoo Audio": {
-                    PatchType.OVERWRITE_SYSTEM_VOLUME: {
+                    PatchType.OVERWRITE_DATA_VOLUME: {
                         "/Library/Extensions": {
                             "VoodooHDA.kext":"11.3",
                             "AppleHDADisabler.kext": "11.3" ,

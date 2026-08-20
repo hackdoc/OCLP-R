@@ -73,7 +73,7 @@ class ModernAudio(BaseHardware):
                         "AppleHDA.kext":      f"{self._constants.applehda_version}",
                     },
                 },
-                PatchType.REMOVE_SYSTEM_VOLUME:{
+                PatchType.REMOVE_DATA_VOLUME:{
                     "/Library/Extensions":[
                         "VoodooHDA.kext",
                         "AppleHDADisabler.kext",
