@@ -1310,21 +1310,21 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Create macOS Installer":"Create macOS Installer",
                 "Download macOS Installer":"Download macOS Installer",
                 "Use existing macOS Installer":"Use existing macOS Installer",
-                "Download DMGs":"Download DMGs",
+                
                 "Return to Main Menu":"Return to Main Menu",
                 "Finding Available Software":"Finding Available Software",
                 "Finding Available DMG":"Finding Available DMG",
                 "Failed to download Installer Catalog from Apple":"Failed to download Installer Catalog from Apple",
-                "Select DMGs from SimpleHac":"Select DMGs from SimpleHac",
+                
                 "Select DMGs":"Select DMGs",
-                "Failed to download dmgs from SimpleHac":"Failed to download dmgs from SimpleHac",
+                
                 "Fetching installer catalog: {seed_type}":"Fetching installer catalog: {seed_type}",
                 "JSON data:":"JSON data:",
                 "Download":"Download",
                 "Copy Link":"Copy Link",
                 "Show Older/Beta Versions":"Show Older/Beta Versions",
                 "Download link copied to clipboard":"Download link copied to clipboard",
-                "Download DMG":"Download DMG",
+                
                 "Potential Issues":"Potential Issues",
                 "View Github Issue":"View Github Issue",
                 "Download Anyways":"Download Anyways",
@@ -1353,7 +1353,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Latest only":"Latest only",
                 "Can't get AES Keys":"Can't get AES Keys",
                 "Error":"Error",
-                "No dmgs found on SimpleHac":"No dmgs found on SimpleHac",
+        
                 "Download the selected DMGs.":"Download the selected DMGs.",
                 "Available installers on SUCatalog":"Available installers on SUCatalog",
                 "No installers found on SUCatalog":"No installers found on SUCatalog",
@@ -1367,7 +1367,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Select macOS Installer":"Select macOS Installer",
                 "Validating chunk {0} of {1}":"Validating chunk {0} of {1}",
                 "macOS installer validated":"macOS installer validated",
-                "Available installers on SimpleHac":"Available installers on SimpleHac",
+            
                 "Copy the download link of the selected DMG.":"Copy the download link of the selected DMG.",
                 "Create macOS Installer":"Create macOS Installer",
                 "Your model ({model}) may not be fully supported by this installer. You may encounter the following issues:\n\n{problems}\n\nFor more information, see associated page. Otherwise, we recommend using macOS Monterey":"Your model ({model}) may not be fully supported by this installer. You may encounter the following issues:\n\n{problems}\n\nFor more information, see associated page. Otherwise, we recommend using macOS Monterey",
@@ -1394,7 +1394,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "No installers found on SUCatalog":"SUCatalog 上未找到安装程序",
                 "Available installers on SUCatalog":"SUCatalog 上可用的安装程序",
                 "Download the selected DMGs.":"下载选中的 DMG 文件。",
-                "No dmgs found on SimpleHac":"SimpleHac 上未找到 dmgs",
+                
                 "Error":"错误",
                 "Can't get AES Keys":"无法获取 AES 密钥",
                 "All entries":"所有条目",
@@ -1409,21 +1409,20 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Create macOS Installer":"创建 macOS 安装程序",
                 "Download macOS Installer":"下载 macOS 安装程序",
                 "Use existing macOS Installer":"使用现有 macOS 安装程序",
-                "Download DMGs":"下载 DMG",
+                
                 "Return to Main Menu":"返回主菜单",
                 "Finding Available Software":"查找可用软件",
                 "Finding Available DMG":"查找可用 DMG",
                 "Failed to download Installer Catalog from Apple":"无法从 Apple 下载安装程序目录",
-                "Select DMGs from SimpleHac":"从 SimpleHac 选择 DMG",
+                
                 "Select DMGs":"选择 DMG",
-                "Failed to download dmgs from SimpleHac":"无法从 SimpleHac 下载 dmgs",
+                
                 "Fetching installer catalog: {seed_type}":"正在获取安装程序目录: {seed_type}",
                 "JSON data:":"JSON数据:",
                 "Download":"下载",
                 "Copy Link":"复制链接",
                 "Show Older/Beta Versions":"显示旧版本/测试版",
                 "Download link copied to clipboard":"下载链接已复制到剪贴板",
-                "Download DMG":"下载 DMG",
                 "Potential Issues":"潜在问题",
                 "View Github Issue":"查看 Github 问题",
                 "Download Anyways":"仍然下载",
@@ -1442,7 +1441,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Finished extracting the installer, would you like to continue and create a macOS installer?":"安装程序提取完成，是否要继续创建 macOS 安装程序？",
                 "Create macOS Installer?":"创建 macOS 安装程序？",
                 "Create macOS Installer":"创建 macOS 安装程序",
-                "Available installers on SimpleHac":"SimpleHac 上可用的安装程序",
+                
                 "Selected macOS DMG {version} ({build})":"已选择 macOS DMG {version} ({build})",
                 "Select Path":"选择路径",
                 "Cannot write to the selected directory.":"无法写入选择的目录。",
@@ -1940,12 +1939,12 @@ Please check the Github page for more information about this release.""":"""
                 "Ignore App Updates":"Ignore App Updates",
                 "Github Proxy":"Github Proxy",
                 "Default":"Default",
-                "SimpleHac":"SimpleHac",
+                
                 "gh-proxy":"gh-proxy",
                 "ghfast":"ghfast",
                 "ghllkk":"ghllkk",
                 "Default : https://dortania.github.io/":"Default : https://dortania.github.io/",
-                "SimpleHac : https://next.oclpapi.simplehac.cn/":"SimpleHac : https://next.oclpapi.simplehac.cn/",
+                
                 "gh-proxy : https://gh-proxy.com/":"gh-proxy : https://gh-proxy.com/",
                 "ghfast : https://ghfast.top/":"ghfast : https://ghfast.top/",
                 "ghllkk : https://gh.llkk.cc/":"ghllkk : https://gh.llkk.cc/",
@@ -2372,16 +2371,16 @@ Hardware Information:
                 "Ignore App Updates":"忽略应用更新",
                 "Github Proxy":"Github 代理",
                 "Default":"默认",
-                "SimpleHac":"SimpleHac",
+                
                 "gh-proxy":"gh-proxy",
                 "ghfast":"ghfast",
                 "ghllkk":"ghllkk",
                 "Default : https://dortania.github.io/":"默认 : https://dortania.github.io/",
-                  "SimpleHac : https://next.oclpapi.simplehac.cn/":"SimpleHac : https://next.oclpapi.simplehac.cn/",
+                  
                   "gh-proxy : https://gh-proxy.com/":"gh-proxy : https://gh-proxy.com/",
                   "ghfast : https://ghfast.top/":"ghfast : https://ghfast.top/",
                   "Default : https://dortania.github.io/":"默认 : https://dortania.github.io/",
-                "SimpleHac : https://next.oclpapi.simplehac.cn/":"SimpleHac : https://next.oclpapi.simplehac.cn/",
+    
                 "gh-proxy : https://gh-proxy.com/":"gh-proxy : https://gh-proxy.com/",
                 "ghfast : https://ghfast.top/":"ghfast : https://ghfast.top/",
                 "ghllkk : https://gh.llkk.cc/":"ghllkk : https://gh.llkk.cc/",
