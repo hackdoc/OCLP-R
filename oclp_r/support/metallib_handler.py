@@ -6,6 +6,7 @@ import logging
 import requests
 import subprocess
 import packaging.version
+import re
 
 from typing  import cast
 from pathlib import Path
@@ -23,6 +24,29 @@ METALLIB_INSTALL_PATHS: list = [
 
 
 METALLIB_ASSET_LIST:   list = None
+
+
+def _parse_build(build: str) -> tuple:
+    match = re.fullmatch(r"\s*(\d+)([A-Za-z])(\d+).*", str(build or ""))
+    if not match:
+        return (-1, -1, -1)
+    letter = ord(match.group(2).upper()) - ord("A")
+    if match.group(2).upper() > "I":
+        letter -= 1
+    return (int(match.group(1)), letter, int(match.group(3)))
+
+
+def _metallib_sort_key(item: dict) -> tuple:
+    try:
+        version = packaging.version.parse(str(item.get("version", "")))
+    except packaging.version.InvalidVersion:
+        version = packaging.version.parse("0")
+    build = str(item.get("build", "") or "")
+    build_key = _parse_build(build)
+    # Release builds sort above beta suffixes at the same version/build.
+    suffix = build[len(str(build_key[0])) + 1:] if build_key != (-1, -1, -1) else ""
+    beta_key = 0 if suffix and suffix[-1:].isalpha() else 1
+    return (version, beta_key, build_key, suffix.lower(), str(item.get("date", "")))
 
 
 class MetalLibraryObject:
@@ -159,6 +183,7 @@ class MetalLibraryObject:
 
 
         # First check exact match
+        remote_metallib_version = sorted(remote_metallib_version, key=_metallib_sort_key, reverse=True)
         for metallib in remote_metallib_version:
             if (metallib["build"] != self.host_build):
                 continue
@@ -175,24 +200,28 @@ class MetalLibraryObject:
             self.metallib_url_is_exactly_match = True
             break
 
-        # If no exact match, check for closest match
+        # If no exact match, sort the manifest ourselves and select the
+        # nearest build family instead of relying on API order.
         if self.metallib_url == "":
-            for metallib in remote_metallib_version:
-                metallib_version = cast(packaging.version.Version, packaging.version.parse(metallib["version"]))
-                if metallib_version > parsed_version:
-                    continue
-                if metallib_version.major != parsed_version.major:
-                    continue
-                if metallib_version.minor not in range(parsed_version.minor - 1, parsed_version.minor + 1):
-                    continue
-
-                # The metallib list is already sorted by version then date, so the first match is the closest
+            host_key = _parse_build(self.host_build)
+            candidates = sorted(remote_metallib_version, key=_metallib_sort_key, reverse=True)
+            candidates = [item for item in candidates
+                          if _parse_build(item.get("build", ""))[0] == host_key[0]] or candidates
+            if candidates:
+                def distance(item):
+                    key = _parse_build(item.get("build", ""))
+                    if key == (-1, -1, -1) or host_key == (-1, -1, -1):
+                        return (1, 1, 0)
+                    return (0 if key[:2] == host_key[:2] else 1,
+                            0 if key[1] == host_key[1] else 1,
+                            abs(key[2] - host_key[2]))
+                metallib = min(candidates, key=distance)
                 self.metallib_closest_match_url = metallib["url"]
                 self.metallib_closest_match_url_build = metallib["build"]
                 self.metallib_closest_match_url_version = metallib["version"]
-                self.metallib_closest_match_file_size = self._get_file_size(self.metallib_closest_match_url)
+                self.metallib_closest_match_file_size = self._get_file_size(metallib["url"])
                 self.metallib_url_is_exactly_match = False
-                break
+
 
         if self.metallib_url == "":
             if self.metallib_closest_match_url == "":

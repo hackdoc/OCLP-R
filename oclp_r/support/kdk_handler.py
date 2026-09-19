@@ -9,6 +9,7 @@ import requests
 import tempfile
 import subprocess
 import packaging.version
+import re
 
 from typing import cast
 from pathlib import Path
@@ -30,6 +31,31 @@ KDK_INFO_PLIST:   str  = "KDKInfo.plist"
 
 
 KDK_ASSET_LIST:   list = None
+
+
+def _parse_build(build: str) -> tuple:
+    """Parse Apple build as kernel major, build letter, and sequence."""
+    match = re.fullmatch(r"\s*(\d+)([A-Za-z])(\d+).*", str(build or ""))
+    if not match:
+        return (-1, -1, -1)
+    letter = ord(match.group(2).upper()) - ord("A")
+    if match.group(2).upper() > "I":
+        letter -= 1
+    return (int(match.group(1)), letter, int(match.group(3)))
+
+
+def _kdk_sort_key(item: dict) -> tuple:
+    """Sort KDKs by manifest version, then by Apple build and date."""
+    try:
+        version = packaging.version.parse(str(item.get("version", "")))
+    except packaging.version.InvalidVersion:
+        version = packaging.version.parse("0")
+    build = str(item.get("build", "") or "")
+    build_key = _parse_build(build)
+    # Release builds sort above beta suffixes at the same version/build.
+    suffix = build[len(str(build_key[0])) + 1:] if build_key != (-1, -1, -1) else ""
+    beta_key = 0 if suffix and suffix[-1:].isalpha() else 1
+    return (version, beta_key, build_key, suffix.lower(), str(item.get("date", "")))
 
 class KernelDebugKitObject:
     """
@@ -193,6 +219,7 @@ class KernelDebugKitObject:
             return
 
         # First check exact match
+        remote_kdk_version = sorted(remote_kdk_version, key=_kdk_sort_key, reverse=True)
         for kdk in remote_kdk_version:
             if (kdk["build"] != host_build):
                 continue
@@ -209,33 +236,32 @@ class KernelDebugKitObject:
             self.kdk_url_expected_size = kdk["fileSize"]
             self.kdk_url_is_exactly_match = True
             break
-        # If no exact match, check for closest match
+        # If no exact match, choose the closest build deterministically. The
+        # manifest version is authoritative; build letters are not macOS
+        # minor versions (e.g. 25G229 must not become 26.6).
         if not self.kdk_url_is_exactly_match:
-                count_kdks=remote_kdk_version
-                if count_kdks:
-                    count_kdks.sort(key=lambda x: x["build"], reverse=True)
-                    closest = None
-                    for kdk in count_kdks:
-                        print(ord(kdk["build"][2]))
-                        # Need same version (example: 26.3==26.3 -> 26D==26D)
-                        if kdk["build"][0:3] == host_build[0:3]:
-                            # We need to check beta versions
-                            closest=kdk
-                            break
-                        
-                        elif kdk["build"][0:2] == host_build[0:2] and ord(kdk["build"][2]) +1 == ord(host_build[2]):
-                            closest=kdk
-                            break
-                    if closest is None:
-                        closest = count_kdks[-1]
-                    self.kdk_closest_match_url = closest["url"]
-                    self.kdk_closest_match_url_build = closest["build"]
-                    self.kdk_closest_match_url_version = closest["version"]
-                    self.kdk_closest_match_url_expected_size = closest["fileSize"]
-                
-                    self.kdk_url_is_exactly_match = False
+            candidates = sorted(remote_kdk_version, key=_kdk_sort_key, reverse=True)
+            host_key = _parse_build(host_build)
+            same_major = [k for k in candidates if _parse_build(k.get("build", ""))[0] == host_key[0]]
+            if same_major:
+                candidates = same_major
+            if candidates:
+                def distance(item):
+                    key = _parse_build(item.get("build", ""))
+                    if key == (-1, -1, -1) or host_key == (-1, -1, -1):
+                        return (1, 1, 0)
+                    return (
+                        0 if key[:2] == host_key[:2] else 1,
+                        0 if key[1] == host_key[1] else 1,
+                        abs(key[2] - host_key[2]),
+                    )
+                closest = min(candidates, key=distance)
+                self.kdk_closest_match_url = closest["url"]
+                self.kdk_closest_match_url_build = closest["build"]
+                self.kdk_closest_match_url_version = closest["version"]
+                self.kdk_closest_match_url_expected_size = closest["fileSize"]
+                self.kdk_url_is_exactly_match = False
 
-                
 
         if not self.kdk_url_is_exactly_match:
             if self.kdk_closest_match_url == "":
