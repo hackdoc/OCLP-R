@@ -761,7 +761,17 @@ class SettingsFrame(wx.Frame):
                         self.trans["When enabled, this will patch the Old USB"],
                         self.trans["extensions on Tahoe."],
                     ],
-                },     
+                },   
+                self.trans["Allow Intel Wi-Fi Patch"]: {
+                    "type": "checkbox",
+                    "value": self.constants.allow_intel_wifi_patch,
+                    "variable": "allow_usb_patch",
+                    "constants_variable": "allow_usb_patch",
+                    "description": [
+                        self.trans["When enabled, OCLP-R starts patching"],
+                        self.trans[" Wi-Fi when you use Ventura kext."]
+                    ],
+                },    
                 self.trans["AppleHDA.kext Version"]: {
                     "type": "choice",
                     "choices": [

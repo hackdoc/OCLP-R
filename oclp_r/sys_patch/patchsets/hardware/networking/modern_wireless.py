@@ -24,18 +24,22 @@ class ModernWireless(BaseHardware):
         Targeting Modern Wireless
         """
         
-        return isinstance(self._computer.wifi, device_probe.Broadcom) and (
+        if isinstance(self._computer.wifi, device_probe.Broadcom) and (
             self._computer.wifi.chipset in [
                 device_probe.Broadcom.Chipsets.AirPortBrcm4360,
                 device_probe.Broadcom.Chipsets.AirportBrcmNIC,
                 device_probe.Broadcom.Chipsets.AirPortBrcmNICThirdParty,
             ]
-        ) or isinstance(self._computer.wifi, device_probe.IntelWirelessCard) and (
+        ): return True
+        elif (isinstance(self._computer.wifi, device_probe.IntelWirelessCard) and (
             self._computer.wifi.chipset in [
                 device_probe.IntelWirelessCard.Chipsets.IntelWirelessIDs,
-            ]
-        )
-
+            ] )):
+            if self._xnu_major==os_data.tahoe.value and not self._constants.allow_intel_wifi_patch:
+                return False
+            return True
+            
+    
     def native_os(self) -> bool:
         """
         Dropped support with macOS 14, Sonoma

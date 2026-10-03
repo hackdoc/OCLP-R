@@ -258,7 +258,7 @@ class Constants:
         self.allow_nvme_fixing:      bool = True   #  Allow NVMe Kernel Space Patches
         self.apfs_trim_timeout:      bool = True   #  Set APFS Trim timeout
         self.custom_sip_value:        int = None   #  Set custom SIP value
-        
+        self.allow_intel_wifi_patch: bool = False  # Set Intel Wifi Patch
         
 
         ## Non-Metal OS support

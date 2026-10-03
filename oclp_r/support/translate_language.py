@@ -2072,10 +2072,16 @@ Booted Information:
                 "Updating System Defaults (root): {variable} = {value} ({value_type})":"Updating System Defaults (root): {variable} = {value} ({value_type})",
                 "Updating GPU Selection: {gpu_choice}":"Updating GPU Selection: {gpu_choice}",
                 "user_download_file:{path}":"user_download_file:{path}",
+                "Allow Intel Wi-Fi Patch":"Allow Intel Wi-Fi Patch",
+                " Wi-Fi when you use Ventura kext.":" Wi-Fi when you use Ventura kext.",
+                "When enabled, OCLP-R starts patching":"When enabled, OCLP-R starts patching",
                 "Root Volume update Failed, check terminal output":"Root Volume update Failed, check terminal output",
             }
         elif self.language_point=="简体中文":
             trans={
+                "Allow Intel Wi-Fi Patch":"允许Intel网卡补丁",
+                " Wi-Fi when you use Ventura kext.":"才应该使用此选项,针对Tahoe.",
+                "When enabled, OCLP-R starts patching":"只有你使用了Ventura的kext,",
                 "Initializing Settings Frame":"初始化设置框架",
                 "Choose Your Language":"选择您的语言",
                 "Provide English & Chinese Simplified.":"提供英文和简体中文",
