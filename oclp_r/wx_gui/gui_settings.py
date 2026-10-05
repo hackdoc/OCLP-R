@@ -786,79 +786,6 @@ class SettingsFrame(wx.Frame):
                     ],
                 },         
             },
-            self.trans["Non-Metal"]:{
-                self.trans["Non-Metal Settings"]: {
-                    "type": "title",
-                },
-                self.trans["Log out required to apply changes to SkyLight"]: {
-                    "type": "sub_title",
-                },
-                self.trans["Dark Menu Bar"]: {
-                    "type": "checkbox",
-                    "value": self._get_system_settings("Moraea_DarkMenuBar"),
-                    "variable": "Moraea_DarkMenuBar",
-                    "description": [
-                        self.trans["If Beta Menu Bar is enabled,"],
-                        self.trans["menu bar colour will dynamically"],
-                    ],
-                    "override_function": self._update_system_defaults,
-                    "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
-                },
-                self.trans["Beta Blur"]: {
-                    "type": "checkbox",
-                    "value": self._get_system_settings("Moraea_BlurBeta"),
-                    "variable": "Moraea_BlurBeta",
-                    "description": [
-                        self.trans["Control window blur behaviour."],
-                    ],
-                    "override_function": self._update_system_defaults,
-                    "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
-
-                },
-                self.trans["Beach Ball Cursor Workaround"]: {
-                    "type": "checkbox",
-                    "value": self._get_system_settings("Moraea.EnableSpinHack"),
-                    "variable": "Moraea.EnableSpinHack",
-                    "description": [
-                        self.trans["Control beach ball cursor behaviour."],
-                    ],
-                    "override_function": self._update_system_defaults_root,
-                    "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
-                },
-                "wrap_around 2": {
-                    "type": "wrap_around",
-                },
-                self.trans["Beta Menu Bar"]: {
-                    "type": "checkbox",
-                    "value": self._get_system_settings("Amy.MenuBar2Beta"),
-                    "variable": "Amy.MenuBar2Beta",
-                    "description": [
-                        self.trans["Supports dynamic colour changes."],
-                    ],
-                    "override_function": self._update_system_defaults,
-                    "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
-                },
-                self.trans["Disable Beta Rim"]: {
-                    "type": "checkbox",
-                    "value": self._get_system_settings("Moraea_RimBetaDisabled"),
-                    "variable": "Moraea_RimBetaDisabled",
-                    "description": [
-                        self.trans["Control Window Rim rendering."],
-                    ],
-                    "override_function": self._update_system_defaults,
-                    "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
-                },
-                self.trans["Disable Color Widgets Enforcement"]: {
-                    "type": "checkbox",
-                    "value": self._get_system_settings("Moraea_ColorWidgetDisabled"),
-                    "variable": "Moraea_ColorWidgetDisabled",
-                    "description": [
-                        self.trans["Control Color Desktop Widgets Enforcement."],
-                    ],
-                    "override_function": self._update_system_defaults,
-                    "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
-                },
-            },
             self.trans["App"]: {
                 self.trans["General"]: {
                     "type": "title",
@@ -1313,31 +1240,7 @@ Hardware Information:
     def close(self):
         exit(0)
 
-    def _update_system_defaults(self, variable, value, global_setting = None):
-        value_type = type(value)
-        if value_type is str:
-            value_type = "-string"
-        elif value_type is int:
-            value_type = "-int"
-        elif value_type is bool:
-            value_type = "-bool"
-
-        logging.info(self.trans["Updating System Defaults: {variable} = {value} ({value_type})"].format(variable=variable, value=value, value_type=value_type))
-        subprocess.run(["/usr/bin/defaults", "write", "-globalDomain", variable, value_type, str(value)])
-
-
-    def _update_system_defaults_root(self, variable, value, global_setting = None):
-        value_type = type(value)
-        if value_type is str:
-            value_type = "-string"
-        elif value_type is int:
-            value_type = "-int"
-        elif value_type is bool:
-            value_type = "-bool"
-
-        logging.info(self.trans["Updating System Defaults (root): {variable} = {value} ({value_type})"].format(variable=variable, value=value, value_type=value_type))
-        subprocess_wrapper.run_as_root(["/usr/bin/defaults", "write", "/Library/Preferences/.GlobalPreferences.plist", variable, value_type, str(value)])
-
+    
 
     def _find_parent_for_key(self, key: str) -> str:
         for parent in self.settings:
@@ -1502,14 +1405,7 @@ Hardware Information:
             global_settings.GlobalEnviromentSettings().write_property("GUI:metal_build", False)
 
 
-    def _get_system_settings(self, variable) -> bool:
-        result = subprocess.run(["/usr/bin/defaults", "read", "-globalDomain", variable], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        if result.returncode == 0:
-            try:
-                return bool(int(result.stdout.decode().strip()))
-            except:
-                return False
-        return False
+    
 
 
     def on_return(self, event):

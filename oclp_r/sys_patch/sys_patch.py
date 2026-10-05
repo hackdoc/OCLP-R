@@ -202,6 +202,7 @@ class PatchSysVolume:
 
         self._clean_skylight_plugins()
         self._delete_nonmetal_enforcement()
+        self._delete_nonmetal_defaults()
         self.clean_launchpad()
         self._clean_up_voodoo_and_hdau()
         kernelcache.KernelCacheSupport(
@@ -318,10 +319,7 @@ class PatchSysVolume:
         if (Path(self.mount_application_support) / Path("SkyLightPlugins/")).exists():
             logging.info(self.trans["- Found SkylightPlugins folder, removing old plugins"])
             subprocess_wrapper.run_as_root_and_verify(["/bin/rm", "-Rf", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            subprocess_wrapper.run_as_root_and_verify(["/bin/mkdir", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        else:
-            logging.info(self.trans["- Creating SkylightPlugins folder"])
-            subprocess_wrapper.run_as_root_and_verify(["/bin/mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+           
     def _delete_nonmetal_enforcement(self) -> None:
         """
         Remove defaults related to forced OpenGL rendering
@@ -352,6 +350,39 @@ class PatchSysVolume:
                 subprocess_wrapper.run_as_root_and_verify(["/bin/rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             subprocess_wrapper.run_as_root_and_verify(generate_copy_arguments(f"{self.constants.payload_path}/{file_name}", destination_path), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
+    def _delete_nonmetal_defaults(self) -> None:
+        skylight_defaults = [
+            "Moraea_DarkMenuBar",
+            "Moraea_BlurBeta",
+            "Moraea.EnableSpinHack",
+            "Amy.MenuBar2Beta",
+            "Moraea_RimBetaDisabled",
+            "Moraea_ColorWidgetDisabled",
+            "Moraea_BacklightHack",
+        ]
+        system_domain = "/Library/Preferences/.GlobalPreferences.plist"
+        domains = {
+            system_domain: skylight_defaults + [
+                "ShowDate",
+                "InternalDebugUseGPUProcessForCanvasRenderingEnabled",
+                "WebKitExperimentalUseGPUProcessForCanvasRenderingEnabled",
+                "WebKitPreferences.acceleratedDrawingEnabled",
+                "NSEnableAppKitMenus",
+                "NSZoomButtonShowMenu",
+            ],
+            "-globalDomain": skylight_defaults,
+        }
+        for domain, keys in domains.items():
+            for key in keys:
+                result = subprocess.run(["/usr/bin/defaults", "read", domain, key], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+                if result.returncode != 0:
+                    continue
+                logging.info(f"- Removing non-Metal Preference: {key}")
+                command = ["/usr/bin/defaults", "delete", domain, key]
+                if domain == system_domain:
+                    subprocess_wrapper.run_as_root(command)
+                else:
+                    subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
 
     def _patch_root_vol(self):
         """
@@ -542,7 +573,7 @@ class PatchSysVolume:
 
         # Make sure non-Metal Enforcement preferences are not present
         self._delete_nonmetal_enforcement()
-
+        self._delete_nonmetal_defaults()
         # Make sure we clean old kexts in /L*/E* that are not in the patchset
         kernelcache.KernelCacheSupport(
             mount_location_data=self.mount_location_data,

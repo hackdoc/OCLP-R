@@ -10,7 +10,7 @@ from ...shared_patches.monterey_gva    import MontereyGVA
 from ...shared_patches.monterey_opencl import MontereyOpenCL
 from ...shared_patches.amd_opencl      import AMDOpenCL
 from ...shared_patches.renderbox     import LegacyMetal31001
-
+from ...shared_patches.tahoe_graphics  import TahoeGraphics
 from .....constants  import Constants
 from .....detections import device_probe
 
@@ -79,12 +79,12 @@ class AMDVega(BaseHardware):
                     "/System/Library/Extensions": {
                         "AMDRadeonX5000.kext":            self._resolve_monterey_framebuffers(),
 
-                        "AMDRadeonVADriver2.bundle":      "12.5",
-                        "AMDRadeonX5000GLDriver.bundle":  "12.5",
-                        **({ "AMDRadeonX5000MTLDriver.bundle": f"12.5-{self._xnu_major}" }),
+                        "AMDRadeonVADriver2.bundle":      "12.5-25" if self._xnu_major >= os_data.tahoe else "12.5",
+                        "AMDRadeonX5000GLDriver.bundle":  "12.5-25" if self._xnu_major >= os_data.tahoe else "12.5",
+                        "AMDRadeonX5000MTLDriver.bundle": "12.5-25" if self._xnu_major >= os_data.tahoe else "12.5" if self._xnu_major < os_data.sequoia else "12.5-24",
                         "AMDRadeonX5000Shared.bundle":    "12.5",
 
-                        "AMDShared.bundle":               "12.5",
+                        "AMDShared.bundle":               "12.5-25" if self._xnu_major >= os_data.tahoe else "12.5",
                     },
                 },
             },
@@ -126,7 +126,7 @@ class AMDVega(BaseHardware):
             # AMD GCN and newer GPUs can still use the native GVA stack
             **LegacyMetal31001(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyGVA(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).revert_patches(),
-
+            **TahoeGraphics(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **AMDOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **self._model_specific_patches(),

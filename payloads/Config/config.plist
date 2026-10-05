@@ -591,7 +591,7 @@
 				<key>Enabled</key>
 				<false/>
 				<key>MaxKernel</key>
-				<string></string>
+				<string>24.99.99</string>
 				<key>MinKernel</key>
 				<string>18.0.0</string>
 				<key>BundlePath</key>
@@ -605,17 +605,53 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
-				<string>Monterey BCM94322 Wifi Patch</string>
+				<string></string>
 				<key>Enabled</key>
 				<false/>
 				<key>MaxKernel</key>
 				<string></string>
+				<key>MinKernel</key>
+				<string>25.0.0</string>
+				<key>BundlePath</key>
+				<string>AirPortAtheros40-Tahoe.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/AirPortAtheros40</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
+				<string>Monterey BCM94322 Wifi Patch</string>
+				<key>Enabled</key>
+				<false/>
+				<key>MaxKernel</key>
+				<string>24.99.99</string>
 				<key>MinKernel</key>
 				<string>19.0.0</string>
 				<key>BundlePath</key>
 				<string>IO80211ElCap.kext/Contents/PlugIns/AirPortBrcm4331.kext</string>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AirPortBrcm4331</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>BundlePath</key>
+				<string>AirPortBrcmNIC-Tahoe.kext</string>
+				<key>Comment</key>
+				<string></string>
+				<key>Enabled</key>
+				<false/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/AirPortBrcmNIC</string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>25.0.0</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>

@@ -22,8 +22,8 @@ class Constants:
         self.hdau_patch_already:              bool = False
 
         # Patcher Versioning
-        self.patcher_version:                 str = "3.1.9"  # OCLP-R
-        self.patcher_support_pkg_version:     str = "1.11.8"  # PatcherSupportPkg
+        self.patcher_version:                 str = "3.3.0"  # OCLP-R
+        self.patcher_support_pkg_version:     str = "2.0.0"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2026 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
         
@@ -70,6 +70,7 @@ class Constants:
         self.apple_raid_version:    str = "1.0.0"  #  AppleRAIDCard
         self.apfs_zlib_version:     str = "12.3.1"  # NoAVXFSCompressionTypeZlib
         self.apfs_zlib_v2_version:  str = "12.6"  #   NoAVXFSCompressionTypeZlib (patched with AVXpel)
+        self.t1_key_store_tahoe_version: str = "1.2.0"
         self.multitouch_version:    str = "1.0.0"  #  AppleUSBMultitouch
         self.topcase_version:       str = "1.0.0"  #  AppleUSBTopCase
         self.topcase_inj_version:   str = "1.0.0"  #  AppleTopCaseInjector
@@ -96,6 +97,8 @@ class Constants:
         self.ioskywalk_version:        str = "1.2.0"  # IOSkywalkFamily (Ventura)
         self.bigsursdxc_version:       str = "1.0.0"  # BigSurSDXC
         self.monterey_ahci_version:    str = "1.0.0"  # CatalinaAHCI
+        self.airport_atheros_tahoe_version: str = "1.0.0"
+        self.airport_brcmnic_tahoe_version: str = "1.0.0"
 
         ## Apple - Jazzzny Modified
         self.aquantia_version: str = "1.1.0"  # AppleEthernetAbuantiaAqtion
@@ -268,6 +271,7 @@ class Constants:
             os_data.os_data.ventura,
             os_data.os_data.sonoma,
             os_data.os_data.sequoia,
+            os_data.os_data.tahoe
         ]
         ## GitHub mirror:
         ###https://ghfast.top
@@ -505,6 +509,10 @@ class Constants:
         return self.payload_kexts_path / Path(f"Misc/AppleSSE-v{self.t1_sse_version}.zip")
 
     @property
+    def t1_key_store_tahoe_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleKeyStore-Tahoe-v{self.t1_key_store_tahoe_version}.zip")
+    
+    @property
     def t1_corecrypto_path(self):
         return self.payload_kexts_path / Path(f"Misc/corecrypto_T1-v{self.t1_corecrypto_version}.zip")
 
@@ -548,6 +556,13 @@ class Constants:
     def applealc_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/AppleALC-v{self.applealc_version}-{self.kext_variant}.zip")
 
+    @property
+    def airport_atheros_tahoe_path(self):
+        return self.payload_kexts_path / Path(f"Wifi/AirPortAtheros40-Tahoe-v{self.airport_atheros_tahoe_version}.zip")
+
+    @property
+    def airport_brcmnic_tahoe_path(self):
+        return self.payload_kexts_path / Path(f"Wifi/AirPortBrcmNIC-Tahoe-v{self.airport_brcmnic_tahoe_version}.zip")
     @property
     def piixata_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleIntelPIIXATA-v{self.piixata_version}.zip")

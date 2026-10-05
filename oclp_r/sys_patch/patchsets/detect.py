@@ -31,6 +31,7 @@ from .hardware.graphics import (
     amd_legacy_gcn,
     amd_polaris,
     amd_vega,
+    amd_navi,
 )
 from .hardware.networking import (
     legacy_wireless,
@@ -39,7 +40,6 @@ from .hardware.networking import (
 from .hardware.misc import (
     display_backlight,
     gmux,
-    keyboard_backlight,
     pcie_webcam,
     t1_security,
     cpu_missing_avx,
@@ -125,6 +125,7 @@ class HardwarePatchsetDetection:
             intel_broadwell.IntelBroadwell,
             intel_skylake.IntelSkylake,
             nvidia_tesla.NvidiaTesla,
+            amd_navi.AMDNavi,
             nvidia_kepler.NvidiaKepler,
             nvidia_webdriver.NvidiaWebDriver,
             amd_terascale_1.AMDTeraScale1,
@@ -141,7 +142,7 @@ class HardwarePatchsetDetection:
             modern_usb.LegacyUSBHost,
             display_backlight.DisplayBacklight,
             gmux.GraphicsMultiplexer,
-            keyboard_backlight.KeyboardBacklight,
+
             pcie_webcam.PCIeFaceTimeCamera,
             t1_security.T1SecurityChip,
             legacy_usb11.USB11Controller,
