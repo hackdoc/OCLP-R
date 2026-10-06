@@ -93,8 +93,8 @@ class NonMetal(BaseSharedPatchSet):
                         "OpenGL.framework":       "10.14.3",
                         "CoreDisplay.framework": f"10.14.4-{self._xnu_major}",
                         "IOSurface.framework":   f"{self._iosurface_version}-{self._xnu_major}",
-                        "IOSurface.framework":   f"10.15.7-{self._xnu_major}",
-                        "QuartzCore.framework":  f"10.15.7-{self._xnu_major}",
+    
+                        
                     },
                     "/System/Library/PrivateFrameworks": {
                         "GPUSupport.framework": "10.14.3",
