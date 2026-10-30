@@ -16,6 +16,7 @@ CLAUDE.MD
 Unknown.png
 __pycache__/
 *.kext
+!/payloads/Kexts/Plists/USB-Map.kext/
 *.py[cod]
 *$py.class
 .history

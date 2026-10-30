@@ -15,6 +15,7 @@ from functools import cache
 from .hardware.base import BaseHardware, HardwareVariantGraphicsSubclass
 
 from .hardware.graphics import (
+    intel_gma_x3100,
     intel_iron_lake,
     intel_sandy_bridge,
     intel_ivy_bridge,
@@ -118,6 +119,7 @@ class HardwarePatchsetDetection:
         self._validation = validation
         self.trans = trans
         self._hardware_variants = [
+            intel_gma_x3100.IntelGMAX3100,
             intel_iron_lake.IntelIronLake,
             intel_sandy_bridge.IntelSandyBridge,
             intel_ivy_bridge.IntelIvyBridge,
@@ -215,45 +217,35 @@ class HardwarePatchsetDetection:
             return True
 
         return False
-    def _validation_check_repatching_is_possible(self) -> bool:
+    def _validation_check_repatching_not_possible(self, present_hardware: list[BaseHardware]) -> bool:
         """
         Determine if repatching is not allowed
         """
-        if self._constants.commit_info[0] in ["Running from source", "Built from source"] or self._constants.commit_info[2] is None or self._constants.commit_info[2] == "":
-            return False
-        oclp_patch_path = "/System/Library/CoreServices/oclp-r.plist"
-        if not Path(oclp_patch_path).exists():
+        oclp_patch_path = Path("/System/Library/CoreServices/oclp-r.plist")
+        if not oclp_patch_path.exists():
             return self._is_root_volume_dirty()
 
-        oclp_plist = plistlib.load(open(oclp_patch_path, "rb"))
+        try:
+            with oclp_patch_path.open("rb") as patch_file:
+                oclp_plist = plistlib.load(patch_file)
+            installed_version = packaging.version.parse(oclp_plist["OCLP-R"])
+        except Exception:
+            return False
 
-        if self._constants.computer.oclp_sys_url != self._constants.commit_info[2]:
-            logging.error(self.trans["Installed patches are from different commit, unpatching is required"])
-            return True
-
-
-
-        wireless_keys = {"Legacy Wireless", "Modern Wireless", "Modern Wireless Common", "Modern Wireless Extended","传统无线补丁","现代无线补丁"}
-
-        # Keep in sync with generate_patchset_plist
-        metadata_keys = {
-            "oclp-r",
-            "oclp-R",
-            "OCLP-r",
-            "OCLP-R",
-           # "OpenCore Legacy Patcher",
-            "PatcherSupportPkg",
-            "Time Patched",
-            "Commit URL",
-            "Kernel Debug Kit Used",
-            "Metal Library Used",
-            "OS Version",
-            "Custom Signature",
-        }
-
-        existing_patches = set(oclp_plist) - wireless_keys - metadata_keys
-        if existing_patches:
-            logging.error(self.trans["Patch(es) already installed: {0}, unpatching is required"].format(", ".join(existing_patches)))
+        for hardware in present_hardware:
+            unpatch_version = hardware.unpatch_required()
+            if unpatch_version is None:
+                continue
+            if installed_version > packaging.version.parse(unpatch_version):
+                continue
+            if not oclp_plist.keys() & hardware.patches().keys():
+                continue
+            logging.error(
+                self.trans.get(
+                    "{0} patches installed by OCLP {1} require unpatching before repatching (last affected version: {2})",
+                    "{0} patches installed by OCLP {1} require unpatching before repatching (last affected version: {2})"
+                ).format(hardware.name(), installed_version, unpatch_version)
+            )
             return True
 
         return False
@@ -334,12 +326,12 @@ class HardwarePatchsetDetection:
     @cache
     def _override_amfi_level(self, level: amfi_detect.AmfiConfigDetectLevel) -> amfi_detect.AmfiConfigDetectLevel:
         """
-        Override level required based on whether AMFIPass is loaded
+        Override level required based on whether AMFIPassH is loaded
         """
-        amfipass_version = utilities.check_kext_loaded("com.dhinakg.AMFIPass")
-        if amfipass_version:
-            if packaging.version.parse(amfipass_version) >= packaging.version.parse(self._constants.amfipass_compatibility_version):
-                # If AMFIPass is loaded, our binaries will work
+        amfipassh_version = utilities.check_kext_loaded("com.hackdoc.AMFIPass")
+        if amfipassh_version:
+            if packaging.version.parse(amfipassh_version) >= packaging.version.parse(self._constants.amfipassh_compatibility_version):
+                # If AMFIPassH is loaded, our binaries will work
                 return amfi_detect.AmfiConfigDetectLevel.NO_CHECK
         return level
 
@@ -573,7 +565,7 @@ class HardwarePatchsetDetection:
             HardwarePatchsetValidation.SIP_ENABLED:                 self._validation_check_system_integrity_protection_enabled(required_sip_configs),
             HardwarePatchsetValidation.SECURE_BOOT_MODEL_ENABLED:   self._validation_check_secure_boot_model_enabled(),
             HardwarePatchsetValidation.AMFI_ENABLED:                self._validation_check_amfi_enabled(highest_amfi_level),
-            HardwarePatchsetValidation.REPATCHING_NOT_SUPPORTED: self._validation_check_repatching_is_possible(),
+            HardwarePatchsetValidation.REPATCHING_NOT_SUPPORTED: self._validation_check_repatching_not_possible(present_hardware),
             HardwarePatchsetValidation.WHATEVERGREEN_MISSING:       self._validation_check_whatevergreen_missing() if has_nvidia_web_drivers is True else False,
             HardwarePatchsetValidation.FORCE_OPENGL_MISSING:        self._validation_check_force_opengl_missing()  if has_nvidia_web_drivers is True else False,
             HardwarePatchsetValidation.FORCE_COMPAT_MISSING:        self._validation_check_force_compat_missing()  if has_nvidia_web_drivers is True else False,

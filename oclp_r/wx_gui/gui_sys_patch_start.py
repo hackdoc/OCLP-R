@@ -331,50 +331,58 @@ class SysPatchStartFrame(wx.Frame):
         self._generate_modal(self.patches, self.trans["Root Patching"])
         self.return_button.Disable()
 
-        thread = threading.Thread(target=self._start_root_patching, args=(self.patches,))
+        # Handler must live on the GUI thread so its timer drives the text box
+        handler = gui_support.ThreadHandler(self.text_box)
+        thread = threading.Thread(target=self._start_root_patching, args=(self.patches, handler))
         thread.start()
 
         gui_support.wait_for_thread(thread)
+        handler.close()
 
         self._post_patch()
         self.return_button.Enable()
 
 
-    def _start_root_patching(self, patches: dict):
+    def _start_root_patching(self, patches: dict, handler: logging.Handler):
         logger = logging.getLogger()
-        logger.addHandler(gui_support.ThreadHandler(self.text_box))
+        logger.addHandler(handler)
         try:
             sys_patch.PatchSysVolume(self.constants.computer.real_model, self.constants, patches).start_patch()
         except:
             logging.error(self.trans["An internal error occurred while running the Root Patcher:\n"])
             logging.error(traceback.format_exc())
-        logger.removeHandler(logger.handlers[2])
+        finally:
+            logger.removeHandler(handler)
 
 
     def revert_root_patching(self):
         logging.info(self.trans["Reverting root patches"])
 
-        self._generate_modal(self.patches, self.trans["Revert Root Patches"])   
+        self._generate_modal(self.patches, self.trans["Revert Root Patches"])
         self.return_button.Disable()
-        
-        thread = threading.Thread(target=self._revert_root_patching, args=(self.patches,))
+
+        # Handler must live on the GUI thread so its timer drives the text box
+        handler = gui_support.ThreadHandler(self.text_box)
+        thread = threading.Thread(target=self._revert_root_patching, args=(self.patches, handler))
         thread.start()
 
         gui_support.wait_for_thread(thread)
+        handler.close()
 
         self._post_patch()
         self.return_button.Enable()
 
 
-    def _revert_root_patching(self, patches: dict):
+    def _revert_root_patching(self, patches: dict, handler: logging.Handler):
         logger = logging.getLogger()
-        logger.addHandler(gui_support.ThreadHandler(self.text_box))
+        logger.addHandler(handler)
         try:
             sys_patch.PatchSysVolume(self.constants.computer.real_model, self.constants, patches).start_unpatch()
         except:
-            logging.error(self.trans["An internal error occurred while running the Root Patcher:\n"])   
+            logging.error(self.trans["An internal error occurred while running the Root Patcher:\n"])
             logging.error(traceback.format_exc())
-        logger.removeHandler(logger.handlers[2])
+        finally:
+            logger.removeHandler(handler)
 
 
     def on_return_to_main_menu(self, event: wx.Event = None):

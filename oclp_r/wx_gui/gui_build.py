@@ -6,7 +6,6 @@ import wx
 import logging
 import threading
 import traceback
-import time
 
 from .. import constants
 
@@ -99,17 +98,23 @@ class BuildFrame(wx.Frame):
 
     def _invoke_build(self) -> None:
         """
-        Invokes build function and waits for it to finish
+        Invokes build function in a background thread so the GUI stays responsive
         """
-        while gui_support.PayloadMount(self.constants, self).is_unpack_finished() is False:
-            wx.Yield()
-            time.sleep(self.constants.thread_sleep_interval)
+        if gui_support.PayloadMount(self.constants, self).is_unpack_finished() is False:
+            # Keep the GUI thread free while payloads are still unpacking
+            wx.CallLater(100, self._invoke_build)
+            return
 
-        thread = threading.Thread(target=self._build)
-        thread.start()
+        # Handler must live on the GUI thread so its timer drives the text box
+        handler = gui_support.ThreadHandler(self.text_box)
+        threading.Thread(target=self._build, args=(handler,), daemon=True).start()
 
-        gui_support.wait_for_thread(thread)
 
+    def _post_build(self, handler: logging.Handler) -> None:
+        """
+        Handle build completion on the GUI thread
+        """
+        handler.close()
         self.return_button.Enable()
 
         # Check if config.plist was built
@@ -134,12 +139,12 @@ class BuildFrame(wx.Frame):
         self.on_install() if dialog.ShowModal() == wx.ID_YES else self.install_button.Enable()
 
 
-    def _build(self) -> None:
+    def _build(self, handler: logging.Handler) -> None:
         """
         Calls build function and redirects stdout to the text box
         """
         logger = logging.getLogger()
-        logger.addHandler(gui_support.ThreadHandler(self.text_box))
+        logger.addHandler(handler)
         try:
             build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants)
             self.build_successful = True
@@ -151,8 +156,9 @@ class BuildFrame(wx.Frame):
             if "TypeError: unsupported type: <class 'NoneType'>" in traceback.format_exc():
                 logging.error(self.trans["If you continue to see this error, delete the following file and restart the application:"])
                 logging.error(self.trans["Path: /Users/Shared/.com.hackdoc.oclp-r.plist"])
-
-        logger.removeHandler(logger.handlers[2])
+        finally:
+            logger.removeHandler(handler)
+            wx.CallAfter(self._post_build, handler)
 
 
     def on_return_to_main_menu(self, event: wx.Event = None) -> None:

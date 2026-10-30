@@ -345,16 +345,6 @@ class SettingsFrame(wx.Frame):
                     "min": 0,
                     "max": 60,
                 },
-                self.trans["MacPro3,1/Xserve2,1 Workaround"]: {
-                    "type": "checkbox",
-                    "value": self.constants.force_quad_thread,
-                    "variable": "force_quad_thread",
-                    "description": [
-                        self.trans["Limits to 4 threads max on these units."],
-                        self.trans["Required for macOS Sequoia and later."],
-                    ],
-                    "condition": (self.constants.custom_model and self.constants.custom_model in ["MacPro3,1", "Xserve2,1"]) or self.constants.computer.real_model in ["MacPro3,1", "Xserve2,1"]
-                },
                 self.trans["Debug"]: {
                     "type": "title",
                 },
@@ -1193,7 +1183,7 @@ Hardware Information:
                 if self.constants.computer.real_model in smbios_data.smbios_dictionary:
                     if self.constants.detected_os > smbios_data.smbios_dictionary[self.constants.computer.real_model]["Max OS Supported"]:
                         chassis_type = "aluminum"
-                        if self.constants.computer.real_model in ["MacBook5,2", "MacBook6,1", "MacBook7,1"]:
+                        if self.constants.computer.real_model in ["MacBook4,1", "MacBook5,2", "MacBook6,1", "MacBook7,1"]:
                             chassis_type = "plastic"
                         dlg = wx.MessageDialog(self.frame_modal, f"This model, {self.constants.computer.real_model}, does not natively support macOS {os_data.os_conversion.kernel_to_os(self.constants.detected_os)}, {os_data.os_conversion.convert_kernel_to_marketing_name(self.constants.detected_os)}. The last native OS was macOS {os_data.os_conversion.kernel_to_os(smbios_data.smbios_dictionary[self.constants.computer.real_model]['Max OS Supported'])}, {os_data.os_conversion.convert_kernel_to_marketing_name(smbios_data.smbios_dictionary[self.constants.computer.real_model]['Max OS Supported'])}\n\nToggling this option will break booting on this OS. Are you absolutely certain this is desired?\n\nYou may end up with a nice {chassis_type} brick 🧱", "Are you certain?", wx.YES_NO | wx.ICON_WARNING | wx.NO_DEFAULT)
                         if dlg.ShowModal() == wx.ID_NO:

@@ -22,8 +22,8 @@ class Constants:
         self.hdau_patch_already:              bool = False
 
         # Patcher Versioning
-        self.patcher_version:                 str = "3.3.2"  # OCLP-R
-        self.patcher_support_pkg_version:     str = "2.0.0"  # PatcherSupportPkg
+        self.patcher_version:                 str = "3.4.0"  # OCLP-R
+        self.patcher_support_pkg_version:     str = "2.0.1"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2026 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"
         
@@ -46,9 +46,9 @@ class Constants:
         self.lilu_version:               str = "1.7.2"  #      Lilu
         self.whatevergreen_version:      str = "1.7.1"  #      WhateverGreen
         self.whatevergreen_navi_version: str = "1.6.9-Navi"  # WhateverGreen (Navi Patch)
-        self.airportbcrmfixup_version:   str = "2.2.0"  #      AirPortBrcmFixup
+        self.airportbcrmfixup_version:   str = "2.2.1"  #      AirPortBrcmFixup
         self.nvmefix_version:            str = "1.1.3"  #      NVMeFix
-        self.applealc_version:           str = "1.6.3"  #      AppleALC
+        self.applealc_version:           str = "1.6.3-Jazzzny"  # AppleALC, modified to add support for older models
         self.restrictevents_version:     str = "1.1.7"  #      RestrictEvents
         self.featureunlock_version:      str = "1.1.8"  #      FeatureUnlock
         self.debugenhancer_version:      str = "1.1.1"  #      DebugEnhancer
@@ -64,12 +64,14 @@ class Constants:
         self.marvel_version:        str = "1.0.1"  #  MarvelYukonEthernet
         self.nforce_version:        str = "1.0.1"  #  nForceEthernet
         self.piixata_version:       str = "1.0.1"  #  AppleIntelPIIXATA
+        self.piixata_monterey_version: str = "1.0.0"  #  AppleIntelPIIXATA (Monterey+)
         self.fw_kext:               str = "1.0.1"  #  IOFireWireFamily
         self.apple_trackpad:        str = "1.0.1"  #  AppleUSBTrackpad
         self.apple_isight_version:  str = "1.0.0"  #  AppleiSight
         self.apple_raid_version:    str = "1.0.0"  #  AppleRAIDCard
         self.apfs_zlib_version:     str = "12.3.1"  # NoAVXFSCompressionTypeZlib
         self.apfs_zlib_v2_version:  str = "12.6"  #   NoAVXFSCompressionTypeZlib (patched with AVXpel)
+        self.apfs_zlib_tahoe_version: str = "26.7"  # NoAVXFSCompressionTypeZlib (Tahoe)
         self.t1_key_store_tahoe_version: str = "1.2.0"
         self.multitouch_version:    str = "1.0.0"  #  AppleUSBMultitouch
         self.topcase_version:       str = "1.0.0"  #  AppleUSBTopCase
@@ -97,7 +99,7 @@ class Constants:
         self.ioskywalk_version:        str = "1.2.0"  # IOSkywalkFamily (Ventura)
         self.bigsursdxc_version:       str = "1.0.0"  # BigSurSDXC
         self.monterey_ahci_version:    str = "1.0.0"  # CatalinaAHCI
-        self.airport_atheros_tahoe_version: str = "1.0.0"
+        self.airport_atheros_tahoe_version: str = "1.0.1"
         self.airport_brcmnic_tahoe_version: str = "1.0.0"
 
         ## Apple - Jazzzny Modified
@@ -113,8 +115,8 @@ class Constants:
         self.aspp_override_version:          str = "1.0.1"  # ACPI_SMC_PlatformPlugin Override
         self.ecm_override_version:           str = "1.0.0"  # AppleUSBECM Override
         self.rsrhelper_version:              str = "1.0.2"  # RSRHelper
-        self.amfipass_version:               str = "1.4.1"  # AMFIPass
-        self.amfipass_compatibility_version: str = "1.2.1"  # Minimum AMFIPass version required
+        self.amfipassh_version:              str = "0.11.17"  # AMFIPassH
+        self.amfipassh_compatibility_version: str = "0.11.17"  # Minimum AMFIPassH version required
 
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
@@ -254,7 +256,6 @@ class Constants:
         self.disable_connectdrivers: bool = False  # Disable ConnectDrivers (hibernation)
         self.set_vmm_cpuid:          bool = False  # Set VMM bit inside CPUID
         self.disable_mediaanalysisd: bool = False  # Set mediaanalysisd to spawn
-        self.force_quad_thread:      bool = False  #  Force quad thread mode (cpus=4)
         self.allow_usb_patch:        bool = False   # Allow USB patch on macOS 26+
         self.set_alc_usage:          bool = True   #  Set AppleALC usage
         self.allow_3rd_party_drives: bool = True   #  Allow ThridPartyDrives quirk
@@ -485,6 +486,10 @@ class Constants:
         return self.payload_kexts_path / Path(f"Misc/NoAVXFSCompressionTypeZlib-AVXpel-v{self.apfs_zlib_v2_version}.zip")
 
     @property
+    def apfs_zlib_tahoe_path(self):
+        return self.payload_kexts_path / Path(f"Misc/NoAVXFSCompressionTypeZlib-AVXpel-Tahoe-v{self.apfs_zlib_tahoe_version}.zip")
+
+    @property
     def multitouch_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleUSBMultitouch-v{self.multitouch_version}.zip")
 
@@ -568,6 +573,10 @@ class Constants:
         return self.payload_kexts_path / Path(f"Misc/AppleIntelPIIXATA-v{self.piixata_version}.zip")
 
     @property
+    def piixata_monterey_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleIntelPIIXATA-Monterey-v{self.piixata_monterey_version}.zip")
+
+    @property
     def backlight_injector_path(self):
         return self.payload_kexts_path / Path(f"Misc/BacklightInjector-v{self.backlight_injector_version}.zip")
 
@@ -628,9 +637,9 @@ class Constants:
         return self.payload_kexts_path / Path(f"Acidanthera/RSRHelper-v{self.rsrhelper_version}-{self.kext_variant}.zip")
 
     @property
-    def amfipass_path(self):
-        # AMFIPass is release only
-        return self.payload_kexts_path / Path(f"Acidanthera/AMFIPass-v{self.amfipass_version}-RELEASE.zip")
+    def amfipassh_path(self):
+        # AMFIPassH is release only
+        return self.payload_kexts_path / Path(f"Hackdoc/AMFIPassH-v{self.amfipassh_version}-RELEASE.zip")
 
     @property
     def innie_path(self):
@@ -692,6 +701,14 @@ class Constants:
     def fw_bus_path(self):
         return self.payload_kexts_path / Path(f"FireWire/IOFireWireSerialBusProtocolTransport-v{self.fw_kext}.zip")
 
+    @property
+    def usb_maps_path(self):
+        return self.plist_folder_path / Path("USBMaps")
+
+    @property
+    def usb_map_template_path(self):
+        return self.plist_folder_path / Path("USB-Map.kext")
+
     # Build Location
     @property
     def build_path(self):
@@ -728,22 +745,6 @@ class Constants:
     @property
     def resources_path(self):
         return self.oc_folder / Path("Resources")
-
-    @property
-    def map_kext_folder(self):
-        return self.kexts_path / Path("USB-Map.kext")
-
-    @property
-    def map_kext_folder_tahoe(self):
-        return self.kexts_path / Path("USB-Map-Tahoe.kext")
-
-    @property
-    def map_contents_folder(self):
-        return self.map_kext_folder / Path("Contents")
-
-    @property
-    def map_contents_folder_tahoe(self):
-        return self.map_kext_folder_tahoe / Path("Contents")
 
     @property
     def pp_kext_folder(self):

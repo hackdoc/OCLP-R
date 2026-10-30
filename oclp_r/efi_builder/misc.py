@@ -8,7 +8,7 @@ import binascii
 
 from pathlib import Path
 
-from . import support
+from . import support, usb_map
 
 from .. import constants
 
@@ -165,7 +165,7 @@ xw
         CPUFriend Handler
         """
 
-        if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1", "Hackdoc1,1"] and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None":
+        if self.constants.allow_oc_everywhere is False and self.model not in model_array.NoCPUFriendData and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None":
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path)
 
             # CPUFriendDataProvider handling
@@ -219,6 +219,9 @@ xw
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyEventDriver.kext")["Enabled"] = True
 
+            if self.computer.trackpad_type:
+                support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "IOHIDFamily USB topcase panic")["Enabled"] = True
+
             if self.computer.internal_keyboard_type == "Legacy":
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("LegacyKeyboardInjector.kext", self.constants.legacy_keyboard, self.constants.legacy_keyboard_path)
             if self.computer.trackpad_type == "Legacy":
@@ -239,10 +242,14 @@ xw
                         support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyEventDriver.kext")["Enabled"] = True
                         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleUSBMultitouch.kext", self.constants.multitouch_version, self.constants.multitouch_path)
 
+                        support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "IOHIDFamily USB topcase panic")["Enabled"] = True
+
             # Two-finger Top Case support for macOS High Sierra+
-            if self.model == "MacBook5,2":
+            if self.model in ["MacBook4,1", "MacBook5,2"]:
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleUSBTrackpad.kext", self.constants.apple_trackpad, self.constants.apple_trackpad_path) # Also requires AppleUSBTopCase.kext
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("LegacyKeyboardInjector.kext", self.constants.legacy_keyboard, self.constants.legacy_keyboard_path) # Inject legacy personalities into AppleUSBTCKeyboard and AppleUSBTCKeyEventDriver
+
+                support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "IOHIDFamily USB topcase panic")["Enabled"] = True
 
 
     def _thunderbolt_handling(self) -> None:
@@ -285,30 +292,7 @@ xw
         USB Handler
         """
 
-        # USB Map
-        usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
-        usb_map_tahoe_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info-Tahoe.plist")
-        if (
-            usb_map_path.exists()
-            and usb_map_tahoe_path.exists()
-            and (self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True)
-            and self.model not in ["Xserve2,1", "Hackdoc1,1"]
-            and (
-                (self.model in model_array.Missing_USB_Map or self.model in model_array.Missing_USB_Map_Ventura)
-                or self.constants.serial_settings in ["Moderate", "Advanced"])
-        ):
-            logging.info(self.trans["- Adding USB-Map.kext and USB-Map-Tahoe.kext"])
-            Path(self.constants.map_kext_folder).mkdir()
-            Path(self.constants.map_kext_folder_tahoe).mkdir()
-            Path(self.constants.map_contents_folder).mkdir()
-            Path(self.constants.map_contents_folder_tahoe).mkdir()
-            shutil.copy(usb_map_path, self.constants.map_contents_folder)
-            # for the tahoe, need to copy but rename to Info.plist
-            shutil.copy(usb_map_tahoe_path, self.constants.map_contents_folder_tahoe / Path("Info.plist"))
-            support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
-            support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB-Map-Tahoe.kext")["Enabled"] = True
-            if self.model in model_array.Missing_USB_Map_Ventura and self.constants.serial_settings not in ["Moderate", "Advanced"]:
-                support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB-Map.kext")["MinKernel"] = "22.0.0"
+        usb_map.BuildUSBMap(self.model, self.constants, self.config)
 
         # Add UHCI/OHCI drivers
         # All Penryn Macs lack an internal USB hub to route USB 1.1 devices to the EHCI controller
@@ -332,9 +316,6 @@ xw
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCIPCI.kext")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCI.kext")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCIPCI.kext")["Enabled"] = True
-
-            # Also remove MaxKernel from the USB-Map.kext, as USB stack will be downgraded after root patching
-            support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB-Map.kext")["MaxKernel"] = ""
 
 
     def _debug_handling(self) -> None:

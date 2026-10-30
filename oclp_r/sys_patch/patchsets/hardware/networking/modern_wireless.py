@@ -35,9 +35,10 @@ class ModernWireless(BaseHardware):
             self._computer.wifi.chipset in [
                 device_probe.IntelWirelessCard.Chipsets.IntelWirelessIDs,
             ] )):
-            if self._xnu_major==os_data.tahoe.value and not self._constants.allow_intel_wifi_patch:
+            if self._constants.allow_intel_wifi_patch:
                 return False
             return True
+        return False
             
     
     def native_os(self) -> bool:
@@ -51,6 +52,9 @@ class ModernWireless(BaseHardware):
         Type of hardware variant
         """
         return HardwareVariant.NETWORKING
+
+    def unpatch_required(self) -> str | None:
+        return "2.4.0"
 
     def _patches_modern_wireless(self) -> dict:
         """

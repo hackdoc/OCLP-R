@@ -5,6 +5,7 @@ gui_support.py: Utilities for interacting with wxPython GUI
 import wx
 import sys
 import time
+import queue
 import logging
 import plistlib
 import threading
@@ -264,16 +265,50 @@ class PayloadMount:
 
 class ThreadHandler(logging.Handler):
     """
-    Reroutes logging output to a wx.TextCtrl using UI callbacks
+    Reroutes logging output to a wx.TextCtrl using a thread-safe queue
+
+    Worker threads only enqueue formatted records. A wx.Timer drains the queue
+    on the GUI thread, so the text control is never touched from another thread
+    and the GUI thread is never blocked waiting for the worker.
     """
 
-    def __init__(self, text_box: wx.TextCtrl):
+    def __init__(self, text_box: wx.TextCtrl, interval: int = 100):
         logging.Handler.__init__(self)
         self.text_box = text_box
+        self._records: queue.Queue = queue.Queue()
+        self._timer = wx.Timer(text_box)
+        text_box.Bind(wx.EVT_TIMER, self._on_timer, self._timer)
+        self._timer.Start(interval)
 
 
     def emit(self, record: logging.LogRecord):
-        wx.CallAfter(self.text_box.AppendText, self.format(record) + '\n')
+        self._records.put(self.format(record))
+
+
+    def _on_timer(self, event: wx.TimerEvent):
+        self._drain()
+
+
+    def _drain(self) -> None:
+        lines = []
+        while True:
+            try:
+                lines.append(self._records.get_nowait())
+            except queue.Empty:
+                break
+        if not lines:
+            return
+        try:
+            self.text_box.AppendText("\n".join(lines) + "\n")
+        except RuntimeError:
+            # Text control was already destroyed
+            pass
+
+
+    def close(self) -> None:
+        self._timer.Stop()
+        self._drain()
+        logging.Handler.close(self)
 
 
 def wait_for_thread(thread: threading.Thread, sleep_interval=None):

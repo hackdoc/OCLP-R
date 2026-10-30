@@ -270,20 +270,27 @@ class InstallOCFrame(wx.Frame):
         # Show dialog
         dialog.ShowWindowModal()
         self.dialog = dialog
+        self.return_button = return_button
 
         # Install OpenCore
         self._invoke_install_oc(partition)
-        return_button.Enable()
 
 
     def _invoke_install_oc(self, partition: dict) -> None:
         """
-        Invoke OpenCore installation
+        Invoke OpenCore installation in a background thread so the GUI stays responsive
         """
-        thread = threading.Thread(target=self._install_oc, args=(partition,))
-        thread.start()
+        # Handler must live on the GUI thread so its timer drives the text box
+        handler = gui_support.ThreadHandler(self.text_box)
+        threading.Thread(target=self._install_oc, args=(partition, handler), daemon=True).start()
 
-        gui_support.wait_for_thread(thread)
+
+    def _install_finished(self, handler: logging.Handler) -> None:
+        """
+        Handle installation completion on the GUI thread
+        """
+        handler.close()
+        self.return_button.Enable()
 
         if self.result is True:
             if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE and self.constants.detected_os >= os_data.os_data.big_sur:
@@ -319,20 +326,22 @@ class InstallOCFrame(wx.Frame):
                 self.constants.update_stage = gui_support.AutoUpdateStages.FINISHED
 
 
-    def _install_oc(self, partition: dict) -> None:
+    def _install_oc(self, partition: dict, handler: logging.Handler) -> None:
         """
         Install OpenCore to disk
         """
         logging.info(f"{self.trans['Installing OpenCore to ']} {partition}")
 
         logger = logging.getLogger()
-        logger.addHandler(gui_support.ThreadHandler(self.text_box))
+        logger.addHandler(handler)
         try:
             self.result = install.tui_disk_installation(self.constants).install_opencore(partition)
         except:
             logging.error(f"{self.trans['An internal error occurred while installing:\n']}")
             logging.error(traceback.format_exc())
-        logger.removeHandler(logger.handlers[2])
+        finally:
+            logger.removeHandler(handler)
+            wx.CallAfter(self._install_finished, handler)
 
 
     def on_reload_frame(self, event: wx.Event = None) -> None:

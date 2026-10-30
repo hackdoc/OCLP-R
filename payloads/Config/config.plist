@@ -749,6 +749,24 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
+				<string>AppleIntelPIIXATA Monterey+</string>
+				<key>Enabled</key>
+				<false/>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>21.0.0</string>
+				<key>BundlePath</key>
+				<string>AppleIntelPIIXATA-Monterey.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/AppleIntelPIIXATA</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
 				<string>CPUFriend - Patching X86PlatformPlugin</string>
 				<key>Enabled</key>
 				<false/>
@@ -1333,9 +1351,27 @@
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/NoAVXFSCompressionTypeZlib</string>
 				<key>MaxKernel</key>
-				<string></string>
+				<string>24.99.99</string>
 				<key>MinKernel</key>
 				<string>22.0.0</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>BundlePath</key>
+				<string>NoAVXFSCompressionTypeZlib-AVXpel-Tahoe.kext</string>
+				<key>Comment</key>
+				<string>Work-around 26.0+ Zlib kernel panic</string>
+				<key>Enabled</key>
+				<false/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/NoAVXFSCompressionTypeZlib</string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>25.0.0</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
@@ -1793,7 +1829,7 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
-				<string>AMFIPass</string>
+				<string>AMFIPassH</string>
 				<key>Enabled</key>
 				<false/>
 				<key>MaxKernel</key>
@@ -1801,9 +1837,9 @@
 				<key>MinKernel</key>
 				<string>20.0.0</string>
 				<key>BundlePath</key>
-				<string>AMFIPass.kext</string>
+				<string>AMFIPassH.kext</string>
 				<key>ExecutablePath</key>
-				<string>Contents/MacOS/AMFIPass</string>
+				<string>Contents/MacOS/AMFIPassH</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
@@ -2474,6 +2510,74 @@
 				<key>Skip</key>
 				<integer>0</integer>
 			</dict>
+			<dict>
+                <key>Arch</key>
+                <string>x86_64</string>
+                <key>Base</key>
+                <string>__ZN11IOHIDDevice12didTerminateEP9IOServicejPb</string>
+                <key>Comment</key>
+                <string>IOHIDFamily USB topcase panic</string>
+                <key>Count</key>
+                <integer>0</integer>
+                <key>Enabled</key>
+                <false/>
+                <key>Find</key>
+                <data></data>
+                <key>Identifier</key>
+                <string>com.apple.iokit.IOHIDFamily</string>
+                <key>Limit</key>
+                <integer>0</integer>
+                <key>Mask</key>
+                <data></data>
+                <key>MaxKernel</key>
+                <string></string>
+                <key>MinKernel</key>
+                <string>25.0.0</string>
+                <key>Replace</key>
+                <data>uAEAAADD</data>
+                <key>ReplaceMask</key>
+                <data></data>
+                <key>Skip</key>
+                <integer>0</integer>
+            </dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Base</key>
+				<string>_ml_processor_register</string>
+				<key>Comment</key>
+				<string>Fix CPU startup ordering</string>
+				<key>Count</key>
+				<integer>1</integer>
+				<key>Enabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				iwUAAAAA/8hBOcR1AA==
+				</data>
+				<key>Identifier</key>
+				<string>kernel</string>
+				<key>Limit</key>
+				<integer>256</integer>
+				<key>Mask</key>
+				<data>
+				//cAAAAA//7///f/AA==
+				</data>
+				<key>MaxKernel</key>
+				<string>25.99.99</string>
+				<key>MinKernel</key>
+				<string>24.0.0</string>
+				<key>Replace</key>
+				<data>
+				/w0AAAAAkJCQkJB1AA==
+				</data>
+				<key>ReplaceMask</key>
+				<data>
+				//8AAAAA////////AA==
+				</data>
+				<key>Skip</key>
+				<integer>0</integer>
+			</dict>
 		</array>
 		<key>Quirks</key>
 		<dict>
@@ -2990,7 +3094,7 @@
 				<key>Path</key>
 				<string>OpenRuntime.efi</string>
 				<key>Enabled</key>
-				<false/>
+				<true/>
 				<key>Arguments</key>
 				<string></string>
 				<key>LoadEarly</key>

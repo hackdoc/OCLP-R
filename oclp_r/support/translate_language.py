@@ -2718,6 +2718,7 @@ class TranslateLanguage_sys_patch:
                 "System volume is tainted, unpatching is required":"System volume is tainted, unpatching is required",
                 "Installed patches are from different commit, unpatching is required":"Installed patches are from different commit, unpatching is required",
                 "Patch(es) already installed: {0}, unpatching is required":"Patch(es) already installed: {0}, unpatching is required",
+                "{0} patches installed by OCLP {1} require unpatching before repatching (last affected version: {2})":"{0} patches installed by OCLP {1} require unpatching before repatching (last affected version: {2})",
                 "Network patches are already applied, requiring network connection":"Network patches are already applied, requiring network connection",
                 "Network patches are applicable, removing other patches":"Network patches are applicable, removing other patches",
                 "Network patches are not applicable, requiring network connection":"Network patches are not applicable, requiring network connection",
@@ -2739,6 +2740,7 @@ class TranslateLanguage_sys_patch:
                 "Network patches are already applied, requiring network connection":"网络补丁已应用，需要网络连接",
                 "Network connection missing, checking whether network patches are applicable":"无网络连接，检测网络补丁是否可用",
                 "Patch(es) already installed: {0}, unpatching is required":"已安装的补丁：{0}，需要取消修补",
+                "{0} patches installed by OCLP {1} require unpatching before repatching (last affected version: {2})":"{0} 补丁由 OCLP {1} 安装，重新修补前需取消修补（最后受影响版本：{2}）",
                 "Installed patches are from different commit, unpatching is required":"已安装的补丁来自不同的提交，需要取消修补",
                 "System volume is tainted, unpatching is required":"系统卷已被修改，需要取消修补",
                 "Failed to parse diskutil output.":"解析diskutil输出失败",
@@ -3169,6 +3171,7 @@ class TranslateLanguage_sys_patch:
                 "AMD TeraScale 2":"AMD TeraScale 2",
                 "AMD Vega":"AMD Vega",
                 "Intel Broadwell":"Intel Broadwell",
+                "Intel GMA X3100":"Intel GMA X3100",
                 "Intel Haswell":"Intel Haswell",
                 "Intel Iron Lake":"Intel Iron Lake",
                 "Intel Ivy Bridge":"Intel Ivy Bridge",
@@ -3217,6 +3220,7 @@ class TranslateLanguage_sys_patch:
                 "AMD TeraScale 2":"AMD TeraScale 2",
                 "AMD Vega":"AMD Vega",
                 "Intel Broadwell":"Intel Broadwell (iGPU,5th)",
+                "Intel GMA X3100":"Intel GMA X3100 (iGPU)",
                 "Intel Haswell":"Intel Haswell (iGPU,4th)",
                 "Intel Iron Lake":"Intel Iron Lake",
                 "Intel Ivy Bridge":"Intel Ivy Bridge (iGPU,3rd)",
@@ -3336,6 +3340,7 @@ class TranslateLanguage_efi_builder:
                 "- Allowing SurPlus on all newer OSes":"- Allowing SurPlus on all newer OSes",
                 "- Adding IOHIDFamily patch":"- Adding IOHIDFamily patch",
                 "- Adding CPU Thread Limit Patch":"- Adding CPU Thread Limit Patch",
+                "- Fixing CPU startup ordering":"- Fixing CPU startup ordering",
                 "- Enabling macOS 26 FileVault 2 support":"- Enabling macOS 26 FileVault 2 support",
                 "- Adding ExFatDxeLegacy.efi":"- Adding ExFatDxeLegacy.efi",
                 "- Enabling NVMe boot support":"- Enabling NVMe boot support",
@@ -3362,6 +3367,7 @@ class TranslateLanguage_efi_builder:
                 "- Allowing SurPlus on all newer OSes":"- 允许在所有较新操作系统上使用 SurPlus",
                 "- Adding IOHIDFamily patch":"- 添加 IOHIDFamily 补丁",
                 "- Adding CPU Thread Limit Patch":"- 添加 CPU 线程限制补丁",
+                "- Fixing CPU startup ordering":"- 修复 CPU 启动顺序",
                 "- Enabling macOS 26 FileVault 2 support":"- 启用 macOS 26 FileVault 2 支持",
                 "- Adding ExFatDxeLegacy.efi":"- 添加 ExFatDxeLegacy.efi",
                 "- Enabling NVMe boot support":"- 启用 NVMe 启动支持",
@@ -3495,7 +3501,7 @@ class TranslateLanguage_efi_builder:
                 "- Disabling AMFI":"- Disabling AMFI",
                 "- Disabling Library Validation":"- Disabling Library Validation",
                 "- Disabling SecureBootModel":"- Disabling SecureBootModel",
-                "- Enabling AMFIPass":"- Enabling AMFIPass"
+                "- Enabling AMFIPassH":"- Enabling AMFIPassH"
             }
         elif self.language_point=="简体中文":
             trans={
@@ -3507,7 +3513,7 @@ class TranslateLanguage_efi_builder:
                 "- Disabling AMFI":"- 禁用 AMFI",
                 "- Disabling Library Validation":"- 禁用库验证",
                 "- Disabling SecureBootModel":"- 禁用 SecureBootModel",
-                "- Enabling AMFIPass":"- 启用 AMFIPass"
+                "- Enabling AMFIPassH":"- 启用 AMFIPassH"
             }
         return trans
     def smbios(self):
