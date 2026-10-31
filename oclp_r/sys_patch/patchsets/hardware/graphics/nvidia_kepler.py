@@ -113,9 +113,10 @@ class NvidiaKepler(BaseHardware):
                     },
                 },
                 PatchType.MERGE_SYSTEM_VOLUME: {
-                     **({ "ImageIO.framework": "26.0-25G229" } if self._xnu_major >= os_data.tahoe else {}),
+                     
                     "/System/Library/Frameworks": {
                         # XNU 21.6 (macOS 12.5)
+                        **({ "ImageIO.framework": "26.0-25G229" } if self._xnu_major >= os_data.tahoe else {}),
                         **({ "Metal.framework": "12.5 Beta 2"} if (self._xnu_float >= self.macOS_12_5 and self._xnu_major < os_data.ventura) else {}),
                     },
                     "/System/Library/PrivateFrameworks": {
