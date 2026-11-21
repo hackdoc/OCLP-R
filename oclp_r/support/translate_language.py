@@ -1052,6 +1052,89 @@ If you plan to create the USB for another machine, please select the "Change Mod
             }
         return trans
 
+    def gui_ipsw_download(self):
+        if self.language_point=="English":
+            trans={
+                "Initializing IPSW Download Frame":"Initializing IPSW Download Frame",
+                "Finding Available IPSW":"Finding Available IPSW",
+                "Select macOS IPSW":"Select macOS IPSW",
+                "Available IPSWs":"Available IPSWs",
+                "Failed to download IPSW catalog":"Failed to download IPSW catalog",
+                "Download":"Download",
+                "Copy Link":"Copy Link",
+                "Return to Main Menu":"Return to Main Menu",
+                "Show Older/Beta Versions":"Show Older/Beta Versions",
+                "Download link copied to clipboard":"Download link copied to clipboard",
+                "Download the selected IPSW.":"Download the selected IPSW.",
+                "Copy the download link of the selected IPSW.":"Copy the download link of the selected IPSW.",
+                "Download path: {path}":"Download path: {path}",
+                "IPSW files are UniversalMac restore images for Apple Silicon Macs.":"IPSW files are UniversalMac restore images for Apple Silicon Macs.",
+                "Cannot write to the selected directory.":"Cannot write to the selected directory.",
+                "Cannot write to the download path, falling back to {path}":"Cannot write to the download path, falling back to {path}",
+                "Insufficient Space":"Insufficient Space",
+                "Insufficient space to download this IPSW: {0} available vs {1} required":"Insufficient space to download this IPSW: {0} available vs {1} required",
+                "Downloaded file is missing.":"Downloaded file is missing.",
+                "Downloaded file is empty.":"Downloaded file is empty.",
+                "Downloaded file is not a valid IPSW.":"Downloaded file is not a valid IPSW.",
+                "Incomplete download: {0} of {1}":"Incomplete download: {0} of {1}",
+                "Verifying IPSW":"Verifying IPSW",
+                "Verifying the downloaded IPSW...":"Verifying the downloaded IPSW...",
+                "IPSW checksum mismatch.":"IPSW checksum mismatch.",
+                "Verification Failed":"Verification Failed",
+                "IPSW already exists: {path}\n\nDownload it again?":"IPSW already exists: {path}\n\nDownload it again?",
+                "IPSW Download":"IPSW Download",
+                "IPSW downloaded to:\n{path}":"IPSW downloaded to:\n{path}",
+                "Download Complete":"Download Complete",
+                "Selected IPSW":"Selected IPSW",
+                "Error":"Error",
+                "Yes":"Yes",
+                "No":"No",
+                "All entries":"All entries",
+                "Latest only":"Latest only",
+            }
+            return trans
+        elif self.language_point=="简体中文":
+            trans={
+                "Initializing IPSW Download Frame":"初始化 IPSW 下载窗口",
+                "Finding Available IPSW":"正在获取可用的 IPSW",
+                "Select macOS IPSW":"选择 macOS IPSW",
+                "Available IPSWs":"可用的 IPSW",
+                "Failed to download IPSW catalog":"无法下载 IPSW 目录",
+                "Download":"下载",
+                "Copy Link":"复制链接",
+                "Return to Main Menu":"返回主菜单",
+                "Show Older/Beta Versions":"显示旧版本/测试版",
+                "Download link copied to clipboard":"下载链接已复制到剪贴板",
+                "Download the selected IPSW.":"下载选中的 IPSW。",
+                "Copy the download link of the selected IPSW.":"复制选中的 IPSW 的下载链接。",
+                "Download path: {path}":"下载路径: {path}",
+                "IPSW files are UniversalMac restore images for Apple Silicon Macs.":"IPSW 文件是适用于 Apple Silicon Mac 的 UniversalMac 恢复镜像。",
+                "Cannot write to the selected directory.":"无法写入选择的目录。",
+                "Cannot write to the download path, falling back to {path}":"无法写入下载路径，改用 {path}",
+                "Insufficient Space":"空间不足",
+                "Insufficient space to download this IPSW: {0} available vs {1} required":"下载此 IPSW 所需的空间不足：{0} 可用 vs {1} 必需",
+                "Downloaded file is missing.":"下载的文件不存在。",
+                "Downloaded file is empty.":"下载的文件为空。",
+                "Downloaded file is not a valid IPSW.":"下载的文件不是有效的 IPSW。",
+                "Incomplete download: {0} of {1}":"下载不完整：{0} / {1}",
+                "Verifying IPSW":"正在校验 IPSW",
+                "Verifying the downloaded IPSW...":"正在校验下载的 IPSW...",
+                "IPSW checksum mismatch.":"IPSW 校验和不匹配。",
+                "Verification Failed":"校验失败",
+                "IPSW already exists: {path}\n\nDownload it again?":"IPSW 已存在：{path}\n\n是否重新下载？",
+                "IPSW Download":"IPSW 下载",
+                "IPSW downloaded to:\n{path}":"IPSW 已下载到：\n{path}",
+                "Download Complete":"下载完成",
+                "Selected IPSW":"选中的 IPSW",
+                "Error":"错误",
+                "Yes":"是",
+                "No":"否",
+                "All entries":"所有条目",
+                "Latest only":"最新版本",
+            }
+            return trans
+        return trans
+
     def gui_about(self):
         if self.language_point=="English":
             trans={
@@ -1309,6 +1392,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             trans={
                 "Create macOS Installer":"Create macOS Installer",
                 "Download macOS Installer":"Download macOS Installer",
+                "Download macOS IPSW":"Download macOS IPSW",
                 "Use existing macOS Installer":"Use existing macOS Installer",
                 
                 "Return to Main Menu":"Return to Main Menu",
@@ -1408,6 +1492,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 "Initializing macOS Installer Download Frame":"初始化 macOS 安装程序下载框架",
                 "Create macOS Installer":"创建 macOS 安装程序",
                 "Download macOS Installer":"下载 macOS 安装程序",
+                "Download macOS IPSW":"下载 macOS IPSW",
                 "Use existing macOS Installer":"使用现有 macOS 安装程序",
                 
                 "Return to Main Menu":"返回主菜单",

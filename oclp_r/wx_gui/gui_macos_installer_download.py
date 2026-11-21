@@ -24,7 +24,8 @@ from ..wx_gui import (
     gui_main_menu,
     gui_support,
     gui_download,
-    gui_macos_installer_flash
+    gui_macos_installer_flash,
+    gui_ipsw_download
 )
 from ..support import (
     macos_installer_handler,
@@ -84,6 +85,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         Format:
         - Title:  Create macOS Installer
         - Button: Download macOS Installer
+        - Button: Download macOS IPSW
         - Button: Use existing macOS Installer
         - Button: Return to Main Menu
         """
@@ -99,8 +101,13 @@ class macOSInstallerDownloadFrame(wx.Frame):
         download_button.Bind(wx.EVT_BUTTON, self.on_download)
         download_button.Centre(wx.HORIZONTAL)
 
+        # Button: Download macOS IPSW
+        ipsw_button = wx.Button(frame, label=self.trans["Download macOS IPSW"], pos=(-1, download_button.GetPosition()[1] + download_button.GetSize()[1] + 2), size=(200, 30))
+        ipsw_button.Bind(wx.EVT_BUTTON, self.on_ipsw)
+        ipsw_button.Centre(wx.HORIZONTAL)
+
         # Button: Use existing macOS Installer
-        existing_button = wx.Button(frame, label=self.trans["Use existing macOS Installer"], pos=(-1, download_button.GetPosition()[1] + download_button.GetSize()[1] +2), size=(200, 30))
+        existing_button = wx.Button(frame, label=self.trans["Use existing macOS Installer"], pos=(-1, ipsw_button.GetPosition()[1] + ipsw_button.GetSize()[1] +2), size=(200, 30))
         existing_button.Bind(wx.EVT_BUTTON, self.on_existing)
         existing_button.Centre(wx.HORIZONTAL)
 
@@ -477,7 +484,20 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.parent.Hide()
         self._generate_catalog_frame()
         self.parent.Close()
-    
+
+    def on_ipsw(self, event: wx.Event) -> None:
+        """
+        Display available macOS IPSWs to download
+        """
+        self.frame_modal.Close()
+        self.parent.Hide()
+        gui_ipsw_download.IPSWDownloadFrame(
+            None,
+            title=self.title,
+            global_constants=self.constants
+        )
+        self.parent.Close()
+
 
 
     def on_existing(self, event: wx.Event = None) -> None:

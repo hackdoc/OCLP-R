@@ -726,7 +726,8 @@ class SettingsFrame(wx.Frame):
                     "choices": [
                         "AppleHDA",
                         "VoodooHDA",
-                        "HDAUniversal"
+                        "HDAUniversal",
+                        "None"
                     ],
                     "value": self.constants.audio_type,
                     "variable": "audio_type",
@@ -755,8 +756,8 @@ class SettingsFrame(wx.Frame):
                 self.trans["Allow Intel Wi-Fi Patch"]: {
                     "type": "checkbox",
                     "value": self.constants.allow_intel_wifi_patch,
-                    "variable": "allow_usb_patch",
-                    "constants_variable": "allow_usb_patch",
+                    "variable": "allow_intel_wifi_patch",
+                    "constants_variable": "allow_intel_wifi_patch",
                     "description": [
                         self.trans["When enabled, OCLP-R starts patching"],
                         self.trans[" Wi-Fi when you use Ventura kext."]

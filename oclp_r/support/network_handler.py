@@ -877,6 +877,10 @@ class DownloadObject:
 
             response = NetworkUtilities().get(self.url, stream=True, timeout=100, headers=headers)
             logging.info(f"- Download URL: {self._get_sanitized_url()}")
+            # NetworkUtilities.get() does not raise for HTTP errors, and its fallback
+            # response for connection failures has no status code
+            if response.status_code is None or response.status_code >= 400:
+                raise Exception(f"HTTP error: {response.status_code}")
             mode = 'ab' if self.resume_download and self.downloaded_file_offset > 0 else 'wb'
             with open(self.filepath, mode) as file:
                 atexit.register(self.stop)
@@ -884,7 +888,7 @@ class DownloadObject:
                     if self.should_stop:
                         self._save_progress()
                         raise Exception(self.trans["Download stopped"])
-                    
+
                     if chunk:
                         file.write(chunk)
                         self.downloaded_file_size += len(chunk)
@@ -896,9 +900,17 @@ class DownloadObject:
                                 print(self.trans["Downloaded {0} of {1}"].format(utilities.human_fmt(self.downloaded_file_size), self.filename))
                             else:
                                 print(self.trans["Downloaded {0:.2f}% of {1} ({2}/s) ({3:.2f} seconds remaining)"].format(self.get_percent(), self.filename, utilities.human_fmt(self.get_speed()), self.get_time_remaining()))
-                
+
                 if response.status_code == 206:  # Partial Content
-                    self._save_progress()
+                    # A Range request has delivered the remaining bytes, so the
+                    # download is complete once the stream ends
+                    if self.total_file_size == 0.0 or (self.downloaded_file_offset + self.downloaded_file_size) >= self.total_file_size:
+                        self.download_complete = True
+                        self._clear_progress()
+                        logging.info(self.trans["Download complete: {0}"].format(self.filename))
+                        logging.info(self.trans["- Location: {0}"].format(self.filepath))
+                    else:
+                        self._save_progress()
                 else:
                     self.download_complete = True
                     self._clear_progress()
@@ -934,7 +946,7 @@ class DownloadObject:
         with self._download_lock:
             if self.total_file_size == 0.0:
                 return -1
-            return self.downloaded_file_size / self.total_file_size * 100
+            return (self.downloaded_file_offset + self.downloaded_file_size) / self.total_file_size * 100
 
 
     def get_speed(self) -> float:
@@ -967,7 +979,7 @@ class DownloadObject:
             speed = self.downloaded_file_size / elapsed
             if speed <= 0:
                 return -1
-            return (self.total_file_size - self.downloaded_file_size) / speed
+            return (self.total_file_size - self.downloaded_file_offset - self.downloaded_file_size) / speed
 
 
     def get_file_size(self) -> float:
@@ -989,7 +1001,7 @@ class DownloadObject:
             float: The downloaded file size in bytes
         """
         with self._download_lock:
-            return self.downloaded_file_size
+            return self.downloaded_file_offset + self.downloaded_file_size
 
 
     def get_part_progress(self) -> dict[int, dict]:

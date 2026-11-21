@@ -18,11 +18,16 @@ class Constants:
         #API Link
         self.kdk_api_link:                    str = ""
         self.metallib_api_link:               str = ""
+        # IPSW catalog: UniversalMac restore images are shared across all Apple Silicon Macs,
+        # so a single reference device is enough to enumerate every macOS IPSW.
+        self.ipsw_api_link:                   str = "https://api.ipsw.me/v4/device/MacBookAir10,1?type=ipsw"
+        # Apple's own catalog only lists the currently signed IPSWs, used as a fallback
+        self.ipsw_apple_api_link:             str = "https://mesu.apple.com/assets/macos/com_apple_macOSIPSW/com_apple_macOSIPSW.xml"
         self.voodoo_patch_already:            bool = False
         self.hdau_patch_already:              bool = False
 
         # Patcher Versioning
-        self.patcher_version:                 str = "3.4.0"  # OCLP-R
+        self.patcher_version:                 str = "3.4.1"  # OCLP-R
         self.patcher_support_pkg_version:     str = "2.0.1"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2026 Dortania and Hackdoc"
         self.patcher_name:                    str = "OCLP-R"

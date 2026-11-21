@@ -36,8 +36,8 @@ class ModernWireless(BaseHardware):
                 device_probe.IntelWirelessCard.Chipsets.IntelWirelessIDs,
             ] )):
             if self._constants.allow_intel_wifi_patch:
-                return False
-            return True
+                return True
+            return False
         return False
             
     
