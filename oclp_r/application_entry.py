@@ -12,8 +12,6 @@ from pathlib import Path
 
 from . import constants
 
-from .wx_gui import gui_entry
-
 from .detections import (
     device_probe,
     os_probe
@@ -37,7 +35,12 @@ class OpenCoreLegacyPatcher:
     def __init__(self) -> None:
         self.constants: constants.Constants = constants.Constants()
         self.trans= TranslateLanguage(self.constants).application_entry()
-        
+
+        # Fast path for the native SwiftUI front-end's read-only queries.
+        # These do not need the payload disk image, so we skip mounting it and
+        # skip analytics to keep the round-trip snappy.
+        self._swift_info_only = any(x in sys.argv for x in ("--print_info", "--list_disks", "--list_partitions"))
+
 
 
         logging_handler.InitializeLoggingSupport(self.constants)
@@ -47,6 +50,7 @@ class OpenCoreLegacyPatcher:
         threading.Thread(target=self.api_link,daemon=True).start()
 
         if utilities.check_cli_args() is None:
+            from .wx_gui import gui_entry
             gui_entry.EntryPoint(self.constants).start()
 
     def api_link(self):
@@ -122,7 +126,8 @@ class OpenCoreLegacyPatcher:
 
         # Initialize working directory
         self.constants.unpack_thread = threading.Thread(target=reroute_payloads.RoutePayloadDiskImage, args=(self.constants,))
-        self.constants.unpack_thread.start()
+        if not self._swift_info_only:
+            self.constants.unpack_thread.start()
 
         # Generate commit info
         self.constants.commit_info = commit_info.ParseCommitInfo(self.constants.launcher_binary).generate_commit_info()
@@ -134,7 +139,8 @@ class OpenCoreLegacyPatcher:
 
         # Generate defaults
         defaults.GenerateDefaults(self.computer.real_model, True, self.constants)
-        threading.Thread(target=analytics_handler.Analytics(self.constants).send_analytics).start()
+        if not self._swift_info_only:
+            threading.Thread(target=analytics_handler.Analytics(self.constants).send_analytics).start()
 
         if utilities.check_cli_args() is None:
             self.constants.cli_mode = False

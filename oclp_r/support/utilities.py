@@ -631,7 +631,32 @@ def check_cli_args():
     parser.add_argument("--auto_patch", help="Check if patches are needed and prompt user", action="store_true", required=False)
     parser.add_argument("--update_installed", help="Prompt user to finish updating via GUI", action="store_true", required=False)
 
-    
+    # Native SwiftUI front-end args (additive)
+    parser.add_argument("--print_info", help="Emit host info as JSON for the native front-end", action="store_true", required=False)
+    parser.add_argument("--print_patches", help="Emit detected root patches as JSON for the native front-end", action="store_true", required=False)
+    parser.add_argument("--set_settings", action="store", help="Persist settings from a JSON payload (native front-end)", required=False)
+    parser.add_argument("--list_disks", help="Emit installable disks as JSON for the native front-end", action="store_true", required=False)
+    parser.add_argument("--list_partitions", action="store", help="Emit installable partitions for a disk as JSON", required=False)
+    parser.add_argument("--install_oc", action="store", help="Install a built OpenCore config to an EFI partition", required=False)
+
+    # Native SwiftUI front-end download args (additive)
+    parser.add_argument("--list_installers", help="Emit macOS installer catalog as JSON", action="store_true", required=False)
+    parser.add_argument("--list_kdk", help="Emit KDK catalog as JSON", action="store_true", required=False)
+    parser.add_argument("--list_metallib", help="Emit Metallib catalog as JSON", action="store_true", required=False)
+    parser.add_argument("--list_ipsw", help="Emit IPSW catalog as JSON", action="store_true", required=False)
+    parser.add_argument("--list_local_installers", help="Emit installed macOS installers as JSON", action="store_true", required=False)
+    parser.add_argument("--download", action="store", help="Download a file (JSON: url, path, size)", required=False)
+    parser.add_argument("--extract_installer", action="store", help="Install InstallAssistant.pkg to /Applications", required=False)
+    parser.add_argument("--validate_installer", action="store", help="Validate InstallAssistant.pkg against Apple chunklist", required=False)
+    parser.add_argument("--verify_sha1", action="store", help="Verify a file's SHA1 (JSON: path, sha1)", required=False)
+    parser.add_argument("--flash_installer", action="store", help="Flash installer to disk (JSON: installer_path, disk)", required=False)
+
+    # Native SwiftUI front-end update / cache args (additive)
+    parser.add_argument("--check_updates", help="Check for OCLP-R updates as JSON", action="store_true", required=False)
+    parser.add_argument("--install_update", action="store", help="Download and install an OCLP-R update (JSON: url, version)", required=False)
+    parser.add_argument("--cache_os_headless", help="Cache KDK/Metallib for a staged OS update", action="store_true", required=False)
+
+
     args = parser.parse_args()
     if not (
         args.build or
@@ -640,7 +665,26 @@ def check_cli_args():
         args.validate or
         args.auto_patch or
         args.prepare_for_update or
-        args.cache_os
+        args.cache_os or
+        args.print_info or
+        args.print_patches or
+        args.set_settings or
+        args.list_disks or
+        args.list_partitions or
+        args.install_oc or
+        args.list_installers or
+        args.list_kdk or
+        args.list_metallib or
+        args.list_ipsw or
+        args.list_local_installers or
+        args.download or
+        args.extract_installer or
+        args.validate_installer or
+        args.verify_sha1 or
+        args.flash_installer or
+        args.check_updates or
+        args.install_update or
+        args.cache_os_headless
     ):
         return None
     else:

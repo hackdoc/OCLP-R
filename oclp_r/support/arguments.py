@@ -15,10 +15,8 @@ from . import subprocess_wrapper
 
 from .. import constants
 
-from ..wx_gui import gui_entry
 from ..efi_builder import build
 from ..sys_patch import sys_patch
-from ..sys_patch.auto_patcher import StartAutomaticPatching
 
 from ..datasets import (
     model_array,
@@ -29,7 +27,8 @@ from . import (
     utilities,
     defaults,
     validation,
-    translate_language
+    translate_language,
+    swift_bridge
 )
 
 
@@ -79,8 +78,84 @@ class arguments:
         if self.args.auto_patch:
             self._sys_patch_auto_handler()
             return
-        
-        
+
+        if self.args.print_info:
+            self._print_info_handler()
+            return
+
+        if self.args.print_patches:
+            self._print_patches_handler()
+            return
+
+        if self.args.set_settings:
+            self._set_settings_handler()
+            return
+
+        if self.args.list_disks:
+            self._list_disks_handler()
+            return
+
+        if self.args.list_partitions:
+            self._list_partitions_handler()
+            return
+
+        if self.args.install_oc:
+            self._install_oc_handler()
+            return
+
+        if self.args.list_installers:
+            self._list_installers_handler()
+            return
+
+        if self.args.list_kdk:
+            self._list_kdk_handler()
+            return
+
+        if self.args.list_metallib:
+            self._list_metallib_handler()
+            return
+
+        if self.args.list_ipsw:
+            self._list_ipsw_handler()
+            return
+
+        if self.args.list_local_installers:
+            self._list_local_installers_handler()
+            return
+
+        if self.args.download:
+            self._download_handler()
+            return
+
+        if self.args.extract_installer:
+            self._extract_installer_handler()
+            return
+
+        if self.args.validate_installer:
+            self._validate_installer_handler()
+            return
+
+        if self.args.verify_sha1:
+            self._verify_sha1_handler()
+            return
+
+        if self.args.flash_installer:
+            self._flash_installer_handler()
+            return
+
+        if self.args.check_updates:
+            self._check_updates_handler()
+            return
+
+        if self.args.install_update:
+            self._install_update_handler()
+            return
+
+        if self.args.cache_os_headless:
+            self._cache_os_headless_handler()
+            return
+
+
 
 
     def _validation_handler(self) -> None:
@@ -124,7 +199,170 @@ class arguments:
         """
 
         logging.info(self.trans["Set Auto patching"])
+        from ..sys_patch.auto_patcher import StartAutomaticPatching
         StartAutomaticPatching(self.constants).start_auto_patch()
+
+
+    def _print_info_handler(self) -> None:
+        """
+        Emit host info as JSON for the native SwiftUI front-end
+        """
+        swift_bridge.emit_result(swift_bridge.build_info(self.constants))
+        sys.exit(0)
+
+
+    def _print_patches_handler(self) -> None:
+        """
+        Emit detected root patches as JSON for the native SwiftUI front-end
+        """
+        swift_bridge.emit_result(swift_bridge.detect_patches(self.constants))
+        sys.exit(0)
+
+
+    def _set_settings_handler(self) -> None:
+        """
+        Persist settings from a JSON payload for the native SwiftUI front-end
+        """
+        import json
+        try:
+            payload = json.loads(self.args.set_settings)
+        except Exception as error:
+            swift_bridge.emit_result({"ok": False, "error": f"Invalid JSON: {error}"})
+            sys.exit(1)
+        result = swift_bridge.apply_settings(self.constants, payload)
+        swift_bridge.emit_result(result)
+        sys.exit(0 if result.get("ok") else 1)
+
+
+    def _list_disks_handler(self) -> None:
+        """
+        Emit installable disks as JSON for the native SwiftUI front-end
+        """
+        swift_bridge.emit_result(swift_bridge.list_disks(self.constants))
+        sys.exit(0)
+
+
+    def _list_partitions_handler(self) -> None:
+        """
+        Emit installable partitions for a disk as JSON for the native front-end
+        """
+        result = swift_bridge.list_partitions(self.constants, self.args.list_partitions)
+        swift_bridge.emit_result(result)
+        sys.exit(0 if result.get("ok") else 1)
+
+
+    def _install_oc_handler(self) -> None:
+        """
+        Install a previously built OpenCore config to an EFI partition
+        """
+        result = swift_bridge.install_oc(self.constants, self.args.install_oc)
+        swift_bridge.emit_result(result)
+        sys.exit(0 if result.get("ok") else 1)
+
+
+    def _list_installers_handler(self) -> None:
+        swift_bridge.emit_result(swift_bridge.list_installers(self.constants))
+        sys.exit(0)
+
+
+    def _list_kdk_handler(self) -> None:
+        swift_bridge.emit_result(swift_bridge.list_kdk(self.constants))
+        sys.exit(0)
+
+
+    def _list_metallib_handler(self) -> None:
+        swift_bridge.emit_result(swift_bridge.list_metallib(self.constants))
+        sys.exit(0)
+
+
+    def _list_ipsw_handler(self) -> None:
+        swift_bridge.emit_result(swift_bridge.list_ipsw(self.constants))
+        sys.exit(0)
+
+
+    def _list_local_installers_handler(self) -> None:
+        swift_bridge.emit_result(swift_bridge.list_local_installers(self.constants))
+        sys.exit(0)
+
+
+    def _download_handler(self) -> None:
+        import json as _json
+        try:
+            payload = _json.loads(self.args.download)
+        except Exception as error:
+            swift_bridge.emit_result({"ok": False, "error": f"Invalid JSON: {error}"})
+            sys.exit(1)
+        result = swift_bridge.download(
+            self.constants,
+            payload.get("url"),
+            payload.get("path"),
+            payload.get("size"),
+        )
+        swift_bridge.emit_result(result)
+        sys.exit(0 if result.get("ok") else 1)
+
+
+    def _extract_installer_handler(self) -> None:
+        result = swift_bridge.extract_installer(self.constants, self.args.extract_installer)
+        swift_bridge.emit_result(result)
+        sys.exit(0 if result.get("ok") else 1)
+
+
+    def _validate_installer_handler(self) -> None:
+        result = swift_bridge.validate_installer(self.constants, self.args.validate_installer)
+        swift_bridge.emit_result(result)
+        sys.exit(0 if result.get("ok") else 1)
+
+
+    def _verify_sha1_handler(self) -> None:
+        import json as _json
+        try:
+            payload = _json.loads(self.args.verify_sha1)
+        except Exception as error:
+            swift_bridge.emit_result({"ok": False, "error": f"Invalid JSON: {error}"})
+            sys.exit(1)
+        result = swift_bridge.verify_sha1(payload.get("path"), payload.get("sha1"))
+        swift_bridge.emit_result(result)
+        sys.exit(0 if result.get("ok") else 1)
+
+
+    def _flash_installer_handler(self) -> None:
+        import json as _json
+        try:
+            payload = _json.loads(self.args.flash_installer)
+        except Exception as error:
+            swift_bridge.emit_result({"ok": False, "error": f"Invalid JSON: {error}"})
+            sys.exit(1)
+        result = swift_bridge.flash_installer(
+            self.constants,
+            payload.get("installer_path"),
+            payload.get("disk"),
+        )
+        swift_bridge.emit_result(result)
+        sys.exit(0 if result.get("ok") else 1)
+
+
+    def _check_updates_handler(self) -> None:
+        swift_bridge.emit_result(swift_bridge.check_updates(self.constants))
+        sys.exit(0)
+
+
+    def _install_update_handler(self) -> None:
+        import json as _json
+        try:
+            payload = _json.loads(self.args.install_update)
+        except Exception as error:
+            swift_bridge.emit_result({"ok": False, "error": f"Invalid JSON: {error}"})
+            sys.exit(1)
+        result = swift_bridge.install_update(self.constants, payload.get("url"), payload.get("version", ""))
+        swift_bridge.emit_result(result)
+        sys.exit(0 if result.get("ok") else 1)
+
+
+    def _cache_os_headless_handler(self) -> None:
+        result = swift_bridge.cache_os_headless(self.constants)
+        swift_bridge.emit_result(result)
+        sys.exit(0 if result.get("ok") else 1)
 
 
     def _prepare_for_update_handler(self) -> None:
@@ -155,6 +393,7 @@ class arguments:
             logging.info(self.trans["Another instance of OS caching is running, exiting"])
             return
 
+        from ..wx_gui import gui_entry
         gui_entry.EntryPoint(self.constants).start(entry=gui_entry.SupportedEntryPoints.OS_CACHE)
 
 
